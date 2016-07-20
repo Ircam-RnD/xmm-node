@@ -104,12 +104,10 @@ void setRegressionEstimator(XmmWrap *obj, xmm::HMM::RegressionEstimator regestim
 	mod->model.configuration.changed = true;
 }
 
-// ========================== XMM <-> v8 CONVERTERS ==================== //
+//=================== xmm to v8::Object converters : ==================//
 
 // TODO : write a generic converter between jsoncpp and v8 !!!!!!!!!!!
-
-// ETC
-
+// --> DONE (see JsonCppV8Converters.h)
 /*
 v8::Local<v8::Object> makeObjectGMM(xmm::Model xm) {
 	return Nan::New<v8::Object>();
@@ -136,7 +134,7 @@ v8::Local<v8::Object> makeObjectSet(xmm::TrainingSet xs) {
 }
 */
 
-v8::Local<v8::Object> makeObjectPhrase(xmm::Phrase xp/*, v8::Local<v8::Object> &outputPhrase*/) {
+v8::Local<v8::Object> makeObjectPhrase(xmm::Phrase xp) {
 	Json::Value jp = xp.toJson();
 
 	v8::Local<v8::Object> outputPhrase = Nan::New<v8::Object>();
@@ -184,11 +182,14 @@ v8::Local<v8::Object> makeObjectPhrase(xmm::Phrase xp/*, v8::Local<v8::Object> &
 	return outputPhrase;
 }
 
-// ==================== v8::Object to xmm converters : ====================== //
+//=================== v8::Object to xmm converters : =====================//
 
+// obsolete since JsonCppV8Converters:
+/*
 bool makeXmmSet(v8::Local<v8::Object> inputSet, xmm::TrainingSet &xs) {
 	return false;
 }
+//*/
 
 bool makeXmmPhrase(v8::Local<v8::Object> inputPhrase, xmm::Phrase &xp) {
 

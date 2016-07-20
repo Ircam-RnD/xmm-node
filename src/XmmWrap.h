@@ -2,7 +2,7 @@
 #define _XMMWRAP_H_
 
 #include <nan.h>
-#include "XmmToolBase.h"
+#include "XmmTool.h"
 #include "../xmm/src/xmm.h"
 
 enum ModelTypeE { XmmUndefinedModelE = 0, XmmGmmE, XmmHhmmE };

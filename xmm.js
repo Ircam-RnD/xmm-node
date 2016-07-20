@@ -32,10 +32,11 @@ gmm.config = {
 
 console.log(phrase);
 
-for(var i=0; i<1000; i++) {
+for(var i=0; i<100; i++) {
 	//console.log('added new phrase at index : ' + gmm.addPhrase(phrase));
 	gmm.addPhrase(phrase)
 }
+
 console.log('\n');
 console.log('trying to add invalid phrase returns : ' + gmm.addPhrase(5));
 
@@ -44,10 +45,12 @@ console.log('training set size : ' + gmm.getTrainingSetSize());
 // console.log('\n');
 // console.log(gmm.getTrainingSet().phrases[0].column_names);
 
-console.log('\n');
-console.log(gmm.getPhrase(999));
+hhmm.setTrainingSet(gmm.getTrainingSet());
 
-//*
+console.log('\n');
+console.log(gmm.getPhrase(9));
+
+/*
 for(var i=0; i<1; i++) {
 	gmm.train(function(msg) {
 		//console.log(msg);
@@ -58,7 +61,14 @@ for(var i=0; i<1; i++) {
 }
 //*/
 
+console.log('\n');
+//console.log(hhmm.getTrainingSet());
+//console.log(gmm.getPhrasesOfLabel('minitest'));
+console.log(gmm.getTrainingSetLabels());
 //console.log('aha !');
+
+gmm.removePhrasesOfLabel('minitest');
+console.log(gmm.getTrainingSetSize());
 
 
 // console.log(gmm.getTrainingSetSize());
