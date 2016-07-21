@@ -1,14 +1,22 @@
 {
-  "name": "xmm",
-  "version": "0.0.1",
-  "description": "node wrapper for Jules Francoise's XMM C++ library",
-  "main": "xmm.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Joseph Larralde",
-  "license": "ISC",
-  "dependencies": {
-    "nan": "^2.3.5"
-  }
+    "name": "xmm",
+    "version": "0.0.1",
+    "description": "node wrapper for Jules Francoise's XMM C++ library",
+    "main": "xmm.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Ircam-RnD/xmm-node"
+    },
+    "scripts": {
+        //"test": "echo \"Error: no test specified\" && exit 1"
+        "test": "node test/xmmtest.js"
+    },
+    "author": "Joseph Larralde",
+    "license": "GPLv3",
+    "dependencies": {
+        "nan": "^2.3.5"
+    },
+    "keywords": [
+        "xmm", "machine learning", "gmm", "hmm", "regression"
+    ]
 }

@@ -1,4 +1,10 @@
+/*
+ * really dirty testing script
+ *
+ */
+
 var xmm = require('./lib/index.js');
+var util = require('util');
 //var xmm = require('./build/Release/xmm');
 
 var phrase = {
@@ -50,11 +56,13 @@ hhmm.setTrainingSet(gmm.getTrainingSet());
 console.log('\n');
 console.log(gmm.getPhrase(9));
 
-/*
+//*
 for(var i=0; i<1; i++) {
 	gmm.train(function(msg) {
 		//console.log(msg);
-		console.log(gmm.getModel().models[0].components);
+		//console.log(gmm.getModel().models[0].components);
+		//console.log(gmm.getModel());
+		console.log(util.inspect(gmm.getModel(), false, null));
 		//console.log(gmm.getTrainingSet());
 	});
 	//gmm.addPhrase(phrase);
