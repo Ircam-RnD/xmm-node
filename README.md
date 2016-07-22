@@ -1,8 +1,8 @@
-# XMM native addon for NodeJS
+# **XMM native addon for NodeJS**
 
 Wraps [XMM](https://github.com/julesfrancoise/xmm) library into a NodeJS module
 
-## Develop :
+## **Develop :**
 
 ### Prerequisites :
 - install latest NodeJS version
@@ -15,9 +15,9 @@ Wraps [XMM](https://github.com/julesfrancoise/xmm) library into a NodeJS module
 ### Test :
 `node test/xmmtest.js`
 
-## Consume :
+## **Consume :**
 
-do none of the above, simply add `"xmm": "github:ircam-rnd/xmm-node"` to your dependencies in `package.json`, then `npm install`
+add `"xmm": "github:ircam-rnd/xmm-node"` to your dependencies in `package.json`, then `npm install`
 
 ## Note
 
