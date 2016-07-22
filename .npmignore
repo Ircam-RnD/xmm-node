@@ -1,8 +1,10 @@
 **/.DS_Store
 
+xmm
+
 xmm-wrapped-objects.js
-src-wrapped-objects
-node_modules
-build
+src-wrapped-objects/
+node_modules/
+build/
 
 npm-debug.log
