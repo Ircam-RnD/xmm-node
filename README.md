@@ -2,16 +2,23 @@
 
 Wraps [XMM](https://github.com/julesfrancoise/xmm) library into a NodeJS module
 
-## Prerequisites :
+## Develop :
+
+### Prerequisites :
 - install latest NodeJS version
 - install node-gyp : `npm install -g node-gyp`
 - install dependencies listed in `package.json` : `npm install`
 
-## Build :
+### Build :
 `node-gyp configure build`
 
-## Test :
-`node xmm.js`
+### Test :
+`node test/xmmtest.js`
+
+## Consume :
+
+do none of the above, simply add `"xmm": "github:ircam-rnd/xmm-node"` to your dependencies in `package.json`, then `npm install`
 
 ## Note
+
 this module is a work in progress, use at your own risk
