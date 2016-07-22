@@ -1,4 +1,0 @@
-[submodule "xmm"]
-	path = xmm
-	url = https://github.com/julesfrancoise/xmm
-	ignore = dirty
