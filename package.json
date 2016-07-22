@@ -8,7 +8,7 @@
         "url": "https://github.com/Ircam-RnD/xmm-node"
     },
     "scripts": {
-        "preinstall": "git clone https://github.com/JulesFrancoise/xmm.git",
+        "preinstall": "git init; git submodule update --init",
         "test": "node test/xmmtest.js"
     },
     "author": "Joseph Larralde",
