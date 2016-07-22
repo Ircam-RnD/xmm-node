@@ -9,6 +9,7 @@
     },
     "scripts": {
         "preinstall": "git clone https://github.com/JulesFrancoise/xmm.git",
+        "install": "node-gyp rebuild",
         "test": "node test/xmmtest.js"
     },
     "author": "Joseph Larralde",

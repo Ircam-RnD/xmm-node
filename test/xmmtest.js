@@ -3,7 +3,7 @@
  *
  */
 
-var xmm = require('./lib/index.js');
+var xmm = require('../index.js');
 var util = require('util');
 //var xmm = require('./build/Release/xmm');
 
