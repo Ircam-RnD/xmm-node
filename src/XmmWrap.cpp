@@ -95,6 +95,7 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
 	std::string modelType = "undefined";
 	obj->modelType_ = XmmUndefinedModelE;
 
+	bool h = true;
 	std::size_t s = 1;
 	std::size_t g = 1;
 	double rr = 0.01;
@@ -106,6 +107,20 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
 	if (info[0]->IsObject())
 	{
 		v8::Local<v8::Object> initConfig = v8::Local<v8::Object>::Cast(info[0]);
+
+		v8::Local<v8::Value> hierarchical
+			= initConfig->Get(Nan::New<v8::String>("hierarchical").ToLocalChecked());
+		if (hierarchical->IsBoolean())
+		{
+			h = hierarchical->BooleanValue();
+		}
+
+		v8::Local<v8::Value> states
+			= initConfig->Get(Nan::New<v8::String>("states").ToLocalChecked());
+		if (states->IsNumber())
+		{
+			s = states->NumberValue();
+		}
 
 		v8::Local<v8::Value> gaussians
 			= initConfig->Get(Nan::New<v8::String>("gaussians").ToLocalChecked());
@@ -219,6 +234,7 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
 	{
 		obj->model_ = new XmmTool<xmm::HierarchicalHMM>();
 		obj->modelType_ = XmmHhmmE;
+		setHierarchical<xmm::HierarchicalHMM>(obj, h);
 		setStates<xmm::HierarchicalHMM>(obj, s);
 		setGaussians<xmm::HierarchicalHMM>(obj, g);	
 		setRelativeRegularization<xmm::HierarchicalHMM>(obj, rr);
@@ -560,6 +576,7 @@ void XmmWrap::getConfig(v8::Local<v8::String> prop,
 
 	v8::Local<v8::Object> outputConfig = Nan::New<v8::Object>();
 
+	bool hierarchical = true;
 	std::size_t states = 1;
 	std::size_t gaussians = 1;
 	double relative_regularization = 0.01;
@@ -577,6 +594,7 @@ void XmmWrap::getConfig(v8::Local<v8::String> prop,
 	}
 	else if (obj->modelType_ == XmmHhmmE)
 	{
+		hierarchical = getHierarchical<xmm::HierarchicalHMM>(obj);
 		states = getStates<xmm::HierarchicalHMM>(obj);
 		gaussians = getGaussians<xmm::HierarchicalHMM>(obj);
 		relative_regularization = getRelativeRegularization<xmm::HierarchicalHMM>(obj);
@@ -618,6 +636,9 @@ void XmmWrap::getConfig(v8::Local<v8::String> prop,
 	{
 		case XmmHhmmE:
 		{
+			outputConfig->Set(Nan::New<v8::String>("hierarchical").ToLocalChecked(),
+								Nan::New<v8::Boolean>(hierarchical));
+
 			outputConfig->Set(Nan::New<v8::String>("states").ToLocalChecked(),
 			 					Nan::New<v8::Number>(states));
 
@@ -651,6 +672,7 @@ void XmmWrap::setConfig(v8::Local<v8::String> prop,
 		v8::Local<v8::Object> inputConfig = v8::Local<v8::Object>::Cast(value);
 		//setConfiguration(obj, inputConfig);
 
+		bool h;
 		std::size_t s;
 		std::size_t g;
 		double rr;
@@ -668,6 +690,7 @@ void XmmWrap::setConfig(v8::Local<v8::String> prop,
 				cm = getCovarianceMode<xmm::GMM>(obj);
 				break;
 			case XmmHhmmE:
+				h = getHierarchical<xmm::HierarchicalHMM>(obj);
 				s = getStates<xmm::HierarchicalHMM>(obj);
 				g = getGaussians<xmm::HierarchicalHMM>(obj);
 				rr = getRelativeRegularization<xmm::HierarchicalHMM>(obj);
@@ -678,6 +701,13 @@ void XmmWrap::setConfig(v8::Local<v8::String> prop,
 				break;
 			default:
 				break;
+		}
+
+		v8::Local<v8::Value> hierarchical
+			= inputConfig->Get(Nan::New<v8::String>("hierarchical").ToLocalChecked());
+		if (hierarchical->IsBoolean())
+		{
+			h = hierarchical->BooleanValue();
 		}
 
 		v8::Local<v8::Value> states
@@ -771,6 +801,7 @@ void XmmWrap::setConfig(v8::Local<v8::String> prop,
 		}
 		else if (obj->modelType_ == XmmHhmmE)
 		{
+			setHierarchical<xmm::HierarchicalHMM>(obj, h);
 			setStates<xmm::HierarchicalHMM>(obj, s);
 			setGaussians<xmm::HierarchicalHMM>(obj, g);
 			setRelativeRegularization<xmm::HierarchicalHMM>(obj, rr);

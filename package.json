@@ -1,5 +1,5 @@
 {
-    "name": "xmm",
+    "name": "xmm-node",
     "version": "0.0.1",
     "description": "node wrapper for Jules Francoise's XMM C++ library",
     "main": "xmm.js",

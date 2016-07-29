@@ -7,6 +7,20 @@
 // TODO : PUT THESE GETTERS / SETTERS IN XMMTOOLBASE
 
 template<typename T>
+bool getHierarchical(XmmWrap *obj) {
+	XmmTool<T> *mod = reinterpret_cast<XmmTool<T> *>(obj->model_);
+	bool hierarchical = mod->model.configuration.hierarchical.get();
+	return hierarchical;
+}
+
+template<typename T>
+void setHierarchical(XmmWrap *obj, bool hierarchical) {
+	XmmTool<T> *mod = reinterpret_cast<XmmTool<T> *>(obj->model_);
+	mod->model.configuration.hierarchical.set(hierarchical);
+	mod->model.configuration.changed = true;
+}
+
+template<typename T>
 std::size_t getStates(XmmWrap *obj) {
 	XmmTool<T> *mod = reinterpret_cast<XmmTool<T> *>(obj->model_);
 	std::size_t states = mod->model.configuration.states.get();
