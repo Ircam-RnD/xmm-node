@@ -24,6 +24,7 @@ public:
 
 		v8::Local<v8::Value> results[] = {
 			//v8::Local<v8::Value>::Cast(model)
+			Nan::Null(),
 			model
 		};
 
@@ -31,7 +32,7 @@ public:
 		// in the event loop, and threaded training is disabled in XmmTool
 		original = tool;
 
-		callback->Call(1, results);
+		callback->Call(2, results);
 	}
 
 private:

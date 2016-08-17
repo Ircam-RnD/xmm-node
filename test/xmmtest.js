@@ -25,11 +25,11 @@ gmm = new xmm('gmm');
 // - hierarchical
 var hhmm = new xmm({
 	model: 'hhmm',
-	gaussians: 5,
+	gaussians: 1,
 	covariance_mode: 'diagonal',
 	transition_mode: 'ergodic',
 	hierarchical: true,
-	states: 10
+	states: 3
 });
 console.log('hhmm config : ' + util.inspect(hhmm.config, false, null));
 //xmm.machin = { a: 1 };
@@ -61,13 +61,14 @@ hhmm.setTrainingSet(gmm.getTrainingSet());
 console.log('\n');
 console.log(gmm.getPhrase(9));
 
-/*
+//*
 for(var i=0; i<1; i++) {
-	hhmm.train(function(msg) {
-		//console.log(msg);
+	gmm.train(function(err, model) {
+		console.log(err);
+		console.log(model);
 		//console.log(gmm.getModel().models[0].components);
 		//console.log(gmm.getModel());
-		console.log(util.inspect(hhmm.getModel(), false, null));
+		//console.log(util.inspect(gmm.getModel(), false, null));
 		//console.log(gmm.getTrainingSet());
 	});
 	//gmm.addPhrase(phrase);

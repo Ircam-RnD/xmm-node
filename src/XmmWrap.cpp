@@ -31,50 +31,26 @@ void XmmWrap::Init()
 	tpl->SetClassName(Nan::New("xmm").ToLocalChecked()); // or should it be "XmmWrap" ?
 	tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
-	// Prototype
-	// What's the difference with :
-	// Nan::SetPrototypeMethod(tpl, "bimodal",	bimodal);
+	Nan::SetPrototypeMethod(tpl, "addPhrase", addPhrase);
+	Nan::SetPrototypeMethod(tpl, "getPhrase", getPhrase);
+	Nan::SetPrototypeMethod(tpl, "getPhrasesOfLabel",	getPhrasesOfLabel);
+	Nan::SetPrototypeMethod(tpl, "removePhrase", removePhrase);
+	Nan::SetPrototypeMethod(tpl, "removePhrasesOfLabel", removePhrasesOfLabel);
+	Nan::SetPrototypeMethod(tpl, "getTrainingSetSize", getTrainingSetSize);
+	Nan::SetPrototypeMethod(tpl, "getTrainingSetLabels", getTrainingSetLabels);
+	Nan::SetPrototypeMethod(tpl, "setTrainingSet", setTrainingSet);
+	Nan::SetPrototypeMethod(tpl, "addTrainingSet", addTrainingSet);
+	Nan::SetPrototypeMethod(tpl, "getTrainingSet", getTrainingSet);
+	Nan::SetPrototypeMethod(tpl, "clearTrainingSet", clearTrainingSet);
+	Nan::SetPrototypeMethod(tpl, "train", train);
+	Nan::SetPrototypeMethod(tpl, "getModel", getModel);
+	Nan::SetPrototypeMethod(tpl, "filter", filter);
+
+	/*
+	// other way to write this with v8 :
 	tpl->PrototypeTemplate()->Set(Nan::New("addPhrase").ToLocalChecked(),
 	  Nan::New<v8::FunctionTemplate>(addPhrase)->GetFunction());
-
-	tpl->PrototypeTemplate()->Set(Nan::New("getPhrase").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(getPhrase)->GetFunction());
-
-	tpl->PrototypeTemplate()->Set(Nan::New("getPhrasesOfLabel").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(getPhrasesOfLabel)->GetFunction());
-
-	tpl->PrototypeTemplate()->Set(Nan::New("removePhrase").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(removePhrase)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("removePhrasesOfLabel").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(removePhrasesOfLabel)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("getTrainingSetSize").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(getTrainingSetSize)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("getTrainingSetLabels").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(getTrainingSetLabels)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("setTrainingSet").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(setTrainingSet)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("addTrainingSet").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(addTrainingSet)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("getTrainingSet").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(getTrainingSet)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("clearTrainingSet").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(clearTrainingSet)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("train").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(train)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("getModel").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(getModel)->GetFunction());
-	
-	tpl->PrototypeTemplate()->Set(Nan::New("filter").ToLocalChecked(),
-	  Nan::New<v8::FunctionTemplate>(filter)->GetFunction());
+	//*/
 
 	// Getters / setters :
 	// solution found here :
