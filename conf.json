@@ -1,8 +1,8 @@
 {	
 	"source": {
     "include": [
-    	"jsdoc/README_INTRO.md",
-    	"jsdoc/documentation.js"
+    	"docs/README_INTRO.md",
+    	"docs/documentation.js"
     ],
     "exclude": [ "xmm" ],
     "includePattern": ".+\\.js(doc)?$",
