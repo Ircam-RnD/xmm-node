@@ -19,7 +19,7 @@
  * @name xmm
  * @class
  * @param {('gmm'|'hhmm')} [modelType='gmm'] - The type of model.
- * @param {XmmModelConfig} [modelCongig] - Configuration parameters for the model.
+ * @param {XmmModelConfig} [modelConfig] - Configuration parameters for the model.
  */
 
 //======================== phrases & training sets ===========================//
