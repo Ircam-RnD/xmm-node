@@ -10,13 +10,13 @@
   "scripts": {
     "preinstall": "git clone https://github.com/JulesFrancoise/xmm.git",
     "install": "node-gyp rebuild",
+    "docs": "jsdoc2md src/documentation.js > docs/index.md",
     "test": "node test/xmmtest.js"
   },
   "author": "Joseph Larralde",
   "license": "GPL-3.0",
   "dependencies": {
-    "nan": "^2.3.5",
-    "xmm-client": "Ircam-RnD/xmm-client"
+    "nan": "^2.3.5"
   },
   "keywords": [
     "xmm",
@@ -26,6 +26,10 @@
     "regression"
   ],
   "devDependencies": {
-    "jsdoc-template": "github:collective-soundworks/jsdoc-template"
+    "babel-tape-runner": "^2.0.1",
+    "jsdoc-template": "github:collective-soundworks/jsdoc-template",
+    "jsdoc-to-markdown": "^1.3.7",
+    "tape": "^4.6.0",
+    "xmm-client": "github:ircam-rnd/xmm-client"
   }
 }
