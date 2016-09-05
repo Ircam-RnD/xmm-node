@@ -2,6 +2,8 @@
 ### XMM native addon for Node.js
 
 Wraps the [XMM](https://github.com/julesfrancoise/xmm) library into a Node.js module.
+Can be used together with the client-side model decoders library
+[xmm-client](https://github.com/Ircam-RnD/xmm-client).
 
 #### developers :
 
