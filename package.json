@@ -1,23 +1,31 @@
 {
-    "name": "xmm-node",
-    "version": "0.0.1",
-    "description": "node wrapper for Jules Francoise's XMM C++ library",
-    "main": "xmm.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Ircam-RnD/xmm-node"
-    },
-    "scripts": {
-        "preinstall": "git clone https://github.com/JulesFrancoise/xmm.git",
-        "install": "node-gyp rebuild",
-        "test": "node test/xmmtest.js"
-    },
-    "author": "Joseph Larralde",
-    "license": "GPLv3",
-    "dependencies": {
-        "nan": "^2.3.5"
-    },
-    "keywords": [
-        "xmm", "machine learning", "gmm", "hmm", "regression"
-    ]
+  "name": "xmm-node",
+  "version": "0.1.0",
+  "description": "node wrapper for the XMM library",
+  "main": "xmm.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ircam-RnD/xmm-node"
+  },
+  "scripts": {
+    "preinstall": "git clone https://github.com/JulesFrancoise/xmm.git",
+    "install": "node-gyp rebuild",
+    "test": "node test/xmmtest.js"
+  },
+  "author": "Joseph Larralde",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "nan": "^2.3.5",
+    "xmm-client": "Ircam-RnD/xmm-client"
+  },
+  "keywords": [
+    "xmm",
+    "machine learning",
+    "gmm",
+    "hmm",
+    "regression"
+  ],
+  "devDependencies": {
+    "jsdoc-template": "github:collective-soundworks/jsdoc-template"
+  }
 }

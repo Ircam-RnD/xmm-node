@@ -3,9 +3,9 @@
  *
  */
 
-var xmm = require('../index.js');
+var Xmm = require('../index.js');
 var util = require('util');
-//var xmm = require('./build/Release/xmm');
+//var Xmm = require('./build/Release/Xmm');
 
 var phrase = {
 	bimodal: false,
@@ -17,29 +17,35 @@ var phrase = {
 	label: 'minitest'
 };
 
-var gmm = new xmm('gmmm');
-gmm = new xmm('gmm');
-// var hhmm = new xmm('hhmm');
+var gmm = new Xmm();
+gmm.config = { model: 'gmm' };
+console.log(gmm.getModelType());
+console.log(gmm.getConfig('gaussians'));
+console.log('\n');
+gmm = new Xmm('gmm');
+// var hhmm = new Xmm('hhmm');
 
 // still missing in configuration :
 // - hierarchical
-var hhmm = new xmm({
-	model: 'hhmm',
+var hhmm = new Xmm('hhmm', {
+	// model: 'hhmm',
 	gaussians: 1,
 	covariance_mode: 'diagonal',
 	transition_mode: 'ergodic',
 	hierarchical: true,
 	states: 3
 });
-console.log('hhmm config : ' + util.inspect(hhmm.config, false, null));
-//xmm.machin = { a: 1 };
+console.log('hhmm config : ' + util.inspect(hhmm.getConfig(), false, null));
+//Xmm.machin = { a: 1 };
 
 
-gmm.config = {
+gmm.setConfig({
 	states: 10,
 	gaussians: 2,
 	relative_regularization: 0.2
-};
+});
+
+const states = gmm.getConfig('states');
 
 console.log(phrase);
 
@@ -63,11 +69,13 @@ console.log(gmm.getPhrase(9));
 
 //*
 for(var i=0; i<1; i++) {
-	gmm.train(function(err, model) {
+	gmm.train(function(err, msg) {
 		console.log(err);
-		console.log(model);
+		console.log('model : ' + msg);
 		//console.log(gmm.getModel().models[0].components);
 		//console.log(gmm.getModel());
+		//console.log(hhmm.getModel());
+		//console.log(gmm.filter([0, 1]));
 		//console.log(util.inspect(gmm.getModel(), false, null));
 		//console.log(gmm.getTrainingSet());
 	});
@@ -75,14 +83,14 @@ for(var i=0; i<1; i++) {
 }
 //*/
 
-console.log('\n');
+//console.log('\n');
 //console.log(hhmm.getTrainingSet());
 //console.log(gmm.getPhrasesOfLabel('minitest'));
-console.log(gmm.getTrainingSetLabels());
+//console.log(gmm.getTrainingSetLabels());
 //console.log('aha !');
 
-gmm.removePhrasesOfLabel('minitest');
-console.log(gmm.getTrainingSetSize());
+//gmm.removePhrasesOfLabel('minitest');
+//console.log(gmm.getTrainingSetSize());
 
 
 // console.log(gmm.getTrainingSetSize());

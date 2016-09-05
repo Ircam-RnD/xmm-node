@@ -1,24 +1,27 @@
-# **XMM native addon for NodeJS**
+## xmm-node
+### XMM native addon for Node.js
 
-Wraps [XMM](https://github.com/julesfrancoise/xmm) library into a NodeJS module
+Wraps the [XMM](https://github.com/julesfrancoise/xmm) library into a Node.js module.
 
-## **Develop :**
+#### developers :
 
-#### Prerequisites :
-- install latest NodeJS version
+install :
+- install latest Node.js version
 - install node-gyp : `npm install -g node-gyp`
+- clone xmm-node : `git clone --recursive https://github.com/Ircam-RnD/xmm-node.git`
 - install dependencies listed in `package.json` : `npm install`
 
-#### Build :
-`node-gyp configure build`
+build : `node-gyp configure build`
 
+<!--
 #### Test :
 `node test/xmmtest.js`
+-->
 
-## **Consume :**
+#### users :
 
-add `"xmm": "github:ircam-rnd/xmm-node"` to your dependencies in `package.json`, then `npm install`
+`npm install Ircam-RnD/xmm-node [--save]`
 
-## Note
+#### note :
 
 this module is a work in progress, use at your own risk

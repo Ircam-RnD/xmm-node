@@ -1,3 +1,6 @@
+#ifndef _JSONCPP_V8_CONVERTERS_H_
+#define _JSONCPP_V8_CONVERTERS_H_
+
 #include <nan.h>
 #include "../xmm/src/xmm.h"
 
@@ -176,3 +179,4 @@ Json::Value arrayToValue(v8::Local<v8::Array> arr)
 	return res;
 }
 
+#endif /* _JSONCPP_V8_CONVERTERS_H_ */

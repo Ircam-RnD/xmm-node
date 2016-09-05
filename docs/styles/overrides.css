@@ -1,0 +1,114 @@
+/* layout */
+body {
+  font-size: 90%;
+}
+
+#main {
+  width: 75%;
+}
+
+/* home page link to github and last release */
+#metas {
+  line-height: 28px;
+  height: 28px;
+}
+
+#metas #github {
+  display: inline-block;
+  height: 28px;
+  line-height: normal;
+  vertical-align: baseline;
+}
+
+#metas #release {
+  font-size: 100%;
+  height: 28px;
+  line-height: normal;
+  color: steelblue;
+  padding: 0 20px;
+  display: inline-block;
+  vertical-align: baseline;
+}
+/* ! home page link to github and last release */
+
+nav {
+  width: 25%;
+}
+
+/* clean h1 from `.md` files */
+h1:not(.page-title) {
+  margin-left: 0;
+  margin-top: 0;
+}
+
+/* generic class description */
+/*.container-overview .description,*/
+.class-description {
+  font-size: 100%;
+  margin: 0 0 0.5em 0;
+  padding: 0.5em 1em;
+  background-color: #efefef;
+  border-radius: 3px;
+}
+
+/* clean tables */
+table {
+  width: 100%;
+}
+
+td.description h6 {
+  margin-top: 0;
+}
+
+td.description p {
+  color: #6a6b73;
+}
+
+td.name code {
+  position: relative;
+  top: 3px;
+}
+
+/* clean code examples */
+pre.prettyprint {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 3px;
+  padding: 6px 0;
+  overflow-y: auto;
+}
+
+pre.prettyprint code {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* inline code */
+p code {
+  color: #748087;
+}
+
+p a code {
+  color: #0095dd;
+}
+
+p img {
+  max-width: 100%;
+}
+
+/* clean nav */
+nav li {
+  margin-top: 1px;
+}
+
+/* @see links */
+.tag-see p {
+  margin: 0;
+}
+
+/* helpers */
+.warning {
+  color: #ff6600;
+  /*font-style: italic;*/
+}
+
