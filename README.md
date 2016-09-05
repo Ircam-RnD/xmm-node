@@ -26,7 +26,9 @@ build : `node-gyp configure build`
 
 #### note :
 
-this module is a work in progress, use at your own risk## API documentation :
+this module is a work in progress, use at your own risk
+
+## API documentation :
 
 <a name="xmm"></a>
 
