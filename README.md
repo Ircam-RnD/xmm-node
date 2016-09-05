@@ -29,7 +29,7 @@ build : `node-gyp configure build`
 this module is a work in progress, use at your own risk
 <hr>
 
-### API documentation :
+# API documentation :
 
 <a name="xmm"></a>
 
@@ -223,7 +223,8 @@ Estimates an input array of floats.
 Get the actual model configuration parameters or one of them.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
-**Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - If called without any argument :
+**Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - Depends on the parameter.
+<br />If called without any argument :
 <li style="list-style-type: none;">
 <ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
 </li>
