@@ -175,7 +175,7 @@
  *	'covariance_mode'|'hierarchical'|'states'|'transition_mode'|'regression_estimator')}
  * [configParam] - The name of a configuration parameter.
  * @returns {(xmmModelConfig|Number|String|Boolean)} Depends on the parameter.
- * <br />If called without any argument :
+ * <br /><br />If called without any argument :
  * <li style="list-style-type: none;">
  * <ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
  * </li>
