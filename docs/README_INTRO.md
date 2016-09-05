@@ -1,4 +1,4 @@
-## xmm-node
+# xmm-node
 ### XMM native addon for Node.js
 
 Wraps the [XMM](https://github.com/julesfrancoise/xmm) library into a Node.js module.
