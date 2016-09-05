@@ -1,21 +1,36 @@
-## Classes
+## xmm-node
+### XMM native addon for Node.js
 
-<dl>
-<dt><a href="#xmm">xmm</a></dt>
-<dd></dd>
-</dl>
+Wraps the [XMM](https://github.com/julesfrancoise/xmm) library into a Node.js module.
+Can be used together with the client-side model decoders library
+[xmm-client](https://github.com/Ircam-RnD/xmm-client).
 
-## Typedefs
+#### developers :
 
-<dl>
-<dt><a href="#XmmModelConfig">XmmModelConfig</a></dt>
-<dd></dd>
-<dt><a href="#TrainCallback">TrainCallback</a> : <code>function</code></dt>
-<dd><p>Callback handling the trained model.</p>
-</dd>
-</dl>
+install :
+- install latest Node.js version
+- install node-gyp : `npm install -g node-gyp`
+- clone xmm-node : `git clone --recursive https://github.com/Ircam-RnD/xmm-node.git`
+- install dependencies listed in `package.json` : `npm install`
 
-<a name="xmm"></a>
+build : `node-gyp configure build`
+
+<!--
+#### Test :
+`node test/xmmtest.js`
+-->
+
+#### users :
+
+`npm install Ircam-RnD/xmm-node [--save]`
+
+#### note :
+
+this module is a work in progress, use at your own risk
+
+#### API documentation :
+
+ERROR, Cannot find module.<a name="xmm"></a>
 
 ## xmm
 **Kind**: global class  
@@ -241,33 +256,4 @@ Set the actual model configuration parameters.
 | Param | Type | Description |
 | --- | --- | --- |
 | config | <code>[XmmModelConfig](#XmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
-
-<a name="XmmModelConfig"></a>
-
-## XmmModelConfig
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| gaussians | <code>Number</code> | <code>1</code> | the number of gaussians used for encoding a state. |
-| relative_regularization | <code>Number</code> | <code>0.01</code> | the relative regularization (see XMM documentation). |
-| absolute_regularization | <code>Number</code> | <code>0.01</code> | the absolute regularization (see XMM documentation). |
-| covariance_mode | <code>&#x27;diagonal&#x27;</code> &#124; <code>&#x27;full&#x27;</code> | <code>&#x27;full&#x27;</code> | the type of covariance matrix used in the model. |
-| hierarchical | <code>Boolean</code> | <code>true</code> | if <code>model</code> is 'hhmm', turns hierarchical mode on/off. |
-| states | <code>Number</code> | <code>1</code> | if <code>model</code> is 'hhmm', defines the number of states used to generate each individual hmm. |
-| transition_mode | <code>&#x27;ergodic&#x27;</code> &#124; <code>&#x27;leftright&#x27;</code> | <code>&#x27;leftright&#x27;</code> | if <code>model</code> is 'hhmm', sets the transition mode between the individual hmm models. |
-| regression_estimator | <code>&#x27;full&#x27;</code> &#124; <code>&#x27;windowed&#x27;</code> &#124; <code>&#x27;likeliest&#x27;</code> | <code>&#x27;full&#x27;</code> | if <code>model</code> is 'hhmm', the type of estimator used for regression with hmms. |
-
-<a name="TrainCallback"></a>
-
-## TrainCallback : <code>function</code>
-Callback handling the trained model.
-
-**Kind**: global typedef  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| err | <code>String</code> | Description of a potential error. |
-| res | <code>Object</code> | An object containing the trained model. |
 

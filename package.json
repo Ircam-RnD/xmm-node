@@ -10,7 +10,7 @@
   "scripts": {
     "preinstall": "git clone https://github.com/JulesFrancoise/xmm.git",
     "install": "node-gyp rebuild",
-    "docs": "jsdoc2md src/documentation.js > docs/index.md",
+    "docs": "jsdoc2md -t docs/README.hbs src/documentation.js > docs/index.md",
     "test": "node test/xmmtest.js"
   },
   "author": "Joseph Larralde",
