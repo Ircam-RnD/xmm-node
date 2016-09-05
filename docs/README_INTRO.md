@@ -27,3 +27,4 @@ build : `node-gyp configure build`
 #### note :
 
 this module is a work in progress, use at your own risk
+<hr>
