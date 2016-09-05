@@ -49,12 +49,12 @@ this module is a work in progress, use at your own risk
     * [.setTrainingSet(trainingSet)](#xmm+setTrainingSet)
     * [.addTrainingSet(trainingSet)](#xmm+addTrainingSet)
     * [.clearTrainingSet()](#xmm+clearTrainingSet)
-    * [.train(trainCallback)](#xmm+train)
+    * [.train(callback)](#xmm+train)
     * [.getModel()](#xmm+getModel) ⇒ <code>Object</code>
     * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
     * [.reset()](#xmm+reset)
     * [.filter(observation)](#xmm+filter) ⇒ <code>Object</code>
-    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[XmmModelConfig](#XmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
     * [.setConfig(config)](#xmm+setConfig)
 
 <a name="new_xmm_new"></a>
@@ -66,7 +66,7 @@ The main xmm class.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
-| [modelConfig] | <code>[XmmModelConfig](#XmmModelConfig)</code> |  | Configuration parameters for the model. |
+| [modelConfig] | <code>[xmmModelConfig](#xmmModelConfig)</code> |  | Configuration parameters for the model. |
 
 <a name="xmm+addPhrase"></a>
 
@@ -176,19 +176,19 @@ Clears the training set.
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 <a name="xmm+train"></a>
 
-### xmm.train(trainCallback)
+### xmm.train(callback)
 Trains the model with the current training set.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| trainCallback | <code>[TrainCallback](#TrainCallback)</code> | The callback handling the trained model. |
+| callback | <code>[trainCallback](#trainCallback)</code> | The callback handling the trained model. |
 
 <a name="xmm+getModel"></a>
 
 ### xmm.getModel() ⇒ <code>Object</code>
-Returns the trained model (the same object as in [TrainCallback](#TrainCallback)).
+Returns the trained model (the same object as in [TrainCallback](TrainCallback)).
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 **Returns**: <code>Object</code> - An object containing the trained model.  
@@ -219,13 +219,13 @@ Estimates an input array of floats.
 
 <a name="xmm+getConfig"></a>
 
-### xmm.getConfig([configParam]) ⇒ <code>[XmmModelConfig](#XmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+### xmm.getConfig([configParam]) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
 Get the actual model configuration parameters or one of them.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
-**Returns**: <code>[XmmModelConfig](#XmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - If called without any argument :
+**Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - If called without any argument :
 <li style="list-style-type: none;">
-<ul> an object of type [XmmModelConfig](#XmmModelConfig) containing all the actual model configuration parameters</ul>
+<ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
 </li>
 Otherwise, the returned value type depends on the requested configuration parameter :
 <li style="list-style-type: none;">
@@ -256,7 +256,7 @@ Set the actual model configuration parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config | <code>[XmmModelConfig](#XmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
+| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
 
 -->
@@ -278,12 +278,12 @@ Set the actual model configuration parameters.
     * [.setTrainingSet(trainingSet)](#xmm+setTrainingSet)
     * [.addTrainingSet(trainingSet)](#xmm+addTrainingSet)
     * [.clearTrainingSet()](#xmm+clearTrainingSet)
-    * [.train(trainCallback)](#xmm+train)
+    * [.train(callback)](#xmm+train)
     * [.getModel()](#xmm+getModel) ⇒ <code>Object</code>
     * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
     * [.reset()](#xmm+reset)
     * [.filter(observation)](#xmm+filter) ⇒ <code>Object</code>
-    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[XmmModelConfig](#XmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
     * [.setConfig(config)](#xmm+setConfig)
 
 <a name="new_xmm_new"></a>
@@ -295,7 +295,7 @@ The main xmm class.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
-| [modelConfig] | <code>[XmmModelConfig](#XmmModelConfig)</code> |  | Configuration parameters for the model. |
+| [modelConfig] | <code>[xmmModelConfig](#xmmModelConfig)</code> |  | Configuration parameters for the model. |
 
 <a name="xmm+addPhrase"></a>
 
@@ -405,19 +405,19 @@ Clears the training set.
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 <a name="xmm+train"></a>
 
-### xmm.train(trainCallback)
+### xmm.train(callback)
 Trains the model with the current training set.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| trainCallback | <code>[TrainCallback](#TrainCallback)</code> | The callback handling the trained model. |
+| callback | <code>[trainCallback](#trainCallback)</code> | The callback handling the trained model. |
 
 <a name="xmm+getModel"></a>
 
 ### xmm.getModel() ⇒ <code>Object</code>
-Returns the trained model (the same object as in [TrainCallback](#TrainCallback)).
+Returns the trained model (the same object as in [TrainCallback](TrainCallback)).
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 **Returns**: <code>Object</code> - An object containing the trained model.  
@@ -448,13 +448,13 @@ Estimates an input array of floats.
 
 <a name="xmm+getConfig"></a>
 
-### xmm.getConfig([configParam]) ⇒ <code>[XmmModelConfig](#XmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+### xmm.getConfig([configParam]) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
 Get the actual model configuration parameters or one of them.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
-**Returns**: <code>[XmmModelConfig](#XmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - If called without any argument :
+**Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - If called without any argument :
 <li style="list-style-type: none;">
-<ul> an object of type [XmmModelConfig](#XmmModelConfig) containing all the actual model configuration parameters</ul>
+<ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
 </li>
 Otherwise, the returned value type depends on the requested configuration parameter :
 <li style="list-style-type: none;">
@@ -485,11 +485,12 @@ Set the actual model configuration parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config | <code>[XmmModelConfig](#XmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
+| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
-<a name="XmmModelConfig"></a>
+<hr>
+<a name="xmmModelConfig"></a>
 
-## XmmModelConfig
+## xmmModelConfig
 **Kind**: global typedef  
 **Properties**
 
@@ -504,9 +505,10 @@ Set the actual model configuration parameters.
 | transition_mode | <code>&#x27;ergodic&#x27;</code> &#124; <code>&#x27;leftright&#x27;</code> | <code>&#x27;leftright&#x27;</code> | if <code>model</code> is 'hhmm', sets the transition mode between the individual hmm models. |
 | regression_estimator | <code>&#x27;full&#x27;</code> &#124; <code>&#x27;windowed&#x27;</code> &#124; <code>&#x27;likeliest&#x27;</code> | <code>&#x27;full&#x27;</code> | if <code>model</code> is 'hhmm', the type of estimator used for regression with hmms. |
 
-<a name="TrainCallback"></a>
+<hr>
+<a name="trainCallback"></a>
 
-## TrainCallback : <code>function</code>
+## trainCallback : <code>function</code>
 Callback handling the trained model.
 
 **Kind**: global typedef  
@@ -516,3 +518,4 @@ Callback handling the trained model.
 | err | <code>String</code> | Description of a potential error. |
 | res | <code>Object</code> | An object containing the trained model. |
 
+<hr>

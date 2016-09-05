@@ -1,5 +1,5 @@
 /**
- * @typedef XmmModelConfig
+ * @typedef xmmModelConfig
  * @property {Number} [gaussians=1] - the number of gaussians used for encoding a state.
  * @property {Number} [relative_regularization=0.01] - the relative regularization (see XMM documentation).
  * @property {Number} [absolute_regularization=0.01] - the absolute regularization (see XMM documentation).
@@ -19,7 +19,7 @@
  * @name xmm
  * @class
  * @param {('gmm'|'hhmm')} [modelType='gmm'] - The type of model.
- * @param {XmmModelConfig} [modelConfig] - Configuration parameters for the model.
+ * @param {xmmModelConfig} [modelConfig] - Configuration parameters for the model.
  */
 
 //======================== phrases & training sets ===========================//
@@ -117,7 +117,7 @@
 
 /**
  * Callback handling the trained model.
- * @callback TrainCallback
+ * @callback trainCallback
  * @param {String} err - Description of a potential error.
  * @param {Object} res - An object containing the trained model.
  */
@@ -127,7 +127,7 @@
  * @method train
  * @memberof xmm
  * @instance
- * @param {TrainCallback} trainCallback - The callback handling the trained model.
+ * @param {trainCallback} callback - The callback handling the trained model.
  */
 
 /**
@@ -174,9 +174,10 @@
  * @param {('gaussians'|'relative_regularization'|'absolute_regularization'|
  *	'covariance_mode'|'hierarchical'|'states'|'transition_mode'|'regression_estimator')}
  * [configParam] - The name of a configuration parameter.
- * @returns {(XmmModelConfig|Number|String|Boolean)} If called without any argument :
+ * @returns {(xmmModelConfig|Number|String|Boolean)}
+ * If called without any argument :
  * <li style="list-style-type: none;">
- * <ul> an object of type {@link XmmModelConfig} containing all the actual model configuration parameters</ul>
+ * <ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
  * </li>
  * Otherwise, the returned value type depends on the requested configuration parameter :
  * <li style="list-style-type: none;">
@@ -200,7 +201,7 @@
  * @method setConfig
  * @memberof xmm
  * @instance
- * @param {XmmModelConfig} config - A config object as returned by {@link getConfig}
+ * @param {xmmModelConfig} config - A config object as returned by {@link getConfig}
  * when called without arguments (missing parameters won't be changed internally
  * and invalid ones will be ignored).
  */
