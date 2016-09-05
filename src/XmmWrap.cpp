@@ -163,6 +163,8 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 	}
 
 	/*
+	//========================== OLD INITIALIZATION ============================//
+
 	if (info[0]->IsObject()) {
 		v8::Local<v8::Object> initConfig = v8::Local<v8::Object>::Cast(info[0]);
 
@@ -249,7 +251,7 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 	}
 	//*/
 
-	//====================== CREATE MODEL OBJECT =====================//
+	//=========================== CREATE MODEL OBJECT ==========================//
 
 	if (modelType == "gmm") {
 		obj->model_ = new XmmTool<xmm::GMM>();
@@ -289,7 +291,7 @@ v8::Local<v8::Object> XmmWrap::NewInstance(v8::Local<v8::Value> arg) {
 	return scope.Escape(instance);
 }
 
-//====================== CLASS METHODS ======================//
+//=============================== CLASS METHODS ==============================//
 
 void XmmWrap::addPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 	XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
@@ -480,8 +482,8 @@ void XmmWrap::clearTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args
 	obj->freeList.clear();
 }
 
-// ======================= TRAINING ======================== //
-// ================ THIS IS A CALL (BACK) ================== //
+//================================= TRAINING =================================//
+//========================== THIS IS A CALL (BACK) ===========================//
 
 void XmmWrap::train(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 	XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
@@ -502,10 +504,8 @@ void XmmWrap::train(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 
 	switch(obj->modelType_) {
 		case XmmGmmE: {
-			//XmmTool<xmm::GMM> x = *reinterpret_cast<XmmTool<xmm::GMM> *>(obj->model_);
 			Nan::AsyncQueueWorker(new XmmWrapTrainWorker<xmm::GMM>(
 				callback, *reinterpret_cast<XmmTool<xmm::GMM> *>(obj->model_), *obj->set_
-				//callback, x, *obj->set_
 			));
 			break;
 		}
@@ -560,7 +560,7 @@ void XmmWrap::getModelType(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 	args.GetReturnValue().Set(Nan::New<v8::String>(stype).ToLocalChecked());
 }
 
-// ======================= FILTERING ======================= //
+//================================ FILTERING =================================//
 
 void XmmWrap::reset(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 	XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
@@ -746,7 +746,7 @@ void XmmWrap::filter(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 	args.GetReturnValue().Set(outputResults);
 }
 
-//===================== CONFIGURATION ====================== //
+//============================= CONFIGURATION ================================//
 
 void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 	XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
@@ -881,7 +881,7 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 	}
 }
 
-// =================== GETTERS / SETTERS =================== //
+//============================ GETTERS / SETTERS =============================//
 
 // example code for getters / setters :
 // https://github.com/kneth/DemoNodeExtension/blob/master/person_wrap.cpp
@@ -977,7 +977,7 @@ void XmmWrap::getConfig(v8::Local<v8::String> prop,
 }
 //*/
 
-// =============================================================== //
+//============================================================================//
 
 // ye old setter signature, replaced by a regular method signature :
 

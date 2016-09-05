@@ -26,13 +26,7 @@ public:
 		Json::Value jm = tool.model.toJson();
 		v8::Local<v8::Object> model = valueToObject(jm);
 
-		// v8::Local<v8::Object> model = Nan::New<v8::Object>();
-		// // construct the object with the trained model
-		// Nan::Set(model, Nan::New<v8::String>("trained").ToLocalChecked(),
-		// 	Nan::New(true));
-
 		v8::Local<v8::Value> results[] = {
-			//v8::Local<v8::Value>::Cast(model)
 			Nan::Null(),
 			model
 		};

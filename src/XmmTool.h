@@ -3,12 +3,12 @@
 
 #include "../xmm/src/xmm.h"
 
+// NOTE : THIS IS POOR DESIGN OF POLYMORPHISM
+// TODO : REWRITE WITH TRUE POLYMORPHISM
+// (WITHOUT TEMPLATES WHICH ARE NOT SUITED)
+
 // our common interface class for polymorphism :
 // TODO : change methods to match those of XmmWrapUtils.h
-
-// class XmmToolWrap {
-
-// };
 
 class XmmToolBase {
 public:
