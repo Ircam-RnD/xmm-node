@@ -6,7 +6,6 @@
 
 				"src/xmm.cpp",
 				"src/XmmWrap.cpp",
-				# "src/XmmWrapTrainWorker.cpp",
 
 				# "src-wrapped-objects/xmm.cpp",
 				# "src-wrapped-objects/phrase.cpp",
