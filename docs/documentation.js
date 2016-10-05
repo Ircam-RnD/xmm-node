@@ -9,7 +9,7 @@
  * @property {Number} [states=1] - if <code>model</code> is 'hhmm', defines the number of states
  * used to generate each individual hmm.
  * @property {('ergodic'|'leftright')} [transition_mode='leftright'] - if <code>model</code> is 'hhmm',
- * sets the transition mode between the individual hmm models.
+ * sets the transition mode between the states of the individual hmm models.
  * @property {('full'|'windowed'|'likeliest')} [regression_estimator='full'] - if <code>model</code> is 'hhmm',
  * the type of estimator used for regression with hmms.
  */
