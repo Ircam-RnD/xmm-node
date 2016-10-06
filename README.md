@@ -39,8 +39,8 @@ this module is a work in progress, use at your own risk
 
 * [xmm](#xmm)
     * [new xmm([modelType])](#new_xmm_new)
-    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
     * [.setConfig(config)](#xmm+setConfig)
+    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
     * [.addPhrase(phrase)](#xmm+addPhrase)
     * [.getPhrase(index)](#xmm+getPhrase) ⇒ <code>Object</code>
     * [.getPhrasesOfLabel(label)](#xmm+getPhrasesOfLabel) ⇒ <code>Object</code>
@@ -67,6 +67,17 @@ The main xmm class.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gm&#x27;</code> | The type of model. |
+
+<a name="xmm+setConfig"></a>
+
+### xmm.setConfig(config)
+Set the actual model configuration parameters.
+
+**Kind**: instance method of <code>[xmm](#xmm)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
 <a name="xmm+getConfig"></a>
 
@@ -98,17 +109,6 @@ Otherwise, the returned value type depends on the requested configuration parame
 | Param | Type | Description |
 | --- | --- | --- |
 | [configParam] | <code>&#x27;gaussians&#x27;</code> &#124; <code>&#x27;relative_regularization&#x27;</code> &#124; <code>&#x27;absolute_regularization&#x27;</code> &#124; <code>&#x27;covariance_mode&#x27;</code> &#124; <code>&#x27;hierarchical&#x27;</code> &#124; <code>&#x27;states&#x27;</code> &#124; <code>&#x27;transition_mode&#x27;</code> &#124; <code>&#x27;regression_estimator&#x27;</code> | The name of a configuration parameter. |
-
-<a name="xmm+setConfig"></a>
-
-### xmm.setConfig(config)
-Set the actual model configuration parameters.
-
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
 <a name="xmm+addPhrase"></a>
 
