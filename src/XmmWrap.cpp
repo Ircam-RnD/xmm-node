@@ -12,8 +12,7 @@ XmmWrap::XmmWrap() {
 
 XmmWrap::~XmmWrap() {
 	delete set_;
-	if (modelType_ != XmmUndefinedModelE)
-	{
+	if (modelType_ != XmmUndefinedModelE) {
 		delete model_;
 	}
 };
@@ -87,6 +86,10 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 	if (info.Length() > 0 && info[0]->IsString()) {
 		v8::String::Utf8Value val(info[0]->ToString());
 		modelType = std::string(*val);
+
+		// this doesn't work for some (undocumented) reason ... 
+		// it seems that the New function always takes into account only 1 arg
+		s = info.Length(); // always 1
 
 		if (info.Length() > 1 && info[1]->IsObject()) {
 			v8::Local<v8::Object> initConfig = v8::Local<v8::Object>::Cast(info[1]);

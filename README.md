@@ -38,7 +38,7 @@ this module is a work in progress, use at your own risk
 **Kind**: global class  
 
 * [xmm](#xmm)
-    * [new xmm([modelType], [modelConfig])](#new_xmm_new)
+    * [new xmm([modelType])](#new_xmm_new)
     * [.addPhrase(phrase)](#xmm+addPhrase)
     * [.getPhrase(index)](#xmm+getPhrase) ⇒ <code>Object</code>
     * [.getPhrasesOfLabel(label)](#xmm+getPhrasesOfLabel) ⇒ <code>Object</code>
@@ -60,14 +60,13 @@ this module is a work in progress, use at your own risk
 
 <a name="new_xmm_new"></a>
 
-### new xmm([modelType], [modelConfig])
+### new xmm([modelType])
 The main xmm class.
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
-| [modelConfig] | <code>[xmmModelConfig](#xmmModelConfig)</code> |  | Configuration parameters for the model. |
+| [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gm&#x27;</code> | The type of model. |
 
 <a name="xmm+addPhrase"></a>
 
