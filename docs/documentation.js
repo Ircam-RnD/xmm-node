@@ -30,6 +30,16 @@
 //============================== configuration ===============================//
 
 /**
+ * Set the actual model configuration parameters.
+ * @method setConfig
+ * @memberof xmm
+ * @instance
+ * @param {xmmModelConfig} config - A config object as returned by {@link getConfig}
+ * when called without arguments (missing parameters won't be changed internally
+ * and invalid ones will be ignored).
+ */
+
+/**
  * Get the actual model configuration parameters or one of them.
  * @method getConfig
  * @memberof xmm
@@ -57,16 +67,6 @@
  * <ul>'regression_estimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
  *	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
  * </li>
- */
-
-/**
- * Set the actual model configuration parameters.
- * @method setConfig
- * @memberof xmm
- * @instance
- * @param {xmmModelConfig} config - A config object as returned by {@link getConfig}
- * when called without arguments (missing parameters won't be changed internally
- * and invalid ones will be ignored).
  */
 
 //======================== phrases & training sets ===========================//
