@@ -39,6 +39,8 @@ this module is a work in progress, use at your own risk
 
 * [xmm](#xmm)
     * [new xmm([modelType])](#new_xmm_new)
+    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+    * [.setConfig(config)](#xmm+setConfig)
     * [.addPhrase(phrase)](#xmm+addPhrase)
     * [.getPhrase(index)](#xmm+getPhrase) ⇒ <code>Object</code>
     * [.getPhrasesOfLabel(label)](#xmm+getPhrasesOfLabel) ⇒ <code>Object</code>
@@ -55,8 +57,6 @@ this module is a work in progress, use at your own risk
     * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
     * [.reset()](#xmm+reset)
     * [.filter(observation)](#xmm+filter) ⇒ <code>Object</code>
-    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
-    * [.setConfig(config)](#xmm+setConfig)
 
 <a name="new_xmm_new"></a>
 
@@ -67,6 +67,48 @@ The main xmm class.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gm&#x27;</code> | The type of model. |
+
+<a name="xmm+getConfig"></a>
+
+### xmm.getConfig([configParam]) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+Get the actual model configuration parameters or one of them.
+
+**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - Depends on the parameter.
+<br /><br />If called without any argument :
+<li style="list-style-type: none;">
+<ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
+</li>
+Otherwise, the returned value type depends on the requested configuration parameter :
+<li style="list-style-type: none;">
+<ul>'gaussians' : the number of gaussians</ul>
+<ul>'relative_regularization' : the relative regularization foat value</ul>
+<ul>'absolute_regularization' : the absolute regularization float value</ul>
+<ul>'covariance_mode' : the actual covariance mode ('full' or 'diagonal')</ul>
+<ul>'hierarchical' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+	<code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
+<ul>'states' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+	the number of states of the hmms</ul>
+<ul>'transition_mode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+	the actual transition mode value ('ergodic' or 'leftright')</ul>
+<ul>'regression_estimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
+</li>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [configParam] | <code>&#x27;gaussians&#x27;</code> &#124; <code>&#x27;relative_regularization&#x27;</code> &#124; <code>&#x27;absolute_regularization&#x27;</code> &#124; <code>&#x27;covariance_mode&#x27;</code> &#124; <code>&#x27;hierarchical&#x27;</code> &#124; <code>&#x27;states&#x27;</code> &#124; <code>&#x27;transition_mode&#x27;</code> &#124; <code>&#x27;regression_estimator&#x27;</code> | The name of a configuration parameter. |
+
+<a name="xmm+setConfig"></a>
+
+### xmm.setConfig(config)
+Set the actual model configuration parameters.
+
+**Kind**: instance method of <code>[xmm](#xmm)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
 <a name="xmm+addPhrase"></a>
 
@@ -216,48 +258,6 @@ Estimates an input array of floats.
 | Param | Type | Description |
 | --- | --- | --- |
 | observation | <code>Array.Number</code> | The observation we want an estimation of. |
-
-<a name="xmm+getConfig"></a>
-
-### xmm.getConfig([configParam]) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
-Get the actual model configuration parameters or one of them.
-
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
-**Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - Depends on the parameter.
-<br /><br />If called without any argument :
-<li style="list-style-type: none;">
-<ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
-</li>
-Otherwise, the returned value type depends on the requested configuration parameter :
-<li style="list-style-type: none;">
-<ul>'gaussians' : the number of gaussians</ul>
-<ul>'relative_regularization' : the relative regularization foat value</ul>
-<ul>'absolute_regularization' : the absolute regularization float value</ul>
-<ul>'covariance_mode' : the actual covariance mode ('full' or 'diagonal')</ul>
-<ul>'hierarchical' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
-	<code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
-<ul>'states' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
-	the number of states of the hmms</ul>
-<ul>'transition_mode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
-	the actual transition mode value ('ergodic' or 'leftright')</ul>
-<ul>'regression_estimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
-	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
-</li>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [configParam] | <code>&#x27;gaussians&#x27;</code> &#124; <code>&#x27;relative_regularization&#x27;</code> &#124; <code>&#x27;absolute_regularization&#x27;</code> &#124; <code>&#x27;covariance_mode&#x27;</code> &#124; <code>&#x27;hierarchical&#x27;</code> &#124; <code>&#x27;states&#x27;</code> &#124; <code>&#x27;transition_mode&#x27;</code> &#124; <code>&#x27;regression_estimator&#x27;</code> | The name of a configuration parameter. |
-
-<a name="xmm+setConfig"></a>
-
-### xmm.setConfig(config)
-Set the actual model configuration parameters.
-
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
 <hr>
 <a name="xmmModelConfig"></a>

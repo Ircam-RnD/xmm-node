@@ -27,6 +27,48 @@
  * @param {xmmModelConfig} [modelConfig] - Configuration parameters for the model.
  */
 
+//============================== configuration ===============================//
+
+/**
+ * Get the actual model configuration parameters or one of them.
+ * @method getConfig
+ * @memberof xmm
+ * @instance
+ * @param {('gaussians'|'relative_regularization'|'absolute_regularization'|
+ *	'covariance_mode'|'hierarchical'|'states'|'transition_mode'|'regression_estimator')}
+ * [configParam] - The name of a configuration parameter.
+ * @returns {(xmmModelConfig|Number|String|Boolean)} Depends on the parameter.
+ * <br /><br />If called without any argument :
+ * <li style="list-style-type: none;">
+ * <ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
+ * </li>
+ * Otherwise, the returned value type depends on the requested configuration parameter :
+ * <li style="list-style-type: none;">
+ * <ul>'gaussians' : the number of gaussians</ul>
+ * <ul>'relative_regularization' : the relative regularization foat value</ul>
+ * <ul>'absolute_regularization' : the absolute regularization float value</ul>
+ * <ul>'covariance_mode' : the actual covariance mode ('full' or 'diagonal')</ul>
+ * <ul>'hierarchical' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+ * 	<code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
+ * <ul>'states' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+ *	the number of states of the hmms</ul>
+ * <ul>'transition_mode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+ *	the actual transition mode value ('ergodic' or 'leftright')</ul>
+ * <ul>'regression_estimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+ *	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
+ * </li>
+ */
+
+/**
+ * Set the actual model configuration parameters.
+ * @method setConfig
+ * @memberof xmm
+ * @instance
+ * @param {xmmModelConfig} config - A config object as returned by {@link getConfig}
+ * when called without arguments (missing parameters won't be changed internally
+ * and invalid ones will be ignored).
+ */
+
 //======================== phrases & training sets ===========================//
 
 /**
@@ -167,48 +209,6 @@
  * @instance
  * @param {Array.Number} observation - The observation we want an estimation of.
  * @returns {Object} filteringResults - An object containing the estimation results.
- */
-
-//============================== configuration ===============================//
-
-/**
- * Get the actual model configuration parameters or one of them.
- * @method getConfig
- * @memberof xmm
- * @instance
- * @param {('gaussians'|'relative_regularization'|'absolute_regularization'|
- *	'covariance_mode'|'hierarchical'|'states'|'transition_mode'|'regression_estimator')}
- * [configParam] - The name of a configuration parameter.
- * @returns {(xmmModelConfig|Number|String|Boolean)} Depends on the parameter.
- * <br /><br />If called without any argument :
- * <li style="list-style-type: none;">
- * <ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
- * </li>
- * Otherwise, the returned value type depends on the requested configuration parameter :
- * <li style="list-style-type: none;">
- * <ul>'gaussians' : the number of gaussians</ul>
- * <ul>'relative_regularization' : the relative regularization foat value</ul>
- * <ul>'absolute_regularization' : the absolute regularization float value</ul>
- * <ul>'covariance_mode' : the actual covariance mode ('full' or 'diagonal')</ul>
- * <ul>'hierarchical' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
- * 	<code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
- * <ul>'states' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
- *	the number of states of the hmms</ul>
- * <ul>'transition_mode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
- *	the actual transition mode value ('ergodic' or 'leftright')</ul>
- * <ul>'regression_estimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
- *	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
- * </li>
- */
-
-/**
- * Set the actual model configuration parameters.
- * @method setConfig
- * @memberof xmm
- * @instance
- * @param {xmmModelConfig} config - A config object as returned by {@link getConfig}
- * when called without arguments (missing parameters won't be changed internally
- * and invalid ones will be ignored).
  */
 
 
