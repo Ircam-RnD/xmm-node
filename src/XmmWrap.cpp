@@ -313,23 +313,22 @@ void XmmWrap::addPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 			obj->freeList.pop_back();
 		}
 
-		//xmm::Phrase xp(jp);
 		if (obj->set_->size() == 0) {
 			delete obj->set_;
 			if (xp.bimodal()) {
 				obj->set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
 																				 xmm::Multimodality::Bimodal);
 				obj->set_->dimension_input.set(xp.dimension_input.get());
-				obj->model_->setBimodal(true);
 			} else {
 				obj->set_ = new xmm::TrainingSet();
-				obj->model_->setBimodal(false);
 			}
 			obj->set_->dimension.set(xp.dimension.get());
 			obj->set_->column_names.set(xp.column_names, true);
-		}
-		obj->set_->addPhrase(index, xp);
 
+			obj->model_->setBimodal(xp.bimodal());
+		}
+
+		obj->set_->addPhrase(index, xp);
 		args.GetReturnValue().Set(Nan::New(index));
 	} else {
 		//args.GetReturnValue().Set(Nan::New(false));		
@@ -459,6 +458,7 @@ void XmmWrap::setTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args) 
 	if (!inputSet->IsObject()) return;
 
 	obj->set_->fromJson(objectToValue(inputSet));
+	obj->model_->setBimodal(obj->set_->bimodal());
 }
 
 void XmmWrap::addTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args) {
@@ -480,11 +480,21 @@ void XmmWrap::addTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args) 
 			obj->freeList.pop_back();
 		}
 
-		//xmm::Phrase xp(jp);
 		if (obj->set_->size() == 0) {
+			delete obj->set_;
+			if (xp.second->bimodal()) {
+				obj->set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
+																				 xmm::Multimodality::Bimodal);
+				obj->set_->dimension_input.set(xp.second->dimension_input.get());
+			} else {
+				obj->set_ = new xmm::TrainingSet();
+			}
 			obj->set_->dimension.set(xp.second->dimension.get());
 			obj->set_->column_names.set(xp.second->column_names, true);
+
+			obj->model_->setBimodal(xp.second->bimodal());
 		}
+
 		obj->set_->addPhrase(index, xp.second);
 	}
 }
