@@ -89,7 +89,7 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 
 		// this doesn't work for some (undocumented) reason ... 
 		// it seems that the New function always takes into account only 1 arg
-		s = info.Length(); // always 1
+		// info.Length() is always 1
 
 		if (info.Length() > 1 && info[1]->IsObject()) {
 			v8::Local<v8::Object> initConfig = v8::Local<v8::Object>::Cast(info[1]);
@@ -315,11 +315,15 @@ void XmmWrap::addPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 
 		//xmm::Phrase xp(jp);
 		if (obj->set_->size() == 0) {
+			delete obj->set_;
 			if (xp.bimodal()) {
-				delete obj->set_;
 				obj->set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
 																				 xmm::Multimodality::Bimodal);
 				obj->set_->dimension_input.set(xp.dimension_input.get());
+				obj->model_->setBimodal(true);
+			} else {
+				obj->set_ = new xmm::TrainingSet();
+				obj->model_->setBimodal(false);
 			}
 			obj->set_->dimension.set(xp.dimension.get());
 			obj->set_->column_names.set(xp.column_names, true);

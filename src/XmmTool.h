@@ -12,6 +12,7 @@
 
 class XmmToolBase {
 public:
+	virtual void setBimodal(bool multimodality);
 	virtual void addToTrainingSet(std::vector<std::string> phrases) = 0;
 	virtual void clearTrainingSet() = 0;
 	virtual void train(xmm::TrainingSet *s) = 0;
@@ -34,12 +35,19 @@ public:
 	xmm::TrainingSet set;
 	Model model;
 
-	XmmTool() {
-			model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
+	XmmTool(bool bimodal = false) {
+		model = Model(bimodal);
+		model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
 	}
 
 	~XmmTool() {}
 	
+	void setBimodal(bool multimodality) {
+		Model tmp = Model(model);
+		model = Model(multimodality);
+		model.configuration = tmp.configuration;
+	}
+
 	virtual void addToTrainingSet(std::vector<std::string> phrases) {
 		xmm::Phrase xp;
 		Json::Value jp;
