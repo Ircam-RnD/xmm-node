@@ -26,7 +26,7 @@ example :
 ```JavaScript
 // es6 :
 import xmm from 'xmm-node';
-// or with older es :
+// or older es versions :
 var xmm = require('xmm-node');
 
 // then :
@@ -38,11 +38,15 @@ hhmm.setConfig({
 	absolute_regularization: 0.1
 });
 
-var phrase; // valid xmm phrase created with xmm-client/PhraseMaker
+// valid xmm phrase created with xmm-client/PhraseMaker
+var phrase = someFunctionReturningAPhrase();
+
 hhmm.addPhrase(phrase);
+
 hhmm.train(function(err, res) {
 	if (err === null) {
-		// pass res to xmm-client/HhmmDecoder
+		// res is a trained model : pass it to xmm-client/HhmmDecoder
+		// or use hhmm.filter(someObservationVector) to do the decoding server-side.
 	}
 });
 ```
