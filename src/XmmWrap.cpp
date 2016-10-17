@@ -315,6 +315,12 @@ void XmmWrap::addPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 
 		//xmm::Phrase xp(jp);
 		if (obj->set_->size() == 0) {
+			if (xp.bimodal()) {
+				delete obj->set_;
+				obj->set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
+																				 xmm::Multimodality::Bimodal);
+				obj->set_->dimension_input.set(xp.dimension_input.get());
+			}
 			obj->set_->dimension.set(xp.dimension.get());
 			obj->set_->column_names.set(xp.column_names, true);
 		}
