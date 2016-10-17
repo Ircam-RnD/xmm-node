@@ -7,6 +7,9 @@
 // TODO : REWRITE WITH TRUE POLYMORPHISM
 // (WITHOUT TEMPLATES WHICH ARE NOT SUITED)
 
+// OR : TRANSFER EVERY METHOD FROM XmmWrap TO XmmTool
+// TO TAKE REAL ADVANTAGE OF TEMPLATES !!!!!!!!!!
+
 // our common interface class for polymorphism :
 // TODO : change methods to match those of XmmWrapUtils.h
 
