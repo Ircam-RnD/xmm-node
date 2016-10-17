@@ -18,7 +18,7 @@
  * The main xmm class.
  * @name xmm
  * @class
- * @param {('gmm'|'hhmm')} [modelType='gm'] - The type of model.
+ * @param {('gmm'|'hhmm')} [modelType='gmm'] - The type of model.
  */
 
 /*******

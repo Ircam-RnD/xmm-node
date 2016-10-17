@@ -1,32 +1,55 @@
 # xmm-node
 ### XMM native addon for Node.js
 
-Wraps the [XMM](https://github.com/julesfrancoise/xmm) library into a Node.js module.
+Wraps the [XMM](https://github.com/ircam-rnd/xmm) library into a Node.js module.
 Can be used together with the client-side model decoders library
-[xmm-client](https://github.com/Ircam-RnD/xmm-client).
+[xmm-client](https://github.com/ircam-rnd/xmm-client).
 
 #### developers :
 
 install :
 - install latest Node.js version
 - install node-gyp : `npm install -g node-gyp`
-- clone xmm-node : `git clone --recursive https://github.com/Ircam-RnD/xmm-node.git`
+- clone xmm-node : `git clone --recursive https://github.com/ircam-rnd/xmm-node.git`
 - install dependencies listed in `package.json` : `npm install`
 
 build : `node-gyp configure build`
 
-<!--
-#### Test :
-`node test/xmmtest.js`
--->
+test : `npm run tests`
 
 #### users :
 
-`npm install Ircam-RnD/xmm-node [--save]`
+`npm install [--save] ircam-rnd/xmm-node`
+
+example :
+
+```JavaScript
+// es6 :
+import xmm from 'xmm-node';
+// or with older es :
+var xmm = require('xmm-node');
+
+// then :
+var hhmm = new xmm('hhmm');
+hhmm.setConfig({
+	gaussians: 3,
+	states: 12,
+	relative_regularization: 0.1,
+	absolute_regularization: 0.1
+});
+
+var phrase; // valid xmm phrase created with xmm-client/PhraseMaker
+hhmm.addPhrase(phrase);
+hhmm.train(function(err, res) {
+	if (err === null) {
+		// pass res to xmm-client/HhmmDecoder
+	}
+});
+```
 
 #### note :
 
-this module is a work in progress, use at your own risk
+this module is still a work in progress.
 
 <hr>
 
@@ -66,7 +89,7 @@ The main xmm class.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gm&#x27;</code> | The type of model. |
+| [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
 
 <a name="xmm+setConfig"></a>
 
