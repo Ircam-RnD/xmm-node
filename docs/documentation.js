@@ -19,11 +19,6 @@
  * @name xmm
  * @class
  * @param {('gmm'|'hhmm')} [modelType='gmm'] - The type of model.
- */
-
-/*******
- * This cannot work because XmmWrap::New function always sees only 1 arg
- * @param {('gmm'|'hhmm')} [modelType='gmm'] - The type of model.
  * @param {xmmModelConfig} [modelConfig] - Configuration parameters for the model.
  */
 

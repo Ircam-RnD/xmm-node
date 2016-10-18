@@ -65,7 +65,7 @@ this module is still a work in progress.
 **Kind**: global class  
 
 * [xmm](#xmm)
-    * [new xmm([modelType])](#new_xmm_new)
+    * [new xmm([modelType], [modelConfig])](#new_xmm_new)
     * [.setConfig(config)](#xmm+setConfig)
     * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
     * [.addPhrase(phrase)](#xmm+addPhrase)
@@ -87,13 +87,14 @@ this module is still a work in progress.
 
 <a name="new_xmm_new"></a>
 
-### new xmm([modelType])
+### new xmm([modelType], [modelConfig])
 The main xmm class.
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
+| [modelConfig] | <code>[xmmModelConfig](#xmmModelConfig)</code> |  | Configuration parameters for the model. |
 
 <a name="xmm+setConfig"></a>
 
