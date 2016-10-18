@@ -7,7 +7,8 @@ test('basic', (t) => {
 	const modelConfig = gmm.getConfig();
 	gmm.setConfig(modelConfig);
 	// console.log(modelConfig);
-	const modelConfigMsg = 'model configuration should not change when replaced by itself';
+	const modelConfigMsg
+		= 'model configuration should not change when replaced by itself';
 	t.deepEqual(gmm.getConfig(), modelConfig, modelConfigMsg);
 
 	t.end();
@@ -27,8 +28,17 @@ test('empty', (t) => {
 	});
 	// console.log(hhmm.getConfig());
 	// console.log(hhmm.filter([0, 0]));
-	const emptyLikelihoodsMsg = 'untrained model should return empty likelihoods on filter';
-	t.equal(hhmm.filter([0,0]).smoothed_log_likelihoods.length, 0, emptyLikelihoodsMsg);
+	const emptyFilterResults = {
+		instant_likelihoods: [],
+		instant_normalized_likelihoods: [],
+		smoothed_likelihoods: [],
+		smoothed_normalized_likelihoods: [],
+		smoothed_log_likelihoods: [],
+		likeliest: ''
+	};
+	const emptyFilterResultsMsg
+		= 'untrained model should return empty filter results';
+	t.deepEqual(hhmm.filter([0]), emptyFilterResults, emptyFilterResultsMsg);
 	t.end();
 });
 
@@ -52,8 +62,9 @@ test('training', (t) => {
 		length: 3,
 		label: 'aLabel'
 	});
+	const trainMsg = 'train should return a trained model';
 	hhmm.train((err, res) => {
-		t.notEqual(res, null || undefined, 'train should return a trained model');
+		t.notEqual(res, null || undefined, trainMsg);
 		// console.log(hhmm.filter([1, 1]));
 	})
 
