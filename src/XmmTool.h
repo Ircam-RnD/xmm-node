@@ -1,147 +1,184 @@
-#ifndef _XMM_TOOL_BASE_H_
-#define _XMM_TOOL_BASE_H_
+#ifndef _XMM_TOOL_H_
+#define _XMM_TOOL_H_
 
+#include <nan.h>
 #include "../xmm/src/xmm.h"
-
-// NOTE : THIS IS POOR DESIGN OF POLYMORPHISM
-// TODO : REWRITE WITH TRUE POLYMORPHISM
-// (WITHOUT TEMPLATES WHICH ARE NOT SUITED)
-
-// OR : TRANSFER EVERY METHOD FROM XmmWrap TO XmmTool
-// TO TAKE REAL ADVANTAGE OF TEMPLATES !!!!!!!!!!
+#include "XmmWrapTrainWorker.h"
 
 // our common interface class for polymorphism :
 // TODO : change methods to match those of XmmWrapUtils.h
 
 class XmmToolBase {
 public:
-	virtual void setBimodal(bool multimodality);
-	virtual void addToTrainingSet(std::vector<std::string> phrases) = 0;
-	virtual void clearTrainingSet() = 0;
-	virtual void train(xmm::TrainingSet *s) = 0;
-	virtual void filter(std::vector<float> const& observation);
-	virtual bool training() = 0;
-	virtual Json::Value toJson() = 0;
-	virtual std::string toString() = 0;
-	virtual void setNbGaussians(std::size_t n) = 0;
-	virtual void setRelativeRegularization(double relReg) = 0;
-	virtual void setAbsoluteRegularization(double absReg) = 0;
+  virtual void setBimodal(bool multimodality) = 0;
+  virtual Json::Value getModel() = 0;
+  virtual void reset()= 0;
+  virtual void train(Nan::Callback *callback, xmm::TrainingSet *set) = 0;
+  virtual v8::Local<v8::Object> filter(std::vector<float> observation);
+
+  virtual std::size_t getGaussians() = 0;
+  virtual void setGaussians(std::size_t gaussians) = 0;
+  virtual double getRelativeRegularization() = 0;
+  virtual void setRelativeRegularization(double relReg) = 0;
+  virtual double getAbsoluteRegularization() = 0;
+  virtual void setAbsoluteRegularization(double absReg) = 0;
+  virtual xmm::GaussianDistribution::CovarianceMode getCovarianceMode() = 0;
+  virtual void setCovarianceMode(xmm::GaussianDistribution::CovarianceMode cm) = 0;
 };
 
 // the specializable template :
 // here manage the index list to ease phrases management (as in unity binding)
 
-template<typename Model>
+template<typename Model, typename Results>
 class XmmTool : public XmmToolBase {
 
 public:
-	xmm::TrainingSet set;
-	Model model;
+  Model model;
 
-	XmmTool(bool bimodal = false) {
-		model = Model(bimodal);
-		model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
-	}
+  XmmTool(bool bimodal = false) {
+    model = Model(bimodal);
+    model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
+  }
 
-	~XmmTool() {}
-	
-	void setBimodal(bool multimodality) {
-		Model tmp = Model(model);
-		model = Model(multimodality);
-		model.configuration = tmp.configuration;
-	}
+  ~XmmTool() {}
+  
+  void setBimodal(bool multimodality) {
+    Model tmp = Model(model);
+    model = Model(multimodality);
+    model.configuration = tmp.configuration;
+  }
 
-	virtual void addToTrainingSet(std::vector<std::string> phrases) {
-		xmm::Phrase xp;
-		Json::Value jp;
-		Json::Reader jr;
-		for (std::size_t i=0; i<phrases.size(); i++) {
-				
-			//std::cout << phrases[i] << std::endl;
-			if (jr.parse(phrases[i], jp)) {
-				xp.fromJson(jp);
-			} else {
-				throw std::runtime_error("Cannot Parse Json String");
-			}
-			//xp.fromString(phrases[i]);
-			/*
-			Json::Value jp2 = xp.toJson();
-			Json::StyledWriter w;
-			std::cout << w.write(jp2) << std::endl;
-			//*/
-			
-			// first set dimension and column names otherwise they will be reinitialized by "onAttributeChange"
-			if (i==0) {
-				set.dimension.set(xp.dimension.get());
-				set.column_names.set(xp.column_names, true);
-			}
-			set.addPhrase(static_cast<int>(set.size()), xp);
-		}
-		//set.dimension.set(xp.dimension.get());
-		//std::cout << xp.column_names[0] << std::endl;
-		//set.column_names.set(xp.column_names, true);
-		/*
-		Json::Value jset = set.toJson();
-		Json::StyledWriter w;
-		std::cout << w.write(jset) << std::endl;
-		//*/        
-	}
+  Json::Value getModel() {
+    return model.toJson();
+  }
 
-	virtual void addPhrase(xmm::Phrase xp) {
+  void reset() {
+    model.reset();
+  }
 
-	}
-	
-	virtual void clearTrainingSet() {
-		set.clear();
-	}
-	
-	virtual void train(xmm::TrainingSet *s) {
-		//model.train(&s);
-		model.train(s);
-	}
+  void train(Nan::Callback *callback, xmm::TrainingSet *set) {
+    Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
+  }
 
-	virtual bool training() {
-		return model.training();
-	}
-	
-	virtual void filter(std::vector<float> const& observation) {
-		model.filter(observation);
-	}
+  v8::Local<v8::Object> filter(std::vector<float> observation) {
+    v8::Local<v8::Object> outputResults = Nan::New<v8::Object>();
+  
+    bool bimodal = model.shared_parameters->bimodal.get();
+    unsigned int nmodels = model.size();
+    unsigned int dimension = model.shared_parameters->dimension.get();
+    unsigned int dimension_input = model.shared_parameters->dimension_input.get();
+    unsigned int dimension_output = dimension - dimension_input;
 
-	virtual Json::Value toJson() {
-		return model.toJson();        
-	}
-	
-	virtual std::string toString() {
-		Json::Value jmodels = model.toJson();
-		Json::FastWriter fw;
-		return fw.write(jmodels);
-	}
-	
-	// configuration
-	
-	virtual void setNbGaussians(std::size_t n) {
-		if (n > 0) {
-			model.configuration.gaussians.set(n, 1);
-			model.configuration.changed = true;
-		}
-		//std::cout << gmm.configuration.gaussians.get() << std::endl;
-	}
-	
-	virtual void setRelativeRegularization(double relReg) {
-		if (relReg > 0) {
-			model.configuration.relative_regularization.set(relReg);
-			model.configuration.changed = true;
-		}
-	}
+    model.filter(observation);
+    xmm::Results<Results> res = model.results;
 
-	virtual void setAbsoluteRegularization(double absReg) {
-		if (absReg > 0) {
-				model.configuration.absolute_regularization.set(absReg);
-				model.configuration.changed = true;
-		}
-	}
+    v8::Local<v8::Array> instant_likelihoods = Nan::New<v8::Array>(nmodels);
+    v8::Local<v8::Array> instant_normalized_likelihoods = Nan::New<v8::Array>(nmodels);
+    v8::Local<v8::Array> smoothed_likelihoods = Nan::New<v8::Array>(nmodels);
+    v8::Local<v8::Array> smoothed_normalized_likelihoods = Nan::New<v8::Array>(nmodels);
+    v8::Local<v8::Array> smoothed_log_likelihoods = Nan::New<v8::Array>(nmodels);
+
+    for (std::size_t i = 0; i < nmodels; ++i) {
+      Nan::Set(instant_likelihoods, i,
+               Nan::New(res.instant_likelihoods[i]));
+      Nan::Set(instant_normalized_likelihoods, i,
+               Nan::New(res.instant_normalized_likelihoods[i]));
+      Nan::Set(smoothed_likelihoods, i,
+               Nan::New(res.smoothed_likelihoods[i]));
+      Nan::Set(smoothed_normalized_likelihoods, i,
+               Nan::New(res.smoothed_normalized_likelihoods[i]));
+      Nan::Set(smoothed_log_likelihoods, i,
+               Nan::New(res.smoothed_log_likelihoods[i]));
+    }
+
+    outputResults->Set(
+      Nan::New<v8::String>("instant_likelihoods").ToLocalChecked(),
+      instant_likelihoods
+    );
+    outputResults->Set(
+      Nan::New<v8::String>("instant_normalized_likelihoods").ToLocalChecked(),
+      instant_normalized_likelihoods
+    );
+    outputResults->Set(
+      Nan::New<v8::String>("smoothed_likelihoods").ToLocalChecked(),
+      smoothed_likelihoods
+    );
+    outputResults->Set(
+      Nan::New<v8::String>("smoothed_normalized_likelihoods").ToLocalChecked(),
+      smoothed_normalized_likelihoods
+    );
+    outputResults->Set(
+      Nan::New<v8::String>("smoothed_log_likelihoods").ToLocalChecked(),
+      smoothed_log_likelihoods
+    );
+
+    outputResults->Set(
+      Nan::New<v8::String>("likeliest").ToLocalChecked(),
+      Nan::New<v8::String>(res.likeliest).ToLocalChecked()
+    );
+
+    if (bimodal) {
+      v8::Local<v8::Array> output_values = Nan::New<v8::Array>(dimension_output);
+      for (unsigned int i = 0; i < dimension_output; ++i) { 
+        Nan::Set(output_values, i, Nan::New(res.output_values[i]));
+      }
+      outputResults->Set(
+        Nan::New<v8::String>("output_values").ToLocalChecked(),
+        output_values
+      );
+
+      unsigned int dim_out_cov = res.output_covariance.size();
+      v8::Local<v8::Array> output_covariance = Nan::New<v8::Array>(dim_out_cov);
+      for (unsigned int i = 0; i < dim_out_cov; ++i) { 
+        Nan::Set(output_covariance, i, Nan::New(res.output_covariance[i]));
+      }
+      outputResults->Set(
+        Nan::New<v8::String>("output_covariance").ToLocalChecked(),
+        output_covariance
+      );
+    }
+
+    return outputResults;
+  }
+
+  //========================= GETTERS / SETTERS ==============================//
+
+  std::size_t getGaussians() {
+    return model.configuration.gaussians.get();
+  }
+
+  void setGaussians(std::size_t gaussians) {
+    model.configuration.gaussians.set(gaussians);
+    model.configuration.changed = true;
+  }
+
+  double getRelativeRegularization() {
+    return model.configuration.relative_regularization.get();
+  }
+
+  void setRelativeRegularization(double relReg) {
+    model.configuration.relative_regularization.set(relReg);
+    model.configuration.changed = true;
+  }
+
+  double getAbsoluteRegularization() {
+    return model.configuration.absolute_regularization.get();
+  }
+
+  void setAbsoluteRegularization(double absReg) {
+    model.configuration.absolute_regularization.set(absReg);
+    model.configuration.changed = true;
+  }
+
+  xmm::GaussianDistribution::CovarianceMode getCovarianceMode() {
+    return model.configuration.covariance_mode.get();
+  }
+
+  void setCovarianceMode(xmm::GaussianDistribution::CovarianceMode cm) {
+    model.configuration.covariance_mode.set(cm);
+    model.configuration.changed = true;
+  }
+
 };
 
-
-#endif /* _XMM_TOOL_BASE_H_ */
+#endif /* _XMM_TOOL_H_ */

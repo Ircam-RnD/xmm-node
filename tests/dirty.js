@@ -5,7 +5,10 @@
 
 var Xmm = require('../index.js');
 var util = require('util');
-//var Xmm = require('./build/Release/Xmm');
+
+var prettify = function(toPrint) {
+	return util.inspect(toPrint, false, null);
+}
 
 var phrase = {
 	bimodal: false,
@@ -17,16 +20,17 @@ var phrase = {
 	label: 'minitest'
 };
 
+// var gmm = new Xmm('gmm', {
+// 	gaussians: 2
+// });
+// var gmm = new Xmm('gmm');
 var gmm = new Xmm();
-gmm.config = { model: 'gmm' };
-console.log(gmm.getModelType());
-console.log(gmm.getConfig('gaussians'));
+
+console.log('gmm nb of gaussians : ' + gmm.getConfig('gaussians'));
 console.log('\n');
 gmm = new Xmm('gmm');
 // var hhmm = new Xmm('hhmm');
 
-// still missing in configuration :
-// - hierarchical
 var hhmm = new Xmm('hhmm', {
 	// model: 'hhmm',
 	gaussians: 1,
@@ -35,7 +39,7 @@ var hhmm = new Xmm('hhmm', {
 	hierarchical: true,
 	states: 3
 });
-console.log('hhmm config : ' + util.inspect(hhmm.getConfig(), false, null));
+console.log('hhmm config : ' + prettify(hhmm.getConfig()));
 //Xmm.machin = { a: 1 };
 
 
@@ -70,8 +74,8 @@ console.log(gmm.getPhrase(9));
 //*
 for(var i=0; i<1; i++) {
 	gmm.train(function(err, msg) {
-		console.log(err);
-		console.log('model : ' + msg);
+		console.log('training error : ' + err);
+		console.log('model : ' + prettify(msg));
 		//console.log(gmm.getModel().models[0].components);
 		//console.log(gmm.getModel());
 		//console.log(hhmm.getModel());

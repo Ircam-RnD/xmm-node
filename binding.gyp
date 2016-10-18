@@ -6,6 +6,8 @@
 
 				"src/xmm.cpp",
 				"src/XmmWrap.cpp",
+				# "src/XmmTool.cpp",
+				"src/JsonCppV8Converters.cpp",
 
 				# "src-wrapped-objects/xmm.cpp",
 				# "src-wrapped-objects/phrase.cpp",

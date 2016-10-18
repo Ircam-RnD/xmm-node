@@ -2,50 +2,51 @@
 #define _XMMWRAPTRAINWORKER_H_
 
 #include <nan.h>
-#include "XmmWrap.h"
+// #include "XmmWrap.h"
+#include "../xmm/src/xmm.h"
 #include "JsonCppV8Converters.h"
 
 template<typename Model>
 class XmmWrapTrainWorker : public Nan::AsyncWorker {
 public:
-	XmmWrapTrainWorker(Nan::Callback *callback, XmmTool<Model>& t, xmm::TrainingSet s) :
-	Nan::AsyncWorker(callback), original(t), tool(t), set(s) {}
+  XmmWrapTrainWorker(Nan::Callback *callback, Model& t, xmm::TrainingSet *s) :
+  Nan::AsyncWorker(callback), original(t), tool(t), set(*s) {}
 
-	~XmmWrapTrainWorker() {}
+  ~XmmWrapTrainWorker() {}
 
-	void Execute() {
-		tool.train(&set);
-		while(tool.training()) {
+  void Execute() {
+    tool.train(&set);
+    while(tool.training()) {
 
-		}
-	}
+    }
+  }
 
-	void HandleOKCallback() {
-		Nan::HandleScope scope;
+  void HandleOKCallback() {
+    Nan::HandleScope scope;
 
-		Json::Value jm = tool.model.toJson();
-		v8::Local<v8::Object> model = valueToObject(jm);
+    Json::Value jm = tool.toJson();
+    v8::Local<v8::Object> model = valueToObject(jm);
 
-		v8::Local<v8::Value> results[] = {
-			Nan::Null(),
-			model
-		};
+    v8::Local<v8::Value> results[] = {
+      Nan::Null(),
+      model
+    };
 
-		// this should be safe to do this, as HandleOKCallback is called
-		// in the event loop, and threaded training is disabled in XmmTool
-		// ... but why do we do this yet ?
-		original = tool;
-		// call reset so the model is ready to filter
-		original.model.reset();
+    // this should be safe to do this, as HandleOKCallback is called
+    // in the event loop, and threaded training is disabled in XmmTool
+    original = tool;
+    // call reset so the model is ready to filter
+    original.reset();
 
-		callback->Call(2, results);
+    callback->Call(2, results);
 
-	}
+  }
 
 private:
-	XmmTool<Model>& original;
-	XmmTool<Model> tool;
-	xmm::TrainingSet set;
+  Model& original;
+  Model tool;
+
+  xmm::TrainingSet set;
 };
 
 #endif /* _XMMWRAPTRAINWORKER_H_ */
