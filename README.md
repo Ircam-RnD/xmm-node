@@ -121,22 +121,22 @@ Get the actual model configuration parameters or one of them.
 Otherwise, the returned value type depends on the requested configuration parameter :
 <li style="list-style-type: none;">
 <ul>'gaussians' : the number of gaussians</ul>
-<ul>'relative_regularization' : the relative regularization foat value</ul>
-<ul>'absolute_regularization' : the absolute regularization float value</ul>
-<ul>'covariance_mode' : the actual covariance mode ('full' or 'diagonal')</ul>
+<ul>'relativeRegularization' : the relative regularization foat value</ul>
+<ul>'absoluteRegularization' : the absolute regularization float value</ul>
+<ul>'covarianceMode' : the actual covariance mode ('full' or 'diagonal')</ul>
 <ul>'hierarchical' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
 	<code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
 <ul>'states' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
 	the number of states of the hmms</ul>
-<ul>'transition_mode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+<ul>'transitionMode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
 	the actual transition mode value ('ergodic' or 'leftright')</ul>
-<ul>'regression_estimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+<ul>'regressionEstimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
 	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
 </li>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [configParam] | <code>&#x27;gaussians&#x27;</code> &#124; <code>&#x27;relative_regularization&#x27;</code> &#124; <code>&#x27;absolute_regularization&#x27;</code> &#124; <code>&#x27;covariance_mode&#x27;</code> &#124; <code>&#x27;hierarchical&#x27;</code> &#124; <code>&#x27;states&#x27;</code> &#124; <code>&#x27;transition_mode&#x27;</code> &#124; <code>&#x27;regression_estimator&#x27;</code> | The name of a configuration parameter. |
+| [configParam] | <code>&#x27;gaussians&#x27;</code> &#124; <code>&#x27;relativeRegularization&#x27;</code> &#124; <code>&#x27;absoluteRegularization&#x27;</code> &#124; <code>&#x27;covarianceMode&#x27;</code> &#124; <code>&#x27;hierarchical&#x27;</code> &#124; <code>&#x27;states&#x27;</code> &#124; <code>&#x27;transitionMode&#x27;</code> &#124; <code>&#x27;regressionEstimator&#x27;</code> | The name of a configuration parameter. |
 
 <a name="xmm+addPhrase"></a>
 
@@ -297,13 +297,13 @@ Estimates an input array of floats.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | gaussians | <code>Number</code> | <code>1</code> | the number of gaussians used for encoding a state. |
-| relative_regularization | <code>Number</code> | <code>0.01</code> | the relative regularization (see XMM documentation). |
-| absolute_regularization | <code>Number</code> | <code>0.01</code> | the absolute regularization (see XMM documentation). |
-| covariance_mode | <code>&#x27;diagonal&#x27;</code> &#124; <code>&#x27;full&#x27;</code> | <code>&#x27;full&#x27;</code> | the type of covariance matrix used in the model. |
+| relativeRegularization | <code>Number</code> | <code>0.01</code> | the relative regularization (see XMM documentation). |
+| absoluteRegularization | <code>Number</code> | <code>0.01</code> | the absolute regularization (see XMM documentation). |
+| covarianceMode | <code>&#x27;diagonal&#x27;</code> &#124; <code>&#x27;full&#x27;</code> | <code>&#x27;full&#x27;</code> | the type of covariance matrix used in the model. |
 | hierarchical | <code>Boolean</code> | <code>true</code> | if <code>model</code> is 'hhmm', turns hierarchical mode on/off. |
 | states | <code>Number</code> | <code>1</code> | if <code>model</code> is 'hhmm', defines the number of states used to generate each individual hmm. |
-| transition_mode | <code>&#x27;ergodic&#x27;</code> &#124; <code>&#x27;leftright&#x27;</code> | <code>&#x27;leftright&#x27;</code> | if <code>model</code> is 'hhmm', sets the transition mode between the states of the individual hmm models. |
-| regression_estimator | <code>&#x27;full&#x27;</code> &#124; <code>&#x27;windowed&#x27;</code> &#124; <code>&#x27;likeliest&#x27;</code> | <code>&#x27;full&#x27;</code> | if <code>model</code> is 'hhmm', the type of estimator used for regression with hmms. |
+| transitionMode | <code>&#x27;ergodic&#x27;</code> &#124; <code>&#x27;leftright&#x27;</code> | <code>&#x27;leftright&#x27;</code> | if <code>model</code> is 'hhmm', sets the transition mode between the states of the individual hmm models. |
+| regressionEstimator | <code>&#x27;full&#x27;</code> &#124; <code>&#x27;windowed&#x27;</code> &#124; <code>&#x27;likeliest&#x27;</code> | <code>&#x27;full&#x27;</code> | if <code>model</code> is 'hhmm', the type of estimator used for regression with hmms. |
 
 <hr>
 <a name="trainCallback"></a>

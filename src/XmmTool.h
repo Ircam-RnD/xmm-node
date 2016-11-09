@@ -12,9 +12,9 @@ class XmmToolBase {
 public:
   virtual void setBimodal(bool multimodality) = 0;
   virtual Json::Value getModel() = 0;
-  virtual void reset()= 0;
+  virtual void reset() = 0;
   virtual void train(Nan::Callback *callback, xmm::TrainingSet *set) = 0;
-  virtual v8::Local<v8::Object> filter(std::vector<float> observation);
+  virtual v8::Local<v8::Object> filter(std::vector<float> observation) = 0;
 
   virtual std::size_t getGaussians() = 0;
   virtual void setGaussians(std::size_t gaussians) = 0;

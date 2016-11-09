@@ -1,16 +1,16 @@
 /**
  * @typedef xmmModelConfig
  * @property {Number} [gaussians=1] - the number of gaussians used for encoding a state.
- * @property {Number} [relative_regularization=0.01] - the relative regularization (see XMM documentation).
- * @property {Number} [absolute_regularization=0.01] - the absolute regularization (see XMM documentation).
- * @property {('diagonal'|'full')} [covariance_mode='full'] - the type of covariance matrix used in the model.
+ * @property {Number} [relativeRegularization=0.01] - the relative regularization (see XMM documentation).
+ * @property {Number} [absoluteRegularization=0.01] - the absolute regularization (see XMM documentation).
+ * @property {('diagonal'|'full')} [covarianceMode='full'] - the type of covariance matrix used in the model.
  * @property {Boolean} [hierarchical=true] - if <code>model</code> is 'hhmm', turns hierarchical
  * mode on/off.
  * @property {Number} [states=1] - if <code>model</code> is 'hhmm', defines the number of states
  * used to generate each individual hmm.
- * @property {('ergodic'|'leftright')} [transition_mode='leftright'] - if <code>model</code> is 'hhmm',
+ * @property {('ergodic'|'leftright')} [transitionMode='leftright'] - if <code>model</code> is 'hhmm',
  * sets the transition mode between the states of the individual hmm models.
- * @property {('full'|'windowed'|'likeliest')} [regression_estimator='full'] - if <code>model</code> is 'hhmm',
+ * @property {('full'|'windowed'|'likeliest')} [regressionEstimator='full'] - if <code>model</code> is 'hhmm',
  * the type of estimator used for regression with hmms.
  */
 
@@ -39,8 +39,8 @@
  * @method getConfig
  * @memberof xmm
  * @instance
- * @param {('gaussians'|'relative_regularization'|'absolute_regularization'|
- *	'covariance_mode'|'hierarchical'|'states'|'transition_mode'|'regression_estimator')}
+ * @param {('gaussians'|'relativeRegularization'|'absoluteRegularization'|
+ *	'covarianceMode'|'hierarchical'|'states'|'transitionMode'|'regressionEstimator')}
  * [configParam] - The name of a configuration parameter.
  * @returns {(xmmModelConfig|Number|String|Boolean)} Depends on the parameter.
  * <br /><br />If called without any argument :
@@ -50,16 +50,16 @@
  * Otherwise, the returned value type depends on the requested configuration parameter :
  * <li style="list-style-type: none;">
  * <ul>'gaussians' : the number of gaussians</ul>
- * <ul>'relative_regularization' : the relative regularization foat value</ul>
- * <ul>'absolute_regularization' : the absolute regularization float value</ul>
- * <ul>'covariance_mode' : the actual covariance mode ('full' or 'diagonal')</ul>
+ * <ul>'relativeRegularization' : the relative regularization foat value</ul>
+ * <ul>'absoluteRegularization' : the absolute regularization float value</ul>
+ * <ul>'covarianceMode' : the actual covariance mode ('full' or 'diagonal')</ul>
  * <ul>'hierarchical' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
  * 	<code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
  * <ul>'states' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
  *	the number of states of the hmms</ul>
- * <ul>'transition_mode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+ * <ul>'transitionMode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
  *	the actual transition mode value ('ergodic' or 'leftright')</ul>
- * <ul>'regression_estimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+ * <ul>'regressionEstimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
  *	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
  * </li>
  */
