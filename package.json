@@ -1,8 +1,8 @@
 {
   "name": "xmm-node",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "node wrapper for the XMM library",
-  "main": "xmm.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Ircam-RnD/xmm-node"
@@ -35,9 +35,9 @@
     "babel-core": "^6.14.0",
     "babel-preset-es2015": "^6.14.0",
     "babel-tape-runner": "^2.0.1",
-    "jsdoc-template": "github:collective-soundworks/jsdoc-template",
+    "jsdoc-template": "ircam-jstools/jsdoc-template",
     "jsdoc-to-markdown": "^1.3.7",
     "tape": "^4.6.0",
-    "xmm-client": "github:ircam-rnd/xmm-client"
+    "xmm-client": "ircam-rnd/xmm-client"
   }
 }
