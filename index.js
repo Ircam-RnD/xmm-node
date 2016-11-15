@@ -75,22 +75,22 @@ Xmm.prototype.getConfig = function(prop) {
     return this._xmm.getConfig(translatedProp);
   } else {
     const config = this._xmm.getConfig();
+    const outConfig = {};
     for (let prop in config) {
       const translatedProp = translateFromXmmConfigProp(prop);
-      config[translatedProp] = config[prop];
-      delete config[prop];
+      outConfig[translatedProp] = config[prop];
     }
-    return config;
+    return outConfig;
   }
 }
 
 Xmm.prototype.setConfig = function(config) {
+  const inConfig = {};
   for (let prop in config) {
     const translatedProp = translateToXmmConfigProp(prop);    
-    config[translatedProp] === config[prop];
-    delete config[prop];
+    inConfig[translatedProp] === config[prop];
   }
-  this._xmm.setConfig(config);
+  this._xmm.setConfig(inConfig);
 }
 
 module.exports = Xmm;
