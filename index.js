@@ -88,7 +88,7 @@ Xmm.prototype.setConfig = function(config) {
   const inConfig = {};
   for (let prop in config) {
     const translatedProp = translateToXmmConfigProp(prop);    
-    inConfig[translatedProp] === config[prop];
+    inConfig[translatedProp] = config[prop];
   }
   this._xmm.setConfig(inConfig);
 }
