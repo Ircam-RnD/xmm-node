@@ -30,12 +30,11 @@ import xmm from 'xmm-node';
 var xmm = require('xmm-node');
 
 // then :
-var hhmm = new xmm('hhmm');
-hhmm.setConfig({
+var hhmm = new xmm('hhmm', {
 	gaussians: 3,
 	states: 12,
-	relative_regularization: 0.1,
-	absolute_regularization: 0.1
+	relativeRegularization: 0.1,
+	absoluteRegularization: 0.1
 });
 
 // valid xmm phrase created with xmm-client/PhraseMaker
