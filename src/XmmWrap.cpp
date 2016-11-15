@@ -39,6 +39,7 @@ void XmmWrap::Init() {
   Nan::SetPrototypeMethod(tpl, "getTrainingSet",        getTrainingSet);
   Nan::SetPrototypeMethod(tpl, "clearTrainingSet",      clearTrainingSet);
   Nan::SetPrototypeMethod(tpl, "train",                 train);
+  Nan::SetPrototypeMethod(tpl, "cancelTraining",        cancelTraining);
   Nan::SetPrototypeMethod(tpl, "getModel",              getModel);
   Nan::SetPrototypeMethod(tpl, "getModelType",          getModelType);
   Nan::SetPrototypeMethod(tpl, "filter",                filter);
@@ -361,7 +362,12 @@ void XmmWrap::train(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 
   Nan::Callback *callback = new Nan::Callback(args[0].As<v8::Function>());
   obj->model_->train(callback, obj->set_);
-  return;
+  // return;
+}
+
+void XmmWrap::cancelTraining(const Nan::FunctionCallbackInfo<v8::Value> & args) {
+  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+  obj->model_->cancelTraining();  
 }
 
 void XmmWrap::getModel(const Nan::FunctionCallbackInfo<v8::Value> & args) {

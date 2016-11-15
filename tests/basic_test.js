@@ -64,9 +64,17 @@ test('training', (t) => {
 	});
 	const trainMsg = 'train should return a trained model';
 	hhmm.train((err, res) => {
-		t.notEqual(res, null || undefined, trainMsg);
+		t.notEqual(res, null, trainMsg);
 		// console.log(hhmm.filter([1, 1]));
+		console.log(`error : ${err} - model : ${res}`);
 	})
+
+	const trainMsgBis = 'train should return a null model when training is cancelled';
+	hhmm.train((err, res) => {
+		t.equal(res, null, trainMsgBis);
+		console.log(`error : ${err} - model : ${res}`);
+	})
+	hhmm.cancelTraining();
 
 	t.end();
 });

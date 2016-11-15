@@ -14,6 +14,7 @@ public:
   virtual Json::Value getModel() = 0;
   virtual void reset() = 0;
   virtual void train(Nan::Callback *callback, xmm::TrainingSet *set) = 0;
+  virtual void cancelTraining() = 0;
   virtual v8::Local<v8::Object> filter(std::vector<float> observation) = 0;
 
   virtual std::size_t getGaussians() = 0;
@@ -31,13 +32,15 @@ public:
 
 template<typename Model, typename Results>
 class XmmTool : public XmmToolBase {
-
+private:
+  XmmWrapTrainWorker<Model> *worker;
 public:
   Model model;
 
   XmmTool(bool bimodal = false) {
     model = Model(bimodal);
     model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
+    worker = nullptr;
   }
 
   ~XmmTool() {}
@@ -57,7 +60,16 @@ public:
   }
 
   void train(Nan::Callback *callback, xmm::TrainingSet *set) {
-    Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
+    worker = new XmmWrapTrainWorker<Model>(callback, model, set);
+    Nan::AsyncQueueWorker(worker);
+    // Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
+  }
+
+  void cancelTraining() {
+    if (worker != nullptr) {
+      worker->Stop();
+      worker = nullptr;
+    }
   }
 
   v8::Local<v8::Object> filter(std::vector<float> observation) {

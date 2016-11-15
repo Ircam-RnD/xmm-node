@@ -81,6 +81,7 @@ Original XMM code authored by Jules Françoise, ported to Node.js by Joseph Larr
     * [.addTrainingSet(trainingSet)](#xmm+addTrainingSet)
     * [.clearTrainingSet()](#xmm+clearTrainingSet)
     * [.train(callback)](#xmm+train)
+    * [.cancelTraining()](#xmm+cancelTraining)
     * [.getModel()](#xmm+getModel) ⇒ <code>Object</code>
     * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
     * [.reset()](#xmm+reset)
@@ -255,6 +256,18 @@ Trains the model with the current training set.
 | Param | Type | Description |
 | --- | --- | --- |
 | callback | <code>[trainCallback](#trainCallback)</code> | The callback handling the trained model. |
+
+<a name="xmm+cancelTraining"></a>
+
+### xmm.cancelTraining()
+Cancel the current training process.
+
+**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Todo**
+
+- [ ] : for the moment, this method only cancels the last training process
+that has been launched. check if it should cancel all the training processes,
+or if it should provide an argument telling how many it should stop.
 
 <a name="xmm+getModel"></a>
 

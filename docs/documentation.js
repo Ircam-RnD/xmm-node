@@ -173,6 +173,16 @@
  */
 
 /**
+ * Cancel the current training process.
+ * @method cancelTraining
+ * @memberof xmm
+ * @instance
+ * @todo : for the moment, this method only cancels the last training process
+ * that has been launched. check if it should cancel all the training processes,
+ * or if it should provide an argument telling how many it should stop.
+ */
+
+/**
  * Returns the trained model (the same object as in {@link TrainCallback}).
  * @method getModel
  * @memberof xmm
