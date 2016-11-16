@@ -46,8 +46,8 @@ public:
 
     v8::Local<v8::Value> results[] = { errMsg, res };
 
-    // this should be safe to do this, as HandleOKCallback is called
-    // in the event loop, and threaded training is disabled in XmmTool
+    // this should be safe to do this, as HandleOKCallback
+    // is called in the event loop
     original = tool;
     // call reset so the model is ready to filter
     original.reset();
