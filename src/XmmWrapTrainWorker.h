@@ -2,7 +2,6 @@
 #define _XMMWRAPTRAINWORKER_H_
 
 #include <nan.h>
-// #include "XmmWrap.h"
 #include "../xmm/src/xmm.h"
 #include "JsonCppV8Converters.h"
 
@@ -11,7 +10,7 @@ class XmmWrapTrainWorker : public Nan::AsyncWorker {
 public:
   XmmWrapTrainWorker(Nan::Callback *callback, Model& t, xmm::TrainingSet *s) :
   Nan::AsyncWorker(callback), original(t), tool(t), set(*s), cancel(false) {
-    tool.configuration.multithreading = xmm::MultithreadingMode::Background;
+    // tool.configuration.multithreading = xmm::MultithreadingMode::Background;
   }
 
   ~XmmWrapTrainWorker() {}
@@ -22,7 +21,6 @@ public:
       if(cancel) {
         tool.cancelTraining();
       }
-      // leave loop if training ended OR user cancelled training
     }
   }
 
@@ -52,11 +50,7 @@ public:
     original = tool;
     // call reset so the model is ready to filter
     original.reset();
-
-    // if (!cancel) {
-      callback->Call(2, results);
-    // }
-
+    callback->Call(2, results);
   }
 
 private:

@@ -30,25 +30,29 @@ public:
 // the specializable template :
 // here manage the index list to ease phrases management (as in unity binding)
 
-template<typename Model, typename Results>
+template<typename Model, typename ModelType>
 class XmmTool : public XmmToolBase {
 private:
   std::vector<XmmWrapTrainWorker<Model> *> workers;
-  std::vector<Nan::Callback *> callbacks;
+  // std::vector<Nan::Callback *> callbacks;
 public:
   Model model;
 
   XmmTool(bool bimodal = false) {
     model = Model(bimodal);
-    model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
+    // model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
+
+    // this allows us to cancel the training process running in the asyncworker
+    model.configuration.multithreading = xmm::MultithreadingMode::Background;
   }
 
   ~XmmTool() {}
   
   void setBimodal(bool multimodality) {
-    Model tmp = Model(model);
+    // Model tmp = Model(model);
+    xmm::Configuration<ModelType> config = model.configuration;
     model = Model(multimodality);
-    model.configuration = tmp.configuration;
+    model.configuration = config;
   }
 
   Json::Value getModel() {
@@ -60,11 +64,9 @@ public:
   }
 
   void train(Nan::Callback *callback, xmm::TrainingSet *set) {
-    callbacks.push_back(callback);
+    // callbacks.push_back(callback);
     workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
     Nan::AsyncQueueWorker(workers[workers.size() - 1]);
-
-    // Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
   }
 
   void cancelTraining() {
@@ -72,16 +74,8 @@ public:
       worker->Stop();
     }
 
-    // for (auto callback : callbacks) {
-    //   v8::Local<v8::Value> results[] = {
-    //     Nan::New<v8::String>("training cancelled").ToLocalChecked(),
-    //     Nan::Null()
-    //   };
-    //   callback->Call(2, results);
-    // }
-
     workers.clear();
-    callbacks.clear();
+    // callbacks.clear();
   }
 
   v8::Local<v8::Object> filter(std::vector<float> observation) {
@@ -94,7 +88,7 @@ public:
     unsigned int dimension_output = dimension - dimension_input;
 
     model.filter(observation);
-    xmm::Results<Results> res = model.results;
+    xmm::Results<ModelType> res = model.results;
 
     v8::Local<v8::Array> instant_likelihoods = Nan::New<v8::Array>(nmodels);
     v8::Local<v8::Array> instant_normalized_likelihoods = Nan::New<v8::Array>(nmodels);
