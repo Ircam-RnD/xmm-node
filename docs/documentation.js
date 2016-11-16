@@ -173,8 +173,9 @@
  */
 
 /**
- * <i><strong>WARNING</strong> This feature is experimental and may cause crashes</i><br />
- * Cancel the current training process.
+ * Cancel the current training process. <br />
+ * <i><strong><font color="#f00">WARNING</font></strong>
+ * This feature is experimental and may cause crashes</i>
  * @method cancelTraining
  * @memberof xmm
  * @instance

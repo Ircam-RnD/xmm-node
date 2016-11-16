@@ -259,8 +259,9 @@ Trains the model with the current training set.
 <a name="xmm+cancelTraining"></a>
 
 ### xmm.cancelTraining()
-<i><strong>WARNING</strong> This feature is experimental and may cause crashes</i><br />
-Cancel the current training process.
+Cancel the current training process. <br />
+<i><strong><font color="#f00">WARNING</font></strong>
+This feature is experimental and may cause crashes</i>
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 <a name="xmm+getModel"></a>
