@@ -259,7 +259,7 @@ Trains the model with the current training set.
 <a name="xmm+cancelTraining"></a>
 
 ### xmm.cancelTraining()
-_<span class="warning">__WARNING__</span> This feature is experimental and may cause crashes_
+<i><strong>WARNING</strong> This feature is experimental and may cause crashes</i><br />
 Cancel the current training process.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
