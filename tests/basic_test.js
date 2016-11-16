@@ -48,7 +48,7 @@ test('training', (t) => {
 	});
 	// console.log(hhmm.getConfig());
 
-	hhmm.addPhrase({
+	var p = {
 		bimodal: false,
 		dimension: 2,
 		dimension_input: 0,
@@ -60,13 +60,31 @@ test('training', (t) => {
 		data_input: [],
 		data_output: [],
 		length: 3,
-		label: 'aLabel'
+		label: 'aLabel'		
+	}
+
+	for (let i = 0; i < 5000; i++) {
+		hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
+	}
+
+	const trainMsgBis = 'train should return a null model when training is cancelled';
+	hhmm.train((err, res) => {
+		t.equal(res, null, trainMsgBis);
+		console.log(`error : ${err} - model : ${res}`);
 	});
+
+	hhmm.cancelTraining();
+
 	const trainMsg = 'train should return a trained model';
 	hhmm.train((err, res) => {
-		t.notEqual(res, null || undefined, trainMsg);
+		t.notEqual(res, null, trainMsg);
 		// console.log(hhmm.filter([1, 1]));
-	})
+		console.log(`error : ${err} - model : ${res}`);
+	});
+
+	// hhmm.cancelTraining();
+
+	console.log('are we still waiting ?');
 
 	t.end();
 });

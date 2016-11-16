@@ -39,6 +39,7 @@ private:
   static void clearTrainingSet    (const Nan::FunctionCallbackInfo<v8::Value>& info);
 
   static void train               (const Nan::FunctionCallbackInfo<v8::Value>& info);
+  static void cancelTraining      (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void getModel            (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void getModelType        (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void reset               (const Nan::FunctionCallbackInfo<v8::Value>& info);
@@ -54,5 +55,6 @@ private:
   static void getConfig           (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void setConfig           (const Nan::FunctionCallbackInfo<v8::Value>& info);
 };
+
 
 #endif // _XMMWRAP_H_

@@ -30,12 +30,11 @@ import xmm from 'xmm-node';
 var xmm = require('xmm-node');
 
 // then :
-var hhmm = new xmm('hhmm');
-hhmm.setConfig({
+var hhmm = new xmm('hhmm', {
 	gaussians: 3,
 	states: 12,
-	relative_regularization: 0.1,
-	absolute_regularization: 0.1
+	relativeRegularization: 0.1,
+	absoluteRegularization: 0.1
 });
 
 // valid xmm phrase created with xmm-client/PhraseMaker
@@ -81,6 +80,7 @@ Original XMM code authored by Jules Françoise, ported to Node.js by Joseph Larr
     * [.addTrainingSet(trainingSet)](#xmm+addTrainingSet)
     * [.clearTrainingSet()](#xmm+clearTrainingSet)
     * [.train(callback)](#xmm+train)
+    * [.cancelTraining()](#xmm+cancelTraining)
     * [.getModel()](#xmm+getModel) ⇒ <code>Object</code>
     * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
     * [.reset()](#xmm+reset)
@@ -256,6 +256,14 @@ Trains the model with the current training set.
 | --- | --- | --- |
 | callback | <code>[trainCallback](#trainCallback)</code> | The callback handling the trained model. |
 
+<a name="xmm+cancelTraining"></a>
+
+### xmm.cancelTraining()
+Cancel the current training process. <br />
+<i><strong><font color="#f00">WARNING</font></strong>
+This feature is experimental and may cause crashes</i>
+
+**Kind**: instance method of <code>[xmm](#xmm)</code>  
 <a name="xmm+getModel"></a>
 
 ### xmm.getModel() ⇒ <code>Object</code>
