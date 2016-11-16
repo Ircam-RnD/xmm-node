@@ -33,14 +33,14 @@ public:
 template<typename Model, typename Results>
 class XmmTool : public XmmToolBase {
 private:
-  XmmWrapTrainWorker<Model> *worker;
+  std::vector<XmmWrapTrainWorker<Model> *> workers;
+  std::vector<Nan::Callback *> callbacks;
 public:
   Model model;
 
   XmmTool(bool bimodal = false) {
     model = Model(bimodal);
     model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
-    worker = nullptr;
   }
 
   ~XmmTool() {}
@@ -60,16 +60,28 @@ public:
   }
 
   void train(Nan::Callback *callback, xmm::TrainingSet *set) {
-    worker = new XmmWrapTrainWorker<Model>(callback, model, set);
-    Nan::AsyncQueueWorker(worker);
+    callbacks.push_back(callback);
+    workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
+    Nan::AsyncQueueWorker(workers[workers.size() - 1]);
+
     // Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
   }
 
   void cancelTraining() {
-    if (worker != nullptr) {
+    for (auto worker : workers) {
       worker->Stop();
-      worker = nullptr;
     }
+
+    // for (auto callback : callbacks) {
+    //   v8::Local<v8::Value> results[] = {
+    //     Nan::New<v8::String>("training cancelled").ToLocalChecked(),
+    //     Nan::Null()
+    //   };
+    //   callback->Call(2, results);
+    // }
+
+    workers.clear();
+    callbacks.clear();
   }
 
   v8::Local<v8::Object> filter(std::vector<float> observation) {

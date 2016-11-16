@@ -10,13 +10,18 @@ template<typename Model>
 class XmmWrapTrainWorker : public Nan::AsyncWorker {
 public:
   XmmWrapTrainWorker(Nan::Callback *callback, Model& t, xmm::TrainingSet *s) :
-  Nan::AsyncWorker(callback), original(t), tool(t), set(*s), cancel(false) {}
+  Nan::AsyncWorker(callback), original(t), tool(t), set(*s), cancel(false) {
+    tool.configuration.multithreading = xmm::MultithreadingMode::Background;
+  }
 
   ~XmmWrapTrainWorker() {}
 
   void Execute() {
     tool.train(&set);
-    while(tool.training() && !cancel) {
+    while(tool.training()) {
+      if(cancel) {
+        tool.cancelTraining();
+      }
       // leave loop if training ended OR user cancelled training
     }
   }
@@ -48,7 +53,9 @@ public:
     // call reset so the model is ready to filter
     original.reset();
 
-    callback->Call(2, results);
+    // if (!cancel) {
+      callback->Call(2, results);
+    // }
 
   }
 

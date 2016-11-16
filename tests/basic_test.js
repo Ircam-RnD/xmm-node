@@ -63,25 +63,32 @@ test('training', (t) => {
 		label: 'aLabel'		
 	}
 
-	hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
-
-	const trainMsg = 'train should return a trained model';
-	hhmm.train((err, res) => {
-		t.notEqual(res, null, trainMsg);
-		// console.log(hhmm.filter([1, 1]));
-		console.log(`error : ${err} - model : ${res}`);
-	})
-
-	for (let i = 0; i < 10000; i++) {
+	for (let i = 0; i < 5000; i++) {
 		hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
 	}
 
+	console.log('trying to launch a first training process');
+
+	const trainMsg = 'train should return a trained model';
+	hhmm.train((err, res) => {
+		// t.notEqual(res, null, trainMsg);
+		// console.log(hhmm.filter([1, 1]));
+		console.log(`error : ${err} - model : ${res}`);
+	});
+
+	hhmm.cancelTraining();
+
+	console.log('now I\'ll try to launch another training process');
+
 	const trainMsgBis = 'train should return a null model when training is cancelled';
 	hhmm.train((err, res) => {
-		t.equal(res, null, trainMsgBis);
+		// t.equal(res, null, trainMsgBis);
 		console.log(`error : ${err} - model : ${res}`);
-	})
-	hhmm.cancelTraining();
+	});
+
+	// hhmm.cancelTraining();
+
+	console.log('are we still waiting ?');
 
 	t.end();
 });
