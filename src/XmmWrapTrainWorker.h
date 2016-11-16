@@ -17,6 +17,7 @@ public:
 
   void Execute() {
     tool.train(&set);
+    
     while(tool.training()) {
       if(cancel) {
         tool.cancelTraining();

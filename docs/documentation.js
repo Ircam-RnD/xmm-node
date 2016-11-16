@@ -173,7 +173,7 @@
  */
 
 /**
- * _<span class="warning">__WARNING__</span> This feature is experimental and may not be stable_
+ * _<span class="warning">__WARNING__</span> This feature is experimental and may cause crashes_
  * Cancel the current training process.
  * @method cancelTraining
  * @memberof xmm

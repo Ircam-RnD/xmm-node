@@ -56,4 +56,5 @@ private:
   static void setConfig           (const Nan::FunctionCallbackInfo<v8::Value>& info);
 };
 
+
 #endif // _XMMWRAP_H_

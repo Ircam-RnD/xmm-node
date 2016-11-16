@@ -94,6 +94,7 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
     // constructor (see index.js)
   }
 
+
   //=========================== CREATE MODEL OBJECT ==========================//
 
   if (modelType == "gmm") {

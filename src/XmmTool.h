@@ -35,6 +35,7 @@ class XmmTool : public XmmToolBase {
 private:
   std::vector<XmmWrapTrainWorker<Model> *> workers;
   // std::vector<Nan::Callback *> callbacks;
+  
 public:
   Model model;
 

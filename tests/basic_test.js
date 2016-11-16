@@ -67,8 +67,6 @@ test('training', (t) => {
 		hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
 	}
 
-	// console.log('trying to launch a first training process');
-
 	const trainMsgBis = 'train should return a null model when training is cancelled';
 	hhmm.train((err, res) => {
 		t.equal(res, null, trainMsgBis);
@@ -76,8 +74,6 @@ test('training', (t) => {
 	});
 
 	hhmm.cancelTraining();
-
-	// console.log('now I\'ll try to launch another training process');
 
 	const trainMsg = 'train should return a trained model';
 	hhmm.train((err, res) => {
