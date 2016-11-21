@@ -69,8 +69,8 @@ See [github.com/Ircam-RnD/xmm](https://github.com/Ircam-RnD/xmm) for detailed XM
 
 * [xmm](#xmm)
     * [new xmm([modelType], [modelConfig])](#new_xmm_new)
-    * [.setConfig(config)](#xmm+setConfig)
     * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+    * [.setConfig(config)](#xmm+setConfig)
     * [.addPhrase(phrase)](#xmm+addPhrase)
     * [.getPhrase(index)](#xmm+getPhrase) ⇒ <code>Object</code>
     * [.getPhrasesOfLabel(label)](#xmm+getPhrasesOfLabel) ⇒ <code>Object</code>
@@ -101,17 +101,6 @@ The main xmm class.
 | [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
 | [modelConfig] | <code>[xmmModelConfig](#xmmModelConfig)</code> |  | Configuration parameters for the model. |
 
-<a name="xmm+setConfig"></a>
-
-### xmm.setConfig(config)
-Set the actual model configuration parameters.
-
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
-
 <a name="xmm+getConfig"></a>
 
 ### xmm.getConfig([configParam]) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
@@ -119,7 +108,7 @@ Get the actual model configuration parameters or one of them.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 **Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - Depends on the parameter.
-<br /><br />If called without any argument :
+<br /><br />If called without any argument, returns :
 <li style="list-style-type: none;">
 <ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
 </li>
@@ -142,6 +131,17 @@ Otherwise, the returned value type depends on the requested configuration parame
 | Param | Type | Description |
 | --- | --- | --- |
 | [configParam] | <code>&#x27;gaussians&#x27;</code> &#124; <code>&#x27;relativeRegularization&#x27;</code> &#124; <code>&#x27;absoluteRegularization&#x27;</code> &#124; <code>&#x27;covarianceMode&#x27;</code> &#124; <code>&#x27;hierarchical&#x27;</code> &#124; <code>&#x27;states&#x27;</code> &#124; <code>&#x27;transitionMode&#x27;</code> &#124; <code>&#x27;regressionEstimator&#x27;</code> | The name of a configuration parameter. |
+
+<a name="xmm+setConfig"></a>
+
+### xmm.setConfig(config)
+Set the actual model configuration parameters.
+
+**Kind**: instance method of <code>[xmm](#xmm)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
 <a name="xmm+addPhrase"></a>
 
