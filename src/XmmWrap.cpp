@@ -41,6 +41,7 @@ void XmmWrap::Init() {
   Nan::SetPrototypeMethod(tpl, "train",                 train);
   Nan::SetPrototypeMethod(tpl, "cancelTraining",        cancelTraining);
   Nan::SetPrototypeMethod(tpl, "getModel",              getModel);
+  Nan::SetPrototypeMethod(tpl, "setModel",              setModel);
   Nan::SetPrototypeMethod(tpl, "getModelType",          getModelType);
   Nan::SetPrototypeMethod(tpl, "filter",                filter);
 
@@ -396,6 +397,17 @@ void XmmWrap::getModelType(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   }
 
   args.GetReturnValue().Set(Nan::New<v8::String>(stype).ToLocalChecked());
+}
+
+void XmmWrap::setModel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
+  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+
+  Nan::MaybeLocal<v8::Value> maybeInputModel = args[0];
+  v8::Local<v8::Object> inputModel
+    = v8::Local<v8::Object>::Cast(maybeInputModel.ToLocalChecked());
+  if (!inputModel->IsObject()) return;
+  
+  obj->model_->setModel(objectToValue(inputModel));
 }
 
 //================================ FILTERING =================================//

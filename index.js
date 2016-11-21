@@ -23,13 +23,16 @@ XmmNative = require('./build/Release/xmm');
 // wrap the native class for more flexibility :
 function Xmm(modelType, options) {
   this._xmm = new XmmNative(modelType);
-  this._xmm.setConfig(options);
 
   // expose all the native methods in the wrapper :
   for (var method in this._xmm) {
     if (!Xmm.prototype[method]) {
       this[method] = this._xmm[method].bind(this._xmm);
     }
+  }
+
+  if (options) {
+    this.setConfig(options);
   }
 }
 
@@ -71,13 +74,13 @@ function translateToXmmConfigProp(prop) {
 
 Xmm.prototype.getConfig = function(prop) {
   if (prop) {
-    const translatedProp = translateToXmmConfigProp(prop);
+    var translatedProp = translateToXmmConfigProp(prop);
     return this._xmm.getConfig(translatedProp);
   } else {
-    const config = this._xmm.getConfig();
-    const outConfig = {};
-    for (let prop in config) {
-      const translatedProp = translateFromXmmConfigProp(prop);
+    var config = this._xmm.getConfig();
+    var outConfig = {};
+    for (var prop in config) {
+      var translatedProp = translateFromXmmConfigProp(prop);
       outConfig[translatedProp] = config[prop];
     }
     return outConfig;
@@ -85,12 +88,20 @@ Xmm.prototype.getConfig = function(prop) {
 }
 
 Xmm.prototype.setConfig = function(config) {
-  const inConfig = {};
-  for (let prop in config) {
-    const translatedProp = translateToXmmConfigProp(prop);    
+  var inConfig = {};
+  for (var prop in config) {
+    var translatedProp = translateToXmmConfigProp(prop);    
     inConfig[translatedProp] = config[prop];
   }
   this._xmm.setConfig(inConfig);
 }
+
+// Xmm.prototype.setModel = function(model) {
+//   this._xmm.setModel(JSON.parse(JSON.stringify(model)));
+//   // this avoid rounding issues on config double parameters
+//   this._xmm.setConfig(model.configuration.default_parameters);
+//   // todo : how to avoid rounding issues on all double numbers ?
+//   // answer : seems that we don't really care ...
+// }
 
 module.exports = Xmm;

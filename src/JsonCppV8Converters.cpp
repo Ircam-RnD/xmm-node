@@ -82,6 +82,11 @@ Json::Value objectToValue(v8::Local<v8::Object> obj) {
       res[skey] = prop->BooleanValue();
     } else if (prop->IsNumber()) {
       res[skey] = prop->NumberValue();
+    // } else if (prop->IsInt32()) {
+    //   res[skey] = prop->IntegerValue();
+    // } else if (prop->IsNumber()) {
+    //   Nan::Maybe<double> d = Nan::To<double>(prop);
+    //   res[skey] = d.FromJust();
     } else if (prop->IsString()) {
       v8::String::Utf8Value val(prop->ToString());
       res[skey] = std::string(*val);
@@ -108,7 +113,12 @@ Json::Value arrayToValue(v8::Local<v8::Array> arr) {
     if (prop->IsBoolean()) {
       res[i] = prop->BooleanValue();
     } else if (prop->IsNumber()) {
-      res[i] = prop->NumberValue();
+      res[i] = Json::Value(prop->NumberValue());
+    // } else if (prop->IsInt32()) {
+    //   res[i] = prop->IntegerValue();
+    // } else if (prop->IsNumber()) {
+    //   Nan::Maybe<double> d = Nan::To<double>(prop);
+    //   res[i] = d.FromJust();
     } else if (prop->IsString()) {
       v8::String::Utf8Value val(prop->ToString());
       res[i] = std::string(*val);

@@ -12,6 +12,7 @@ class XmmToolBase {
 public:
   virtual void setBimodal(bool multimodality) = 0;
   virtual Json::Value getModel() = 0;
+  virtual void setModel(Json::Value jm) = 0;
   virtual void reset() = 0;
   virtual void train(Nan::Callback *callback, xmm::TrainingSet *set) = 0;
   virtual void cancelTraining() = 0;
@@ -58,6 +59,10 @@ public:
 
   Json::Value getModel() {
     return model.toJson();
+  }
+
+  void setModel(Json::Value jm) {
+    model.fromJson(jm);
   }
 
   void reset() {

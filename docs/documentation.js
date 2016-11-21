@@ -182,11 +182,19 @@
  */
 
 /**
- * Returns the trained model (the same object as in {@link TrainCallback}).
+ * Returns the trained model (the same object as in {@link trainCallback}).
  * @method getModel
  * @memberof xmm
  * @instance
  * @returns {Object} An object containing the trained model.
+ */
+
+/**
+ * Sets a previously trained model.
+ * @method setModel
+ * @memberof xmm
+ * @instance
+ * @param {Object} model - A valid XMM model of the instance's actual type.
  */
 
 /**
@@ -195,6 +203,14 @@
  * @memberof xmm
  * @instance
  * @returns {('gmm'|'hhmm')} The type of model as String.
+ */
+
+/***
+ * Sets the type of the actual model.
+ * @method setModelType
+ * @memberof xmm
+ * @instance
+ * @param {String} modelType - the new model type to switch to.
  */
 
 //================================ filtering =================================//

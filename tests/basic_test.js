@@ -44,9 +44,9 @@ test('empty', (t) => {
 
 test('training', (t) => {
 	const hhmm = new xmm('hhmm', {
-		hierarchical: false
+		hierarchical: false,
+		relativeRegularization: 0.1
 	});
-	// console.log(hhmm.getConfig());
 
 	var p = {
 		bimodal: false,
@@ -63,7 +63,7 @@ test('training', (t) => {
 		label: 'aLabel'		
 	}
 
-	for (let i = 0; i < 5000; i++) {
+	for (let i = 0; i < 500; i++) {
 		hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
 	}
 
@@ -80,6 +80,15 @@ test('training', (t) => {
 		t.notEqual(res, null, trainMsg);
 		// console.log(hhmm.filter([1, 1]));
 		console.log(`error : ${err} - model : ${res}`);
+
+		const setModelConfigMsg = 'config should not change when queried after setModel';
+		let config = hhmm.getConfig();
+		// console.log(hhmm.getModel()['models']);
+		hhmm.setModel(res);
+		// console.log(hhmm.getConfig());
+		// console.log(hhmm.getModel()['models']);
+		// doesn't work : ROUNDING ISSUES IN JSONCPP ???? (happen during setModel)
+		// t.deepEqual(config, hhmm.getConfig(), setModelConfigMsg)
 	});
 
 	// hhmm.cancelTraining();

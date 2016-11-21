@@ -41,6 +41,7 @@ private:
   static void train               (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void cancelTraining      (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void getModel            (const Nan::FunctionCallbackInfo<v8::Value>& info);
+  static void setModel            (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void getModelType        (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void reset               (const Nan::FunctionCallbackInfo<v8::Value>& info);
   static void filter              (const Nan::FunctionCallbackInfo<v8::Value>& info);

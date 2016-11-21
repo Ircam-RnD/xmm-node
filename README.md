@@ -52,8 +52,9 @@ hhmm.train(function(err, res) {
 
 #### credits :
 
-This library has been developed by the ISMM team at IRCAM, within the context of the RAPID-MIX project, funded by the European Union’s Horizon 2020 research and innovation programme.  
-Original XMM code authored by Jules Françoise, ported to Node.js by Joseph Larralde.  
+This library is developed by the ISMM team at IRCAM, within the context of the RAPID-MIX project, funded by the European Union’s Horizon 2020 research and innovation programme.  
+Original XMM code authored by Jules Françoise, ported to JavaScript by Joseph Larralde.  
+See [github.com/Ircam-RnD/xmm](https://github.com/Ircam-RnD/xmm) for detailed XMM credits.
 
 <hr>
 
@@ -82,6 +83,7 @@ Original XMM code authored by Jules Françoise, ported to Node.js by Joseph Larr
     * [.train(callback)](#xmm+train)
     * [.cancelTraining()](#xmm+cancelTraining)
     * [.getModel()](#xmm+getModel) ⇒ <code>Object</code>
+    * [.setModel(model)](#xmm+setModel)
     * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
     * [.reset()](#xmm+reset)
     * [.filter(observation)](#xmm+filter) ⇒ <code>Object</code>
@@ -267,10 +269,21 @@ This feature is experimental and may cause crashes</i>
 <a name="xmm+getModel"></a>
 
 ### xmm.getModel() ⇒ <code>Object</code>
-Returns the trained model (the same object as in [TrainCallback](TrainCallback)).
+Returns the trained model (the same object as in [trainCallback](#trainCallback)).
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 **Returns**: <code>Object</code> - An object containing the trained model.  
+<a name="xmm+setModel"></a>
+
+### xmm.setModel(model)
+Sets a previously trained model.
+
+**Kind**: instance method of <code>[xmm](#xmm)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| model | <code>Object</code> | A valid XMM model of the instance's actual type. |
+
 <a name="xmm+getModelType"></a>
 
 ### xmm.getModelType() ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
