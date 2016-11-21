@@ -39,18 +39,19 @@
  * </li>
  * Otherwise, the returned value type depends on the requested configuration parameter :
  * <li style="list-style-type: none;">
- * <ul>'gaussians' : the number of gaussians</ul>
- * <ul>'relativeRegularization' : the relative regularization foat value</ul>
- * <ul>'absoluteRegularization' : the absolute regularization float value</ul>
- * <ul>'covarianceMode' : the actual covariance mode ('full' or 'diagonal')</ul>
- * <ul>'hierarchical' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
- * 	<code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
- * <ul>'states' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
+ * <ul><code>'gaussians'</code> : the number of gaussians</ul>
+ * <ul><code>'relativeRegularization'</code> : the relative regularization foat value</ul>
+ * <ul><code>'absoluteRegularization'</code> : the absolute regularization float value</ul>
+ * <ul><code>'covarianceMode'</code> : the actual covariance mode ('full' or 'diagonal')</ul>
+ * <ul><code>'hierarchical'</code> : if the model type is not 'hhmm', <code>undefined</code>,
+ * otherwise <code>true</code> if the model is hierarchical and <code>false</code> if it is not</ul>
+ * <ul><code>'states'</code> : if the model type is not 'hhmm', <code>undefined</code>, otherwise
  *	the number of states of the hmms</ul>
- * <ul>'transitionMode' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
- *	the actual transition mode value ('ergodic' or 'leftright')</ul>
- * <ul>'regressionEstimator' : if the model type is not 'hhmm', <code>undefined</code>, otherwise
- *	the actual regression estimator used with hmms ('full', 'windowed' or 'likeliest')</ul>
+ * <ul><code>'transitionMode'</code> : if the model type is not 'hhmm', <code>undefined</code>,
+ * otherwise the actual transition mode value ('ergodic' or 'leftright')</ul>
+ * <ul><code>'regressionEstimator'</code> : if the model type is not 'hhmm',
+ * <code>undefined</code>, otherwise the actual regression estimator used with hmms
+ * ('full', 'windowed' or 'likeliest')</ul>
  * </li>
  */
 
