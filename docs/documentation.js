@@ -190,7 +190,7 @@
  */
 
 /**
- * Sets a previously trained model.
+ * Sets the actual model from another already trained model.
  * @method setModel
  * @memberof xmm
  * @instance

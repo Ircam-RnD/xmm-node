@@ -278,7 +278,7 @@ Returns the trained model (the same object as in [trainCallback](#trainCallback)
 <a name="xmm+setModel"></a>
 
 ### xmm.setModel(model)
-Sets a previously trained model.
+Sets the actual model from another already trained model.
 
 **Kind**: instance method of <code>[xmm](#xmm)</code>  
 
