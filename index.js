@@ -1,3 +1,11 @@
+/*
+ * This library is developed by the ISMM (http://ismm.ircam.fr/) team at IRCAM,
+ * within the context of the RAPID-MIX (http://rapidmix.goldsmithsdigital.com/)
+ * project, funded by the European Union’s Horizon 2020 research and innovation programme.  
+ * Original XMM code authored by Jules Françoise, ported to Node.js by Joseph Larralde.  
+ * See https://github.com/Ircam-RnD/xmm for detailed XMM credits.
+ */
+
 /** @module xmm */
 
 // var Xmm = null;
