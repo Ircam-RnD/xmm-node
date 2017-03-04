@@ -16,7 +16,11 @@ public:
   ~XmmWrapTrainWorker() {}
 
   void Execute() {
-    tool.train(&set);
+    if (set.size() > 0) {
+      tool.train(&set);
+    } else {
+      tool.clear();
+    }
     
     while(tool.training()) {
       if(cancel) {
@@ -41,6 +45,11 @@ public:
       res = model;
     } else {
       errMsg = Nan::New<v8::String>("training cancelled").ToLocalChecked();
+      res = Nan::Null();
+    }
+
+    if (set.size() == 0) {
+      errMsg = Nan::Null();
       res = Nan::Null();
     }
 
