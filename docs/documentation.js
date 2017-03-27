@@ -3,14 +3,14 @@
  * @property {Number} [gaussians=1] - the number of gaussians used for encoding a state.
  * @property {Number} [relativeRegularization=0.01] - the relative regularization (see XMM documentation).
  * @property {Number} [absoluteRegularization=0.01] - the absolute regularization (see XMM documentation).
- * @property {('diagonal'|'full')} [covarianceMode='full'] - the type of covariance matrix used in the model.
+ * @property {('diagonal|full')} [covarianceMode='full'] - the type of covariance matrix used in the model.
  * @property {Boolean} [hierarchical=true] - if <code>model</code> is 'hhmm', turns hierarchical
  * mode on/off.
  * @property {Number} [states=1] - if <code>model</code> is 'hhmm', defines the number of states
  * used to generate each individual hmm.
- * @property {('ergodic'|'leftright')} [transitionMode='leftright'] - if <code>model</code> is 'hhmm',
+ * @property {('ergodic|leftright')} [transitionMode='leftright'] - if <code>model</code> is 'hhmm',
  * sets the transition mode between the states of the individual hmm models.
- * @property {('full'|'windowed'|'likeliest')} [regressionEstimator='full'] - if <code>model</code> is 'hhmm',
+ * @property {('full|windowed|likeliest')} [regressionEstimator='full'] - if <code>model</code> is 'hhmm',
  * the type of estimator used for regression with hmms.
  */
 
@@ -29,8 +29,8 @@
  * @method getConfig
  * @memberof xmm
  * @instance
- * @param {('gaussians'|'relativeRegularization'|'absoluteRegularization'|
- *	'covarianceMode'|'hierarchical'|'states'|'transitionMode'|'regressionEstimator')}
+ * @param {('gaussians|relativeRegularization|absoluteRegularization|
+ *	covarianceMode|hierarchical|states|transitionMode|regressionEstimator')}
  * [configParam] - The name of a configuration parameter.
  * @returns {(xmmModelConfig|Number|String|Boolean)} Depends on the parameter.
  * <br /><br />If called without any argument, returns :
