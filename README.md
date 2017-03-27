@@ -98,7 +98,7 @@ The main xmm class.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [modelType] | <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
+| [modelType] | <code>&#x27;gmm\|hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
 | [modelConfig] | <code>[xmmModelConfig](#xmmModelConfig)</code> |  | Configuration parameters for the model. |
 
 <a name="xmm+getConfig"></a>
