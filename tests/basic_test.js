@@ -2,13 +2,20 @@ import xmm from '../index';
 import test from 'tape';
 
 test('basic', (t) => {
-	const gmm = new xmm('gmm');
+	let modelConfig = {
+		gaussians: 3,
+		covarianceMode: 'full',
+		relativeRegularization: 0.1,
+		absoluteRegularization: 0.1
+	};
 
-	const modelConfig = gmm.getConfig();
-	gmm.setConfig(modelConfig);
+	const gmm = new xmm('gmm', modelConfig);
+
+	// const modelConfig = gmm.getConfig();
+	// gmm.setConfig(modelConfig);
 	// console.log(modelConfig);
 	const modelConfigMsg
-		= 'model configuration should not change when replaced by itself';
+		= 'model configuration should be the same as the one it\'s been instantiated with';
 	t.deepEqual(gmm.getConfig(), modelConfig, modelConfigMsg);
 
 	t.end();
