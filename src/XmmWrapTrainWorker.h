@@ -22,8 +22,8 @@ public:
       tool.clear();
     }
     
-    while(tool.training()) {
-      if(cancel) {
+    while (tool.training()) {
+      if (cancel) {
         tool.cancelTraining();
       }
     }
@@ -48,10 +48,12 @@ public:
       res = Nan::Null();
     }
 
-    if (set.size() == 0) {
-      errMsg = Nan::Null();
-      res = Nan::Null();
-    }
+    // Don't do this, let the default empty model with default config patameters
+    
+    // if (set.size() == 0) {
+    //   errMsg = Nan::Null();
+    //   res = Nan::Null();
+    // }
 
     v8::Local<v8::Value> results[] = { errMsg, res };
 

@@ -74,17 +74,17 @@ test('training', (t) => {
 		hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
 	}
 
-	const trainMsgBis = 'train should return a null model when training is cancelled';
+	const trainMsg = 'train should return a null model when training is cancelled';
 	hhmm.train((err, res) => {
-		t.equal(res, null, trainMsgBis);
+		t.equal(res, null, trainMsg);
 		console.log(`error : ${err} - model : ${res}`);
 	});
 
 	hhmm.cancelTraining();
 
-	const trainMsg = 'train should return a trained model';
+	const trainMsgBis = 'train should return a trained model';
 	hhmm.train((err, res) => {
-		t.notEqual(res, null, trainMsg);
+		t.notEqual(res, null, trainMsgBis);
 		// console.log(hhmm.filter([1, 1]));
 		console.log(`error : ${err} - model : ${res}`);
 
@@ -96,6 +96,13 @@ test('training', (t) => {
 		// console.log(hhmm.getModel()['models']);
 		// doesn't work : ROUNDING ISSUES IN JSONCPP ???? (happen during setModel)
 		// t.deepEqual(config, hhmm.getConfig(), setModelConfigMsg)
+	});
+
+	const trainMsgTer = 'train should return an empty model when training set empty';
+	hhmm.clearTrainingSet();
+	hhmm.train((err, res) => {
+		t.notEqual(res, null, trainMsgTer);
+		console.log(`error: ${err} - model : ${JSON.stringify(res, null, 2)}`);
 	});
 
 	// hhmm.cancelTraining();
