@@ -11,6 +11,8 @@ public:
   XmmWrapTrainWorker(Nan::Callback *callback, Model& t, xmm::TrainingSet *s) :
   Nan::AsyncWorker(callback), original(t), tool(t), set(*s), cancel(false) {
     // tool.configuration.multithreading = xmm::MultithreadingMode::Background;
+    // No threads !
+    tool.configuration.multithreading::MultithreadingMode::Sequential;
   }
 
   ~XmmWrapTrainWorker() {}
@@ -22,11 +24,12 @@ public:
       tool.clear();
     }
     
-    while (tool.training()) {
-      if (cancel) {
-        tool.cancelTraining();
-      }
-    }
+    // No threads !
+    // while (tool.training()) {
+    //   if (cancel) {
+    //     tool.cancelTraining();
+    //   }
+    // }
   }
 
   void Stop() {
