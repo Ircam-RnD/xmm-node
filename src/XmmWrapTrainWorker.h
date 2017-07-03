@@ -12,7 +12,7 @@ public:
   Nan::AsyncWorker(callback), original(t), tool(t), set(*s), cancel(false) {
     // tool.configuration.multithreading = xmm::MultithreadingMode::Background;
     // No threads !
-    tool.configuration.multithreading::MultithreadingMode::Sequential;
+    tool.configuration.multithreading = xmm::MultithreadingMode::Sequential;
   }
 
   ~XmmWrapTrainWorker() {}
@@ -43,13 +43,13 @@ public:
     v8::Local<v8::Object> model = valueToObject(jm);
 
     v8::Local<v8::Value> errMsg, res;
-    if (!cancel) {
+    // if (!cancel) {
       errMsg = Nan::Null();
       res = model;
-    } else {
-      errMsg = Nan::New<v8::String>("training cancelled").ToLocalChecked();
-      res = Nan::Null();
-    }
+    // } else {
+    //   errMsg = Nan::New<v8::String>("training cancelled").ToLocalChecked();
+    //   res = Nan::Null();
+    // }
 
     // Don't do this, let the default empty model with default config patameters
     
