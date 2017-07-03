@@ -42,10 +42,10 @@ public:
 
   XmmTool(bool bimodal = false) {
     model = Model(bimodal);
-    // model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
+    model.configuration.multithreading = xmm::MultithreadingMode::Sequential;
 
     // this allows us to cancel the training process running in the asyncworker
-    model.configuration.multithreading = xmm::MultithreadingMode::Background;
+    // model.configuration.multithreading = xmm::MultithreadingMode::Background;
   }
 
   ~XmmTool() {}
