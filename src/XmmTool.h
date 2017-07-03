@@ -70,18 +70,21 @@ public:
   }
 
   void train(Nan::Callback *callback, xmm::TrainingSet *set) {
-    // callbacks.push_back(callback);
-    workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
-    Nan::AsyncQueueWorker(workers[workers.size() - 1]);
+    // callbacks.push_back(callback); // no need for callbacks
+
+    // workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
+    // Nan::AsyncQueueWorker(workers[workers.size() - 1]);
+    Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
   }
 
   void cancelTraining() {
-    for (auto worker : workers) {
-      worker->Stop();
-    }
+    // for (auto worker : workers) {
+    //   worker->Stop();
+    // }
 
-    workers.clear();
-    // callbacks.clear();
+    // workers.clear();
+
+    // callbacks.clear(); // no need for callbacks
   }
 
   v8::Local<v8::Object> filter(std::vector<float> observation) {

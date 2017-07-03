@@ -32,9 +32,9 @@ public:
     // }
   }
 
-  void Stop() {
-    cancel = true;
-  }
+  // void Stop() {
+  //   cancel = true;
+  // }
 
   void HandleOKCallback() {
     Nan::HandleScope scope;
