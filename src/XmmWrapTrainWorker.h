@@ -62,9 +62,9 @@ public:
 
     // this should be safe to do this, as HandleOKCallback
     // is called in the event loop
-    // std::cout << "before assignment" << std::endl;
-    original = tool;
-    // std::cout << "after assignment" << std::endl;
+
+    // original = tool;
+
     // call reset so the model is ready to filter
     original.reset();
     callback->Call(2, results);
