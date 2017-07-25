@@ -66,3 +66,13 @@ test('phrases', (t) => {
 	t.end();
 });
 
+test('model types', (t) => {
+	const myXmm = new xmm('gmm');
+
+	const changeModelTypeMsg = 'getModelType should return the new modelType changed by setModelType';
+
+	myXmm.setModelType('hhmm');
+	t.equal(myXmm.getModelType(), 'hhmm', changeModelTypeMsg);
+	t.end();
+});
+

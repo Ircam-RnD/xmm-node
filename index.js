@@ -30,21 +30,21 @@ XmmNative = require('./build/Release/xmm');
 
 // wrap the native class for more flexibility :
 function Xmm(modelType, options) {
-  var initialize = (function(modelType) {
-    this._xmm = new XmmNative(modelType);
-
-    // expose all the native methods in the wrapper :
-    for (var method in this._xmm) {
-      if (!Xmm.prototype[method]) {
-        this[method] = this._xmm[method].bind(this._xmm);
-      }
-    }
-  }).bind(this);
-
-  initialize(modelType);
+  this._initialize(modelType);
 
   if (options) {
     this.setConfig(options);
+  }
+}
+
+Xmm.prototype._initialize = function(modelType) {
+  this._xmm = new XmmNative(modelType);
+
+  // expose all the native methods in the wrapper :
+  for (var method in this._xmm) {
+    if (!Xmm.prototype[method]) {
+      this[method] = this._xmm[method].bind(this._xmm);
+    }
   }
 }
 
@@ -110,15 +110,7 @@ Xmm.prototype.setConfig = function(config) {
 
 Xmm.prototype.setModelType = function(modelType) {
   var options = this._xmm.getConfig();
-  initialize(modelType);
-  // this._xmm = new XmmNative(modelType);
-
-  // // expose all the native methods in the wrapper :
-  // for (var method in this._xmm) {
-  //   if (!Xmm.prototype[method]) {
-  //     this[method] = this._xmm[method].bind(this._xmm);
-  //   }
-  // }
+  this._initialize(modelType);
 
   this.setConfig(options);
 }
