@@ -69,7 +69,7 @@ void XmmWrap::Init() {
 void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   XmmWrap* obj = new XmmWrap();
 
-  std::string modelType;
+  std::string modelType = "";
 
   bool h = true;
   std::size_t s = 1;
@@ -83,18 +83,17 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   if (info.Length() > 0 && info[0]->IsString()) {
     v8::String::Utf8Value val(info[0]->ToString());
     modelType = std::string(*val);
-
-    if (modelType != "gmm" &&
-        modelType != "hhmm") {
-      modelType = "gmm";
-    }
-
-    // for some (undocumented) reason it seems that the New function
-    // only takes into account the first arg (info.Length() is always 1)
-    // so we wrap the class into some js code to provide a more elaborate
-    // constructor (see index.js)
   }
 
+  if (modelType != "gmm" &&
+      modelType != "hhmm") {
+    modelType = "gmm";
+  }
+
+  // for some (undocumented) reason it seems that the New function
+  // only takes into account the first arg (info.Length() is always 1)
+  // so we wrap the class into some js code to provide a more elaborate
+  // constructor (see index.js)
 
   //=========================== CREATE MODEL OBJECT ==========================//
 

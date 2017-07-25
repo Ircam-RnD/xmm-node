@@ -1,5 +1,5 @@
 /*
- * really dirty testing script
+ * really dirty testing script for test drafts
  *
  */
 

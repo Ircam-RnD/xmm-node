@@ -1,7 +1,15 @@
 import xmm from '../index';
 import test from 'tape';
 
-test('basic', (t) => {
+test('instantiation without arguments', (t) => {
+	const noArgsMsg = 'instantiation without arguments should create a gmm';
+
+	const gmm = new xmm();
+	t.equal(gmm.getModelType(), 'gmm', noArgsMsg);
+	t.end();
+});
+
+test('model configuration consistency', (t) => {
 	let modelConfig = {
 		gaussians: 3,
 		covarianceMode: 'full',
@@ -12,13 +20,13 @@ test('basic', (t) => {
 	const gmm = new xmm('gmm', modelConfig);
 
 	const modelConfigMsg
-		= 'model configuration should be the same as the one it\'s been instantiated with';
+		= 'returned model configuration should be the same as the one it was instantiated with';
 
 	t.deepEqual(gmm.getConfig(), modelConfig, modelConfigMsg);
 	t.end();
 });
 
-test('empty', (t) => {
+test('untrained filtering', (t) => {
 	const hhmm = new xmm('hmm', {
 		gaussians: 3,
 		relative_regularization: 0.1,
@@ -69,7 +77,7 @@ test('phrases', (t) => {
 test('model types', (t) => {
 	const myXmm = new xmm('gmm');
 
-	const changeModelTypeMsg = 'getModelType should return the new modelType changed by setModelType';
+	const changeModelTypeMsg = 'getModelType should return the new modelType set by setModelType';
 
 	myXmm.setModelType('hhmm');
 	t.equal(myXmm.getModelType(), 'hhmm', changeModelTypeMsg);
