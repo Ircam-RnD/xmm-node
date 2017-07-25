@@ -72,17 +72,29 @@ public:
   void train(Nan::Callback *callback, xmm::TrainingSet *set) {
     // callbacks.push_back(callback); // no need for callbacks
 
-    // workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
-    // Nan::AsyncQueueWorker(workers[workers.size() - 1]);
-    Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
+    for (int i = workers.size() - 1; i >= 0; i--) {
+      if (workers[i]->Done()) {
+        // No need to delete the pointer as it's probably freed after call to HandleOKCallback
+        // We can deduce this from the fact that we're not supposed to call delete
+        // if (workers[i] != nullptr) delete workers[i];
+        workers.erase(workers.begin() + i);
+      }
+    }
+
+    // Already tried to replace new by make_shared an declare workers as vector of shared_ptrs
+    // But this crashes, probably because of some automatic call to delete
+    workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
+    Nan::AsyncQueueWorker(workers[workers.size() - 1]);
+
+    // Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
   }
 
   void cancelTraining() {
-    // for (auto worker : workers) {
-    //   worker->Stop();
-    // }
+    for (auto worker : workers) {
+      worker->Stop();
+    }
 
-    // workers.clear();
+    workers.clear();
 
     // callbacks.clear(); // no need for callbacks
   }

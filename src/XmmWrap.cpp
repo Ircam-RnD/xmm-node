@@ -214,11 +214,14 @@ void XmmWrap::getPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   if (pindex < obj->set_->size() + obj->freeList.size()) {
     std::shared_ptr<xmm::Phrase> xp = obj->set_->getPhrase(pindex);
     //Json::Value jp = xp->toJson();
-    args.GetReturnValue().Set(makeObjectPhrase(*xp));
+    if (xp != nullptr) {
+      args.GetReturnValue().Set(makeObjectPhrase(*xp));
+      return;
+    }
     //args.GetReturnValue().Set(valueToObject(jp));
-  } else {
-    args.GetReturnValue().Set(Nan::New(false)); // if phrase doesn't exist return false
   }
+
+  args.GetReturnValue().Set(Nan::Null()); // if phrase doesn't exist return false
 }
 
 void XmmWrap::removePhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
@@ -234,16 +237,20 @@ void XmmWrap::removePhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 
   for (int i=0; i<obj->freeList.size(); i++) {
     if (pindex == obj->freeList[i]) {
-      args.GetReturnValue().Set(Nan::New(false));
+      args.GetReturnValue().Set(Nan::False());
       return;
     }
   }
 
   obj->freeList.push_back(pindex);
   std::sort(obj->freeList.begin(), obj->freeList.end(), std::greater<int>());
-  obj->set_->removePhrase(pindex);
 
-  args.GetReturnValue().Set(Nan::New(true));
+  if (obj->set_->getPhrase(pindex) != nullptr) {
+    obj->set_->removePhrase(pindex);
+    args.GetReturnValue().Set(Nan::True());
+  } else {
+    args.GetReturnValue().Set(Nan::False());
+  }
 }
 
 void XmmWrap::removePhrasesOfLabel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
@@ -257,9 +264,12 @@ void XmmWrap::removePhrasesOfLabel(const Nan::FunctionCallbackInfo<v8::Value> & 
     std::string label = std::string(*val);
 
     xmm::TrainingSet *s = obj->set_->getPhrasesOfClass(label);
-    for (auto const &phrase : *s) {
-      obj->freeList.push_back(phrase.first);
+    if (s != nullptr) {
+      for (auto const &phrase : *s) {
+        obj->freeList.push_back(phrase.first);
+      }
     }
+
     std::sort(obj->freeList.begin(), obj->freeList.end(), std::greater<int>());
     obj->set_->removePhrasesOfClass(label);
   }
@@ -369,7 +379,7 @@ void XmmWrap::train(const Nan::FunctionCallbackInfo<v8::Value> & args) {
 
 void XmmWrap::cancelTraining(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-  obj->model_->cancelTraining();  
+  obj->model_->cancelTraining();
 }
 
 void XmmWrap::getModel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
