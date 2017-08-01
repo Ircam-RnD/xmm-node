@@ -8,25 +8,24 @@
 
 /** @module xmm */
 
-// var Xmm = null;
 var XmmNative = null;
 
+//  NO NEED TO DO THIS ANYMORE THANKS TO NODE-PRE-GYP :
 
 /** @todo pre-build binaries for windows */
 
 // Load the precompiled binary for windows.
 
-// if(process.platform == "win32" && process.arch == "x64") {
-//  xmm = require('./bin/winx64/xmm');  
+// if (process.platform == "win32" && process.arch == "x64") {
+//  XmmNative = require('./bin/winx64/xmm');  
 // } else if(process.platform == "win32" && process.arch == "ia32") {
-//  xmm = require('./bin/winx86/xmm');  
+//  XmmNative = require('./bin/winx86/xmm');  
 // } else {
 
 // Load the new built binary for other platforms.
-// Xmm = require('./build/Release/xmm');
 XmmNative = require('./build/Release/xmm');
 
-//}
+// }
 
 // wrap the native class for more flexibility :
 function Xmm(modelType, options) {
