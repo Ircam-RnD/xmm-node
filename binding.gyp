@@ -37,8 +37,8 @@
 				#"xmm/src/xmm.h"
 			],
 
-			# "cflags" : ["-std=c++11", "-fexceptions"],
-			"cflags": ["-Wall", "-std=c++11", "-fexceptions"],
+			"cflags" : ["-std=c++11", "-fexceptions"],
+			# "cflags": ["-Wall", "-std=c++11", "-fexceptions"],
 			"cflags_cc" : ["-std=c++11", "-fexceptions"],
 			#"cflags_cc" : ["-std=c++11", "-fexceptions", "-Wall"],
 			#"cflags!" : [ '-fno-exceptions' ],
