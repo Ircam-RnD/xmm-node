@@ -23,7 +23,7 @@ var XmmNative = null;
 // } else {
 
 // Load the new built binary for other platforms.
-XmmNative = require('./build/Release/xmm');
+XmmNative = require('./build/Release/xmm-node');
 
 // }
 
