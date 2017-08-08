@@ -22,8 +22,13 @@ var XmmNative = null;
 //  XmmNative = require('./bin/winx86/xmm');  
 // } else {
 
+var binary = require('node-pre-gyp');
+var path = require('path');
+var bindingPath = binary.find(path.resolve(path.join(__dirname, './package.json')));
+
 // Load the new built binary for other platforms.
-XmmNative = require('./build/Release/xmm-node');
+// XmmNative = require('./build/Release/xmm-node');
+XmmNative = require(bindingPath);
 
 // }
 

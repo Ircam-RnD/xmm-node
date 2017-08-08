@@ -39,7 +39,8 @@
 
 			#"cflags": ["-Wall", "-std=c++11"],
 			"cflags" : ["-std=c++11", "-fexceptions"],
-			"cflags_cc" : ["-std=c++11", "-fexceptions"],
+			#"cflags_cc" : ["-std=c++11", "-fexceptions"],
+			"cflags_cc" : ["-std=c++11", "-fexceptions", "-Wall"],
 			#"cflags!" : [ '-fno-exceptions' ],
 			#"cflags_cc!" : [ '-fno-exceptions' ],
 			"conditions" : [
