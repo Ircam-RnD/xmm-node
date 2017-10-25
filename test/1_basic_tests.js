@@ -14,7 +14,8 @@ test('model configuration consistency', (t) => {
 		gaussians: 3,
 		covarianceMode: 'full',
 		relativeRegularization: 0.1,
-		absoluteRegularization: 0.1
+		absoluteRegularization: 0.1,
+		// states: 1,
 	};
 
 	const gmm = new xmm('gmm', modelConfig);

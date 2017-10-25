@@ -6,3 +6,5 @@ node_modules
 build
 
 npm-debug.log
+log.txt
+package-lock.json

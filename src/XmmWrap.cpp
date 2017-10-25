@@ -169,7 +169,7 @@ void XmmWrap::addPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
     obj->set_->addPhrase(index, xp);
     args.GetReturnValue().Set(Nan::New(index));
   } else {
-    //args.GetReturnValue().Set(Nan::New(false));   
+    //args.GetReturnValue().Set(Nan::New(false));
   }
 }
 
@@ -190,7 +190,7 @@ void XmmWrap::getPhrasesOfLabel(const Nan::FunctionCallbackInfo<v8::Value> & arg
       js = s->toJson();
     }
 
-    args.GetReturnValue().Set(valueToObject(js));   
+    args.GetReturnValue().Set(valueToObject(js));
   }
 }
 
@@ -415,7 +415,7 @@ void XmmWrap::setModel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   v8::Local<v8::Object> inputModel
     = v8::Local<v8::Object>::Cast(maybeInputModel.ToLocalChecked());
   if (!inputModel->IsObject()) return;
-  
+
   obj->model_->setModel(objectToValue(inputModel));
 }
 
@@ -473,7 +473,7 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   std::string cm = (covariance_mode == xmm::GaussianDistribution::CovarianceMode::Full)
                  ? "full"
                  : ((covariance_mode == xmm::GaussianDistribution::CovarianceMode::Diagonal)
-                    ? "diagonal" 
+                    ? "diagonal"
                     : "");
 
   std::string tm = (transition_mode == xmm::HMM::TransitionMode::Ergodic)

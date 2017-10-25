@@ -16,7 +16,9 @@
     "type": "git",
     "url": "git+https://github.com/Ircam-RnD/xmm-node.git"
   },
-  "bundledDependencies":["node-pre-gyp"],
+  "bundledDependencies": [
+    "node-pre-gyp"
+  ],
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build > log.txt 2>&1",
     "docs": "jsdoc2md -t docs/README.hbs docs/documentation.js > README.md",
