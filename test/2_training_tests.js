@@ -14,18 +14,18 @@ test('training', (t) => {
   });
 
   var p = {
-    bimodal: false,
-    dimension: 2,
-    dimension_input: 0,
+    bimodal: true,
+    dimension: 3,
+    dimension_input: 3,
     column_names: [ "" ],
-    data: [
-      1.1, 1.2,
-      2.3, 2.1,
-      3.7, 3.2
-    ],
-    // data_input: [1, 2],
-    // data_output: [1],
-    length: 3,
+    // data: [
+    //   1.1, 1.2,
+    //   2.3, 2.1,
+    //   3.7, 3.2
+    // ],
+    data_input: [1, 2, 3],
+    data_output: [1, 2, 3],
+    length: 1,
     label: 'aLabel'
   }
 
@@ -46,8 +46,8 @@ test('training', (t) => {
   const trainMsgThree = 'train should return a trained model';
 
   for (let i = 0; i < 500; i++) {
-    // setMaker.addPhrase(p);
-    hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
+    setMaker.addPhrase(p);
+    // hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
   }
   // hhmm.setTrainingSet(setMaker.getTrainingSet());
   // hhmm.clearTrainingSet();
