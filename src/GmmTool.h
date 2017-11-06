@@ -9,8 +9,8 @@
 #include <iostream>
 #include "XmmTool.h"
 
-class GmmTool : public XmmTool<xmm::GMM> {
-    
+class GmmTool : public XmmTool<xmm::GMM, xmm::GMM> {
+
 public:
   GmmTool() {};
   ~GmmTool() {};

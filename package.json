@@ -1,6 +1,6 @@
 {
   "name": "xmm-node",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "author": "Joseph Larralde",
   "license": "GPL-3.0",
   "description": "node wrapper for the XMM library",
@@ -42,7 +42,7 @@
     "jsdoc-template": "ircam-jstools/jsdoc-template",
     "jsdoc-to-markdown": "^1.3.7",
     "tape": "^4.6.0",
-    "xmm-client": "ircam-rnd/xmm-client"
+    "xmm-client": "github:ircam-rnd/xmm-client#v0.3.3"
   },
   "babel": {
     "presets": [

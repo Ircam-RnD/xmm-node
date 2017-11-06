@@ -15,6 +15,7 @@ test('model configuration consistency', (t) => {
 		covarianceMode: 'full',
 		relativeRegularization: 0.1,
 		absoluteRegularization: 0.1,
+		multiClassRegressionEstimator: 'mixture',
 		// states: 1,
 	};
 

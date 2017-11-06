@@ -26,6 +26,8 @@ public:
   virtual void setAbsoluteRegularization(double absReg) = 0;
   virtual xmm::GaussianDistribution::CovarianceMode getCovarianceMode() = 0;
   virtual void setCovarianceMode(xmm::GaussianDistribution::CovarianceMode cm) = 0;
+  virtual xmm::MultiClassRegressionEstimator getMultiClassRegressionEstimator() = 0;
+  virtual void setMultiClassRegressionEstimator(xmm::MultiClassRegressionEstimator mre) = 0;
 };
 
 // the specializable template :
@@ -36,7 +38,7 @@ class XmmTool : public XmmToolBase {
 private:
   std::vector<XmmWrapTrainWorker<Model> *> workers;
   // std::vector<Nan::Callback *> callbacks;
-  
+
 public:
   Model model;
 
@@ -49,7 +51,7 @@ public:
   }
 
   ~XmmTool() {}
-  
+
   void setBimodal(bool multimodality) {
     // Model tmp = Model(model);
     xmm::Configuration<ModelType> config = model.configuration;
@@ -101,7 +103,7 @@ public:
 
   v8::Local<v8::Object> filter(std::vector<float> observation) {
     v8::Local<v8::Object> outputResults = Nan::New<v8::Object>();
-  
+
     bool bimodal = model.shared_parameters->bimodal.get();
     unsigned int nmodels = model.size();
     unsigned int dimension = model.shared_parameters->dimension.get();
@@ -158,7 +160,7 @@ public:
 
     if (bimodal) {
       v8::Local<v8::Array> output_values = Nan::New<v8::Array>(dimension_output);
-      for (unsigned int i = 0; i < dimension_output; ++i) { 
+      for (unsigned int i = 0; i < dimension_output; ++i) {
         Nan::Set(output_values, i, Nan::New(res.output_values[i]));
       }
       outputResults->Set(
@@ -168,7 +170,7 @@ public:
 
       unsigned int dim_out_cov = res.output_covariance.size();
       v8::Local<v8::Array> output_covariance = Nan::New<v8::Array>(dim_out_cov);
-      for (unsigned int i = 0; i < dim_out_cov; ++i) { 
+      for (unsigned int i = 0; i < dim_out_cov; ++i) {
         Nan::Set(output_covariance, i, Nan::New(res.output_covariance[i]));
       }
       outputResults->Set(
@@ -215,6 +217,15 @@ public:
 
   void setCovarianceMode(xmm::GaussianDistribution::CovarianceMode cm) {
     model.configuration.covariance_mode.set(cm);
+    model.configuration.changed = true;
+  }
+
+  xmm::MultiClassRegressionEstimator getMultiClassRegressionEstimator() {
+    return model.configuration.multiClass_regression_estimator;
+  }
+
+  void setMultiClassRegressionEstimator(xmm::MultiClassRegressionEstimator mre) {
+    model.configuration.multiClass_regression_estimator = mre;
     model.configuration.changed = true;
   }
 

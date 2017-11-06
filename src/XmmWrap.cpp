@@ -456,6 +456,7 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   double relative_regularization = obj->model_->getRelativeRegularization();
   double absolute_regularization = obj->model_->getAbsoluteRegularization();
   xmm::GaussianDistribution::CovarianceMode covariance_mode = obj->model_->getCovarianceMode();
+  xmm::MultiClassRegressionEstimator multiclass_regression_estimator = obj->model_->getMultiClassRegressionEstimator();
 
   // HierarchicalHMM-specific :
   bool hierarchical = true;
@@ -490,6 +491,12 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
                        ? "likeliest"
                        : ""));
 
+  std::string mre = (multiclass_regression_estimator == xmm::MultiClassRegressionEstimator::Likeliest)
+                  ? "likeliest"
+                  : ((multiclass_regression_estimator == xmm::MultiClassRegressionEstimator::Mixture)
+                    ? "mixture"
+                    : "");
+
   std::string modelType;
   switch (obj->modelType_) {
     case XmmGmmE:
@@ -522,6 +529,8 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
       args.GetReturnValue().Set(Nan::New<v8::Number>(absolute_regularization));
     } else if (item == "covariance_mode") {
       args.GetReturnValue().Set(Nan::New<v8::String>(cm).ToLocalChecked());
+    } else if (item == "multiclass_regression_etimator") {
+      args.GetReturnValue().Set(Nan::New<v8::String>(mre).ToLocalChecked());
     }
 
     if (obj->modelType_ == XmmHhmmE) {
@@ -547,6 +556,8 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
               Nan::New<v8::Number>(absolute_regularization));
     outputConfig->Set(Nan::New<v8::String>("covariance_mode").ToLocalChecked(),
               Nan::New<v8::String>(cm).ToLocalChecked());
+    outputConfig->Set(Nan::New<v8::String>("multiClass_regression_estimator").ToLocalChecked(),
+              Nan::New<v8::String>(mre).ToLocalChecked());
 
     if (obj->modelType_ == XmmHhmmE) {
       outputConfig->Set(Nan::New<v8::String>("hierarchical").ToLocalChecked(),
@@ -577,6 +588,7 @@ void XmmWrap::setConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
     double rr = obj->model_->getRelativeRegularization();
     double ar = obj->model_->getAbsoluteRegularization();
     xmm::GaussianDistribution::CovarianceMode cm = obj->model_->getCovarianceMode();
+    xmm::MultiClassRegressionEstimator mre = obj->model_->getMultiClassRegressionEstimator();
 
     // HierarchicalHMM-specific :
     bool h = true;
@@ -659,12 +671,25 @@ void XmmWrap::setConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
       }
     }
 
+    v8::Local<v8::Value> multiclass_regression_estimator
+      = inputConfig->Get(Nan::New<v8::String>("multiClass_regression_estimator").ToLocalChecked());
+    if (multiclass_regression_estimator->IsString()) {
+      v8::String::Utf8Value val(multiclass_regression_estimator->ToString());
+      std::string smre = std::string(*val);
+      if (smre == "likeliest") {
+        mre = xmm::MultiClassRegressionEstimator::Likeliest;
+      } else if (smre == "mixture") {
+        mre = xmm::MultiClassRegressionEstimator::Mixture;
+      }
+    }
+
     // =============== SET NEW VALUES ============== //
 
     obj->model_->setGaussians(g);
     obj->model_->setRelativeRegularization(rr);
     obj->model_->setAbsoluteRegularization(ar);
     obj->model_->setCovarianceMode(cm);
+    obj->model_->setMultiClassRegressionEstimator(mre);
 
     if (obj->modelType_ == XmmHhmmE) {
       setHierarchical(obj, h);

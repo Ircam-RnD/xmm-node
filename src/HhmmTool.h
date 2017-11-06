@@ -9,12 +9,12 @@
 #include <iostream>
 #include "XmmTool.h"
 
-class HhmmTool : public XmmTool<xmm::HierarchicalHMM> {
-    
+class HhmmTool : public XmmTool<xmm::HierarchicalHMM, xmm::HMM> {
+
 public:
   HhmmTool() {};
   ~HhmmTool() {};
-    
+
   void setNbStates(std::size_t nbStates) {
     if(nbStates > 0) {
       model.configuration.states.set(nbStates, 1);

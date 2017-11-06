@@ -1,5 +1,5 @@
 import xmm from '../index';
-import { SetMaker } from 'xmm-client';
+import { GmmDecoder, SetMaker } from 'xmm-client';
 import test from 'tape';
 
 test('training', (t) => {
@@ -8,14 +8,17 @@ test('training', (t) => {
 
   const setMaker = new SetMaker();
 
-  const hhmm = new xmm('hhmm', {
-    hierarchical: false,
-    relativeRegularization: 0.1
+  const gmm = new xmm('gmm', {
+    // hierarchical: false,
+    relativeRegularization: 0.1,
+    multiClassRegressionEstimator: 'mixture',
   });
+
+  const gmmClient = new GmmDecoder();
 
   var p = {
     bimodal: true,
-    dimension: 3,
+    dimension: 6,
     dimension_input: 3,
     column_names: [ "" ],
     // data: [
@@ -24,38 +27,56 @@ test('training', (t) => {
     //   3.7, 3.2
     // ],
     data_input: [1, 2, 3],
-    data_output: [1, 2, 3],
+    data_output: [0, 0, 0],
     length: 1,
     label: 'aLabel'
-  }
+  };
 
   const trainMsgOne = 'train should return a null model when training is cancelled';
 
-  hhmm.train((err, res) => {
+  gmm.train((err, res) => {
     t.equal(res, null, trainMsgOne);
   });
 
-  hhmm.cancelTraining();
+  gmm.cancelTraining();
 
   const trainMsgTwo = 'train should return an empty model when trained with empty set';
 
-  hhmm.train((err, res) => {
+  gmm.train((err, res) => {
     t.deepEqual(res.models, [], trainMsgTwo);
   });
 
   const trainMsgThree = 'train should return a trained model';
 
-  for (let i = 0; i < 500; i++) {
-    setMaker.addPhrase(p);
+  for (let i = 0; i < 5; i++) {
+    setMaker.addPhrase(JSON.parse(JSON.stringify(p)));
     // hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
   }
-  // hhmm.setTrainingSet(setMaker.getTrainingSet());
+
+  p.data_input = [3, 2, 1];
+  p.data_output = [10, 10, 10];
+  p.label = 'anotherLabel';
+
+  for (let i = 0; i < 5; i++) {
+    setMaker.addPhrase(JSON.parse(JSON.stringify(p)));
+    // hhmm.addPhrase(JSON.parse(JSON.stringify(p)));
+  }
+
+  const set = setMaker.getTrainingSet();
+  gmm.setTrainingSet(set);
+  console.log(set);
   // hhmm.clearTrainingSet();
   // hhmm.addTrainingSet(setMaker.getTrainingSet());
 
-  hhmm.train((err, res) => {
+  gmm.train((err, res) => {
+    console.log(JSON.stringify(res, null, 2));
+    gmmClient.setModel(res);
+
     t.notEqual(res, null, trainMsgThree);
     t.equal(res.models.length > 0, true, trainMsgThree);
+
+    console.log(gmmClient.filter([3, 2, 3]));
+    console.log(gmmClient.filter([3, 2, 1]));
 
     // const setModelConfigMsg = 'config should not change when queried after setModel';
     // let config = hhmm.getConfig();

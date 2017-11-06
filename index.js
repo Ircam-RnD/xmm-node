@@ -1,8 +1,8 @@
 /*
  * This library is developed by the ISMM (http://ismm.ircam.fr/) team at IRCAM,
  * within the context of the RAPID-MIX (http://rapidmix.goldsmithsdigital.com/)
- * project, funded by the European Union’s Horizon 2020 research and innovation programme.  
- * Original XMM code authored by Jules Françoise, ported to Node.js by Joseph Larralde.  
+ * project, funded by the European Union’s Horizon 2020 research and innovation programme.
+ * Original XMM code authored by Jules Françoise, ported to Node.js by Joseph Larralde.
  * See https://github.com/Ircam-RnD/xmm for detailed XMM credits.
  */
 
@@ -17,9 +17,9 @@ var XmmNative = null;
 // Load the precompiled binary for windows.
 
 // if (process.platform == "win32" && process.arch == "x64") {
-//  XmmNative = require('./bin/winx64/xmm');  
+//  XmmNative = require('./bin/winx64/xmm');
 // } else if(process.platform == "win32" && process.arch == "ia32") {
-//  XmmNative = require('./bin/winx86/xmm');  
+//  XmmNative = require('./bin/winx86/xmm');
 // } else {
 
 var binary = require('node-pre-gyp');
@@ -67,6 +67,8 @@ function translateFromXmmConfigProp(prop) {
     return 'transitionMode';
   } else if (prop === 'regression_estimator') {
     return 'regressionEstimator';
+  } else if (prop === 'multiClass_regression_estimator') {
+    return 'multiClassRegressionEstimator';
   } else {
     return prop;
   }
@@ -83,6 +85,8 @@ function translateToXmmConfigProp(prop) {
     return 'transition_mode';
   } else if (prop === 'regressionEstimator') {
     return 'regression_estimator';
+  } else if (prop === 'multiClassRegressionEstimator') {
+    return 'multiClass_regression_estimator';
   } else {
     return prop;
   }
@@ -106,7 +110,7 @@ Xmm.prototype.getConfig = function(prop) {
 Xmm.prototype.setConfig = function(config) {
   var inConfig = {};
   for (var prop in config) {
-    var translatedProp = translateToXmmConfigProp(prop);    
+    var translatedProp = translateToXmmConfigProp(prop);
     inConfig[translatedProp] = config[prop];
   }
   this._xmm.setConfig(inConfig);
