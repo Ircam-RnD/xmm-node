@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build > log.txt 2>&1",
-    "docs": "jsdoc2md -t docs/README.hbs docs/documentation.js > README.md",
+    "doc": "jsdoc2md -t docs/README.hbs docs/documentation.js > README.md",
     "test": "babel-tape-runner \"test/*_tests.js\""
   },
   "dependencies": {

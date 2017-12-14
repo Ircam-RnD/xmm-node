@@ -32,7 +32,8 @@
  * @memberof xmm
  * @instance
  * @param {('gaussians|relativeRegularization|absoluteRegularization|
- *	covarianceMode|hierarchical|states|transitionMode|regressionEstimator|multiClassRegressionEstimator')}
+ *	covarianceMode|hierarchical|states|transitionMode|
+ *  regressionEstimator|multiClassRegressionEstimator')}
  * [configParam] - The name of a configuration parameter.
  * @returns {(xmmModelConfig|Number|String|Boolean)} Depends on the parameter.
  * <br /><br />If called without any argument, returns :
@@ -54,6 +55,9 @@
  * <ul><code>'regressionEstimator'</code> : if the model type is not 'hhmm',
  * <code>undefined</code>, otherwise the actual regression estimator used with hmms
  * ('full', 'windowed' or 'likeliest')</ul>
+ * <ul><code>'multiClassRegressionEstimator'</code> : how to compute the regression :
+ * based on the likeliest class, or based on the whole set of classes,
+ * </ul>
  * </li>
  */
 

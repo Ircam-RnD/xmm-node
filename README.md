@@ -127,11 +127,14 @@ otherwise the actual transition mode value ('ergodic' or 'leftright')</ul>
 <ul><code>'regressionEstimator'</code> : if the model type is not 'hhmm',
 <code>undefined</code>, otherwise the actual regression estimator used with hmms
 ('full', 'windowed' or 'likeliest')</ul>
+<ul><code>'multiClassRegressionEstimator'</code> : how to compute the regression :
+based on the likeliest class, or based on the whole set of classes,
+</ul>
 </li>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [configParam] | <code>&#x27;gaussians\|relativeRegularization\|absoluteRegularization\| covarianceMode\|hierarchical\|states\|transitionMode\|regressionEstimator\|multiClassRegressionEstimator&#x27;</code> | The name of a configuration parameter. |
+| [configParam] | <code>&#x27;gaussians\|relativeRegularization\|absoluteRegularization\| covarianceMode\|hierarchical\|states\|transitionMode\| regressionEstimator\|multiClassRegressionEstimator&#x27;</code> | The name of a configuration parameter. |
 
 <a name="xmm+setConfig"></a>
 
