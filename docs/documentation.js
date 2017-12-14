@@ -12,6 +12,8 @@
  * sets the transition mode between the states of the individual hmm models.
  * @property {('full|windowed|likeliest')} [regressionEstimator='full'] - if <code>model</code> is 'hhmm',
  * the type of estimator used for regression with hmms.
+ * @property {('likeliest|mixture')} [multiClassRegressionEstimator='likeliest'] - how to compute the regression :
+ * based on the likeliest class, or based on the whole set of classes.
  */
 
 /**
@@ -30,7 +32,7 @@
  * @memberof xmm
  * @instance
  * @param {('gaussians|relativeRegularization|absoluteRegularization|
- *	covarianceMode|hierarchical|states|transitionMode|regressionEstimator')}
+ *	covarianceMode|hierarchical|states|transitionMode|regressionEstimator|multiClassRegressionEstimator')}
  * [configParam] - The name of a configuration parameter.
  * @returns {(xmmModelConfig|Number|String|Boolean)} Depends on the parameter.
  * <br /><br />If called without any argument, returns :
