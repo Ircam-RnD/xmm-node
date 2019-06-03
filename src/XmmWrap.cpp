@@ -126,7 +126,9 @@ v8::Local<v8::Object> XmmWrap::NewInstance(v8::Local<v8::Value> arg) {
   const unsigned int argc = 1;
   v8::Local<v8::Value> argv[argc] = { arg };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
-  v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
+  // v8::Local<v8::Object> instance = cons->NewInstance(argc, argv).ToLocalChecked();
+  // see : https://github.com/phusion/node-sha3/pull/33/commits/3da944ecef0d4732739f7f121b6238cac6bbcd33
+  v8::Local<v8::Object> instance = Nan::NewInstance(cons, argc, argv).ToLocalChecked();
 
   return scope.Escape(instance);
 }
