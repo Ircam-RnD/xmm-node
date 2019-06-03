@@ -42,7 +42,7 @@
     "jsdoc-template": "ircam-jstools/jsdoc-template",
     "jsdoc-to-markdown": "^1.3.7",
     "tape": "^4.6.0",
-    "xmm-client": "github:ircam-rnd/xmm-client#v0.3.3"
+    "xmm-client": "github:ircam-rnd/xmm-client#v0.3.4"
   },
   "babel": {
     "presets": [
