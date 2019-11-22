@@ -1,75 +1,50 @@
-#include <nan.h>
-//#include "XmmWrap.h"
+#include "XmmWrap.h"
 #include "XmmWrapUtils.h"
-//#include "XmmWrapTrainWorker.h"
-#include "JsonCppV8Converters.h"
+#include "JsonCppNapiConverters.h"
 
-//=================== CONSTRUCTOR / DESTRUCTOR / INIT / NEW ==================//
+Napi::FunctionReference XmmWrap::constructor;
 
-XmmWrap::XmmWrap() {
-  set_ = new xmm::TrainingSet();
-};
+Napi::Object
+XmmWrap::Init(Napi::Env env, Napi::Object exports) {
+  Napi::HandleScope scope(env);
 
-XmmWrap::~XmmWrap() {
-  delete set_;
-  if (modelType_ != XmmUndefinedModelE) {
-    delete model_;
-  }
-};
+  Napi::Function func = DefineClass(env, "xmm", {
+    InstanceMethod("addPhrase",             &XmmWrap::addPhrase),
+    InstanceMethod("getPhrase",             &XmmWrap::getPhrase),
+    InstanceMethod("getPhrasesOfLabel",     &XmmWrap::getPhrasesOfLabel),
+    InstanceMethod("removePhrase",          &XmmWrap::removePhrase),
+    InstanceMethod("removePhrasesOfLabel",  &XmmWrap::removePhrasesOfLabel),
+    InstanceMethod("getTrainingSetSize",    &XmmWrap::getTrainingSetSize),
+    InstanceMethod("getTrainingSetLabels",  &XmmWrap::getTrainingSetLabels),
+    InstanceMethod("getTrainingSet",        &XmmWrap::getTrainingSet),
+    InstanceMethod("setTrainingSet",        &XmmWrap::setTrainingSet),
+    InstanceMethod("addTrainingSet",        &XmmWrap::addTrainingSet),
+    InstanceMethod("clearTrainingSet",      &XmmWrap::clearTrainingSet),
 
-Nan::Persistent<v8::Function> XmmWrap::constructor;
+    InstanceMethod("train",                 &XmmWrap::train),
+    InstanceMethod("cancelTraining",        &XmmWrap::cancelTraining),
+    InstanceMethod("getModel",              &XmmWrap::getModel),
+    InstanceMethod("setModel",              &XmmWrap::setModel),
+    InstanceMethod("getModelType",          &XmmWrap::getModelType),
+    InstanceMethod("reset",                 &XmmWrap::reset),
+    InstanceMethod("filter",                &XmmWrap::filter),
 
-void XmmWrap::Init() {
-  Nan::HandleScope scope;
+    InstanceMethod("getConfig",             &XmmWrap::getConfig),
+    InstanceMethod("setConfig",             &XmmWrap::setConfig)
+  });
 
-  // Prepare constructor template
-  v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
-  tpl->SetClassName(Nan::New("xmm").ToLocalChecked());
-  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+  constructor = Napi::Persistent(func);
+  constructor.SuppressDestruct();
 
-  Nan::SetPrototypeMethod(tpl, "addPhrase",             addPhrase);
-  Nan::SetPrototypeMethod(tpl, "getPhrase",             getPhrase);
-  Nan::SetPrototypeMethod(tpl, "getPhrasesOfLabel",     getPhrasesOfLabel);
-  Nan::SetPrototypeMethod(tpl, "removePhrase",          removePhrase);
-  Nan::SetPrototypeMethod(tpl, "removePhrasesOfLabel",  removePhrasesOfLabel);
-  Nan::SetPrototypeMethod(tpl, "getTrainingSetSize",    getTrainingSetSize);
-  Nan::SetPrototypeMethod(tpl, "getTrainingSetLabels",  getTrainingSetLabels);
-  Nan::SetPrototypeMethod(tpl, "setTrainingSet",        setTrainingSet);
-  Nan::SetPrototypeMethod(tpl, "addTrainingSet",        addTrainingSet);
-  Nan::SetPrototypeMethod(tpl, "getTrainingSet",        getTrainingSet);
-  Nan::SetPrototypeMethod(tpl, "clearTrainingSet",      clearTrainingSet);
-  Nan::SetPrototypeMethod(tpl, "train",                 train);
-  Nan::SetPrototypeMethod(tpl, "cancelTraining",        cancelTraining);
-  Nan::SetPrototypeMethod(tpl, "getModel",              getModel);
-  Nan::SetPrototypeMethod(tpl, "setModel",              setModel);
-  Nan::SetPrototypeMethod(tpl, "getModelType",          getModelType);
-  Nan::SetPrototypeMethod(tpl, "filter",                filter);
-
-  // other way to write this with v8 :
-  // tpl->PrototypeTemplate()->Set(Nan::New("addPhrase").ToLocalChecked(),
-  //   Nan::New<v8::FunctionTemplate>(addPhrase)->GetFunction());
-
-  // Getters / setters :
-  // solution found here :
-  // http://stackoverflow.com/questions/33383493/how-do-i-update-my-function-to-use-the-new-v8-functiontemplates
-
-  // Nan::SetAccessor(
-  //  tpl->InstanceTemplate(),
-  //  Nan::New("config").ToLocalChecked(),
-  //  getConfig, setConfig
-  // );
-
-  // now replaced by regular methods :
-  Nan::SetPrototypeMethod(tpl, "getConfig", getConfig);
-  Nan::SetPrototypeMethod(tpl, "setConfig", setConfig);
-
-  constructor.Reset(tpl->GetFunction());
+  exports.Set("xmm", func);
+  return exports;
+  // return func;
 }
 
-void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  XmmWrap* obj = new XmmWrap();
-
-  std::string modelType = "";
+XmmWrap::XmmWrap(const Napi::CallbackInfo& info)
+    : Napi::ObjectWrap<XmmWrap>(info) {
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
 
   bool h = true;
   std::size_t s = 1;
@@ -80,9 +55,12 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   xmm::HMM::TransitionMode tm = xmm::HMM::TransitionMode::LeftRight;
   xmm::HMM::RegressionEstimator re = xmm::HMM::RegressionEstimator::Full; // use Windowed as a compromise between LR / ergodic ?
 
-  if (info.Length() > 0 && info[0]->IsString()) {
-    v8::String::Utf8Value val(info[0]->ToString());
-    modelType = std::string(*val);
+  std::string modelType = "";
+
+  if (info.Length() > 0 && info[0].IsString()) {
+    // v8::String::Utf8Value val(info[0]->ToString());
+    // modelType = std::string(*val);
+    modelType = std::string(info[0].As<Napi::String>());
   }
 
   if (modelType != "gmm" &&
@@ -90,276 +68,231 @@ void XmmWrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
     modelType = "gmm";
   }
 
-  // for some (undocumented) reason it seems that the New function
-  // only takes into account the first arg (info.Length() is always 1)
-  // so we wrap the class into some js code to provide a more elaborate
-  // constructor (see index.js)
-
-  //=========================== CREATE MODEL OBJECT ==========================//
-
   if (modelType == "gmm") {
-    obj->model_ = new XmmTool<xmm::GMM, xmm::GMM>();
-    obj->modelType_ = XmmGmmE;
+    model_ = new XmmTool<xmm::GMM, xmm::GMM>();
+    modelType_ = XmmGmmE;
   } else if (modelType == "hhmm") {
-    obj->model_ = new XmmTool<xmm::HierarchicalHMM, xmm::HMM>();
-    obj->modelType_ = XmmHhmmE;
-    setHierarchical(obj, h);
-    setStates(obj, s);
-    setTransitionMode(obj, tm);
-    setRegressionEstimator(obj, re);
+    model_ = new XmmTool<xmm::HierarchicalHMM, xmm::HMM>();
+    modelType_ = XmmHhmmE;
+    setHierarchical(this, h);
+    setStates(this, s);
+    setTransitionMode(this, tm);
+    setRegressionEstimator(this, re);
   } else { // never happens
-    obj->modelType_ = XmmUndefinedModelE;
+    modelType_ = XmmUndefinedModelE;
   }
 
-  obj->model_->setGaussians(g);
-  obj->model_->setRelativeRegularization(rr);
-  obj->model_->setAbsoluteRegularization(ar);
-  obj->model_->setCovarianceMode(cm);
+  model_->setGaussians(g);
+  model_->setRelativeRegularization(rr);
+  model_->setAbsoluteRegularization(ar);
+  model_->setCovarianceMode(cm);
 
-  obj->Wrap(info.This());
-  info.GetReturnValue().Set(info.This());
+  set_ = new xmm::TrainingSet();
 }
 
-v8::Local<v8::Object> XmmWrap::NewInstance(v8::Local<v8::Value> arg) {
-  Nan::EscapableHandleScope scope;
-
-  const unsigned int argc = 1;
-  v8::Local<v8::Value> argv[argc] = { arg };
-  v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
-  // v8::Local<v8::Object> instance = cons->NewInstance(argc, argv).ToLocalChecked();
-  // see : https://github.com/phusion/node-sha3/pull/33/commits/3da944ecef0d4732739f7f121b6238cac6bbcd33
-  v8::Local<v8::Object> instance = Nan::NewInstance(cons, argc, argv).ToLocalChecked();
-
-  return scope.Escape(instance);
+XmmWrap::~XmmWrap() {
+  delete set_;
+  if (modelType_ != XmmUndefinedModelE) {
+    delete model_;
+  }
 }
 
-//=============================== CLASS METHODS ==============================//
+Napi::Value
+XmmWrap::addPhrase(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsObject()) {
 
-void XmmWrap::addPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+    Napi::Object inputPhrase = info[0].As<Napi::Object>();
+    xmm::Phrase xp;
 
-  Nan::MaybeLocal<v8::Value> maybeInputPhrase = args[0];
-  v8::Local<v8::Object> inputPhrase
-    = v8::Local<v8::Object>::Cast(maybeInputPhrase.ToLocalChecked());
-  if (!inputPhrase->IsObject()) return;
-
-  xmm::Phrase xp;
-  if (makeXmmPhrase(inputPhrase, xp)) {
-    int index;
-    if (obj->freeList.size() == 0) {
-      index = obj->set_->size();
-    } else {
-      index = obj->freeList.back();
-      obj->freeList.pop_back();
-    }
-
-    if (obj->set_->size() == 0) {
-      delete obj->set_;
-      if (xp.bimodal()) {
-        obj->set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
-                                         xmm::Multimodality::Bimodal);
-        obj->set_->dimension_input.set(xp.dimension_input.get());
+    if (makeXmmPhrase(inputPhrase, xp)) {
+      int index;
+      if (freeList.size() == 0) {
+        index = set_->size();
       } else {
-        obj->set_ = new xmm::TrainingSet();
+        index = freeList.back();
+        freeList.pop_back();
       }
-      obj->set_->dimension.set(xp.dimension.get());
-      obj->set_->column_names.set(xp.column_names, true);
 
-      obj->model_->setBimodal(xp.bimodal());
+      if (set_->size() == 0) {
+        delete set_;
+        if (xp.bimodal()) {
+          set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
+                                      xmm::Multimodality::Bimodal);
+          set_->dimension_input.set(xp.dimension_input.get());
+        } else {
+          set_ = new xmm::TrainingSet();
+        }
+
+        set_->dimension.set(xp.dimension.get());
+        set_->column_names.set(xp.column_names, true);
+
+        model_->setBimodal(xp.bimodal());
+      }
+
+      set_->addPhrase(index, xp);
+      return Napi::Number::New(info.Env(), index);
+    }
+  }
+
+  return Napi::Number::New(info.Env(), -1);;
+}
+
+Napi::Value
+XmmWrap::getPhrase(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsNumber()) {
+    int index = info[0].As<Napi::Number>().Int32Value();
+
+    for (int i = 0; i < freeList.size(); i++) {
+      if (index == freeList[i]) return info.Env().Undefined();
     }
 
-    obj->set_->addPhrase(index, xp);
-    args.GetReturnValue().Set(Nan::New(index));
-  } else {
-    //args.GetReturnValue().Set(Nan::New(false));
+    if (index < set_->size() + freeList.size()) {
+      std::shared_ptr<xmm::Phrase> xp = set_->getPhrase(index);
+
+      if (xp != nullptr) {
+        return makeObjectPhrase(info.Env(), *xp); // Napi::Object::New(info.Env(), makeObjectPhrase(*xp));
+      }
+    }
+
+    return info.Env().Undefined();
   }
 }
 
-void XmmWrap::getPhrasesOfLabel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+Napi::Value
+XmmWrap::getPhrasesOfLabel(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsString()) {
+    std::string label = std::string(info[0].As<Napi::String>());
 
-  Nan::MaybeLocal<v8::Value> maybeLabel = args[0];
-  v8::Local<v8::Value> vlabel = maybeLabel.ToLocalChecked();
-
-  if (vlabel->IsString()) {
-    v8::String::Utf8Value val(vlabel->ToString());
-    std::string label = std::string(*val);
-
-    xmm::TrainingSet *s = obj->set_->getPhrasesOfClass(label);
+    xmm::TrainingSet *s = set_->getPhrasesOfClass(label);
     Json::Value js;
 
     if (s != nullptr) {
       js = s->toJson();
     }
 
-    args.GetReturnValue().Set(valueToObject(js));
+    return valueToObject(info.Env(), js);
   }
 }
 
-void XmmWrap::getPhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+Napi::Value
+XmmWrap::removePhrase(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsNumber()) {
+    int pindex = info[0].As<Napi::Number>().Int32Value();
 
-  // getIndex and return corresponding phrase as JS object
-  Nan::MaybeLocal<v8::Value> maybePIndex = args[0];
-  v8::Local<v8::Value> vpindex;
-  if (!maybePIndex.IsEmpty()) {
-    vpindex = maybePIndex.ToLocalChecked();
-  }
-  int pindex = (vpindex->IsNumber() ? vpindex->NumberValue() : -1);
-  //pindex = translateIndex(obj, pindex);
-
-  for (int i=0; i<obj->freeList.size(); i++) {
-    if (pindex == obj->freeList[i]) return;
-  }
-
-  if (pindex < obj->set_->size() + obj->freeList.size()) {
-    std::shared_ptr<xmm::Phrase> xp = obj->set_->getPhrase(pindex);
-    //Json::Value jp = xp->toJson();
-    if (xp != nullptr) {
-      args.GetReturnValue().Set(makeObjectPhrase(*xp));
-      return;
+    for (int i = 0; i < freeList.size(); i++) {
+      if (pindex == freeList[i]) {
+        return Napi::Boolean::New(info.Env(), false);
+      }
     }
-    //args.GetReturnValue().Set(valueToObject(jp));
-  }
 
-  args.GetReturnValue().Set(Nan::Null()); // if phrase doesn't exist return false
-}
+    freeList.push_back(pindex);
+    std::sort(freeList.begin(), freeList.end(), std::greater<int>());
 
-void XmmWrap::removePhrase(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-
-  // get index and return corresponding phrase as JS object
-  Nan::MaybeLocal<v8::Value> maybePIndex = args[0];
-  v8::Local<v8::Value> vpindex;
-  if (!maybePIndex.IsEmpty()) {
-    vpindex = maybePIndex.ToLocalChecked();
-  }
-  int pindex = (vpindex->IsNumber() ? vpindex->NumberValue() : -1);
-
-  for (int i=0; i<obj->freeList.size(); i++) {
-    if (pindex == obj->freeList[i]) {
-      args.GetReturnValue().Set(Nan::False());
-      return;
+    if (set_->getPhrase(pindex) != nullptr) {
+      set_->removePhrase(pindex);
+      return Napi::Boolean::New(info.Env(), true);
     }
   }
 
-  obj->freeList.push_back(pindex);
-  std::sort(obj->freeList.begin(), obj->freeList.end(), std::greater<int>());
-
-  if (obj->set_->getPhrase(pindex) != nullptr) {
-    obj->set_->removePhrase(pindex);
-    args.GetReturnValue().Set(Nan::True());
-  } else {
-    args.GetReturnValue().Set(Nan::False());
-  }
+  return Napi::Boolean::New(info.Env(), false);
 }
 
-void XmmWrap::removePhrasesOfLabel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+void
+XmmWrap::removePhrasesOfLabel(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsString()) {
+    std::string label = std::string(info[0].As<Napi::String>());
 
-  Nan::MaybeLocal<v8::Value> maybeLabel = args[0];
-  v8::Local<v8::Value> vlabel = maybeLabel.ToLocalChecked();
+    xmm::TrainingSet *s = set_->getPhrasesOfClass(label);
 
-  if (vlabel->IsString()) {
-    v8::String::Utf8Value val(vlabel->ToString());
-    std::string label = std::string(*val);
-
-    xmm::TrainingSet *s = obj->set_->getPhrasesOfClass(label);
     if (s != nullptr) {
       for (auto const &phrase : *s) {
-        obj->freeList.push_back(phrase.first);
+        freeList.push_back(phrase.first);
       }
     }
 
-    std::sort(obj->freeList.begin(), obj->freeList.end(), std::greater<int>());
-    obj->set_->removePhrasesOfClass(label);
+    std::sort(freeList.begin(), freeList.end(), std::greater<int>());
+    set_->removePhrasesOfClass(label);
   }
 }
 
-void XmmWrap::getTrainingSetSize(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-  args.GetReturnValue().Set(Nan::New(static_cast<int>(obj->set_->size())));
+Napi::Value
+XmmWrap::getTrainingSetSize(const Napi::CallbackInfo& info) {
+  return Napi::Number::New(info.Env(), static_cast<int>(set_->size()));
 }
 
-void XmmWrap::getTrainingSetLabels(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-  std::set<std::string> slabels = obj->set_->labels();
-
-  std::size_t nlabels = slabels.size();
-  v8::Local<v8::Array> labels = Nan::New<v8::Array>(nlabels);
+Napi::Value
+XmmWrap::getTrainingSetLabels(const Napi::CallbackInfo& info) {
+  std::set<std::string> slabels = set_->labels();
+  Napi::Array labels = Napi::Array::New(info.Env(), slabels.size());
   std::size_t i = 0;
+
   for (auto it : slabels) {
-    Nan::Set(labels, i, Nan::New<v8::String>(it).ToLocalChecked());
+    labels.Set(i, Napi::String::New(info.Env(), it));
     ++i;
   }
-  args.GetReturnValue().Set(labels);
+
+  return labels;
 }
 
-void XmmWrap::getTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-  Json::Value js = obj->set_->toJson();
-  args.GetReturnValue().Set(valueToObject(js));
+Napi::Value
+XmmWrap::getTrainingSet(const Napi::CallbackInfo& info) {
+  // Json::Value = set_->toJson()
+  return valueToObject(info.Env(), set_->toJson());
 }
 
-void XmmWrap::setTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-  Nan::MaybeLocal<v8::Value> maybeInputSet = args[0];
-  v8::Local<v8::Object> inputSet
-    = v8::Local<v8::Object>::Cast(maybeInputSet.ToLocalChecked());
-  if (!inputSet->IsObject()) return;
-
-  obj->set_->fromJson(objectToValue(inputSet));
-  obj->model_->setBimodal(obj->set_->bimodal());
-}
-
-void XmmWrap::addTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-
-  Nan::MaybeLocal<v8::Value> maybeInputSet = args[0];
-  v8::Local<v8::Object> inputSet
-    = v8::Local<v8::Object>::Cast(maybeInputSet.ToLocalChecked());
-  if (!inputSet->IsObject()) return;
-
-  xmm::TrainingSet xs(objectToValue(inputSet));
-  for (auto xp : xs) {
-    int index;
-    if (obj->freeList.size() == 0) {
-      index = obj->set_->size();
-    } else {
-      index = obj->freeList.back();
-      obj->freeList.pop_back();
-    }
-
-    if (obj->set_->size() == 0) {
-      delete obj->set_;
-      if (xp.second->bimodal()) {
-        obj->set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
-                                         xmm::Multimodality::Bimodal);
-        obj->set_->dimension_input.set(xp.second->dimension_input.get());
-      } else {
-        obj->set_ = new xmm::TrainingSet();
-      }
-      obj->set_->dimension.set(xp.second->dimension.get());
-      obj->set_->column_names.set(xp.second->column_names, true);
-
-      obj->model_->setBimodal(xp.second->bimodal());
-    }
-
-    obj->set_->addPhrase(index, xp.second);
+void
+XmmWrap::setTrainingSet(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsObject()) {
+    set_->fromJson(objectToValue(info[0].As<Napi::Object>())); // no json validation ????
+    model_->setBimodal(set_->bimodal());
   }
 }
 
-void XmmWrap::clearTrainingSet(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-  obj->set_->clear();
-  obj->freeList.clear();
+void
+XmmWrap::addTrainingSet(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsObject()) {
+    xmm::TrainingSet xs(objectToValue(info[0].As<Napi::Object>()));
+
+    for (auto xp : xs) {
+      int index;
+
+      if (freeList.size() == 0) {
+        index = set_->size();
+      } else {
+        index = freeList.back();
+        freeList.pop_back();
+      }
+
+      if (set_->size() == 0) {
+        delete set_;
+
+        if (xp.second->bimodal()) {
+          set_ = new xmm::TrainingSet(xmm::MemoryMode::OwnMemory,
+                                      xmm::Multimodality::Bimodal);
+          set_->dimension_input.set(xp.second->dimension_input.get());
+        } else {
+          set_ = new xmm::TrainingSet();
+        }
+
+        set_->dimension.set(xp.second->dimension.get());
+        set_->column_names.set(xp.second->column_names, true);
+        model_->setBimodal(xp.second->bimodal());
+      }
+
+      set_->addPhrase(index, xp.second);
+    }
+  }
 }
 
-//================================= TRAINING =================================//
-//========================== THIS IS A CALL (BACK) ===========================//
+void
+XmmWrap::clearTrainingSet(const Napi::CallbackInfo& info) {
+  set_->clear();
+  freeList.clear();
+}
 
-void XmmWrap::train(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+void
+XmmWrap::train(const Napi::CallbackInfo& info) {
+  // XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
 
   /*
   // ============= synchronous callback ============ //
@@ -373,92 +306,84 @@ void XmmWrap::train(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   Nan::MakeCallback(Nan::GetCurrentContext()->Global(), cb, argc, argv);
   //*/
 
-  Nan::Callback *callback = new Nan::Callback(args[0].As<v8::Function>());
-  obj->model_->train(callback, obj->set_);
-  // return;
+  // Nan::Callback *callback = new Nan::Callback(args[0].As<v8::Function>());
+  // obj->model_->train(callback, obj->set_);
+  Napi::Function callback = info[0].As<Napi::Function>();
+  model_->train(callback, set_);
 }
 
-void XmmWrap::cancelTraining(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-  obj->model_->cancelTraining();
+void
+XmmWrap::cancelTraining(const Napi::CallbackInfo& info) {
+  model_->cancelTraining();
 }
 
-void XmmWrap::getModel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-
-  Json::Value jm = obj->model_->getModel();
-  args.GetReturnValue().Set(valueToObject(jm));
+Napi::Value
+XmmWrap::getModel(const Napi::CallbackInfo& info) {
+  return valueToObject(info.Env(), model_->getModel());
 }
 
-void XmmWrap::getModelType(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+void       
+XmmWrap::setModel(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsObject()) {
+    model_->setModel(objectToValue(info[0].As<Napi::Object>()));
+  }
+}
 
+Napi::Value
+XmmWrap::getModelType(const Napi::CallbackInfo& info) {
   std::string stype = "unknown";
-  switch (obj->modelType_) {
+  switch (modelType_) {
     case XmmGmmE:
       stype = "gmm";
       break;
-
     case XmmHhmmE:
       stype = "hhmm";
       break;
-
     default:
       break;
   }
 
-  args.GetReturnValue().Set(Nan::New<v8::String>(stype).ToLocalChecked());
+  return Napi::String::New(info.Env(), stype);
 }
 
-void XmmWrap::setModel(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-
-  Nan::MaybeLocal<v8::Value> maybeInputModel = args[0];
-  v8::Local<v8::Object> inputModel
-    = v8::Local<v8::Object>::Cast(maybeInputModel.ToLocalChecked());
-  if (!inputModel->IsObject()) return;
-
-  obj->model_->setModel(objectToValue(inputModel));
+void       
+XmmWrap::reset(const Napi::CallbackInfo& info) {
+  model_->reset();
 }
 
-//================================ FILTERING =================================//
+Napi::Value
+XmmWrap::filter(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
 
-void XmmWrap::reset(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+  if (info.Length() > 0 && info[0].IsArray()) {
+    Napi::Array arr = info[0].As<Napi::Array>();
+    std::vector<float> observation;
 
-  obj->model_->reset();
-}
+    for (unsigned int i = 0; i < arr.Length(); i++) {
+      if (arr.Get(i).IsNumber()) {
+        observation.push_back(arr.Get(i).ToNumber().DoubleValue());
+      } else {
+        observation.push_back(Napi::Number::New(env, 0));
+      }
+    }
 
-void XmmWrap::filter(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
-
-  // args must be an array of size dimension / dimension_input
-  Nan::MaybeLocal<v8::Value> maybeInputObs = args[0];
-  v8::Local<v8::Array> inputObs
-    = v8::Local<v8::Array>::Cast(maybeInputObs.ToLocalChecked());
-  if (!inputObs->IsArray()) return;
-
-  std::vector<float> observation;
-  for (unsigned int i = 0; i < inputObs->Length(); ++i) {
-    observation.push_back(inputObs->Get(i)->NumberValue());
+    return valueToObject(env, model_->filter(observation));
   }
 
-  v8::Local<v8::Object> outputResults = obj->model_->filter(observation);
-
-  // then, output !
-  args.GetReturnValue().Set(outputResults);
+  return env.Null();
 }
 
 //============================= CONFIGURATION ================================//
 
-void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.Holder());
+Napi::Value
+XmmWrap::getConfig(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
 
-  std::size_t gaussians = obj->model_->getGaussians();
-  double relative_regularization = obj->model_->getRelativeRegularization();
-  double absolute_regularization = obj->model_->getAbsoluteRegularization();
-  xmm::GaussianDistribution::CovarianceMode covariance_mode = obj->model_->getCovarianceMode();
-  xmm::MultiClassRegressionEstimator multiclass_regression_estimator = obj->model_->getMultiClassRegressionEstimator();
+  std::size_t gaussians = model_->getGaussians();
+  double relative_regularization = model_->getRelativeRegularization();
+  double absolute_regularization = model_->getAbsoluteRegularization();
+  xmm::GaussianDistribution::CovarianceMode covariance_mode = model_->getCovarianceMode();
+  xmm::MultiClassRegressionEstimator multiclass_regression_estimator = model_->getMultiClassRegressionEstimator();
 
   // HierarchicalHMM-specific :
   bool hierarchical = true;
@@ -466,11 +391,11 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   xmm::HMM::TransitionMode transition_mode = xmm::HMM::TransitionMode::LeftRight;
   xmm::HMM::RegressionEstimator regression_estimator = xmm::HMM::RegressionEstimator::Full;
 
-  if (obj->modelType_ == XmmHhmmE) {
-    hierarchical = getHierarchical(obj);
-    states = getStates(obj);
-    transition_mode = getTransitionMode(obj);
-    regression_estimator = getRegressionEstimator(obj);
+  if (modelType_ == XmmHhmmE) {
+    hierarchical = getHierarchical(this);
+    states = getStates(this);
+    transition_mode = getTransitionMode(this);
+    regression_estimator = getRegressionEstimator(this);
   }
 
   std::string cm = (covariance_mode == xmm::GaussianDistribution::CovarianceMode::Full)
@@ -500,7 +425,7 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
                     : "");
 
   std::string modelType;
-  switch (obj->modelType_) {
+  switch (modelType_) {
     case XmmGmmE:
       modelType = "gmm";
       break;
@@ -514,69 +439,169 @@ void XmmWrap::getConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
       break;
   }
 
-  // generate return value according to arguments :
-  if (args.Length() > 0) {
-    Nan::MaybeLocal<v8::Value> maybeItem = args[0];
-    v8::Local<v8::Value> vitem = maybeItem.ToLocalChecked();
-    if (!vitem->IsString()) return;
+  if (info.Length() > 0 && info[0].IsString()) {
+    // Nan::MaybeLocal<v8::Value> maybeItem = args[0];
+    // v8::Local<v8::Value> vitem = maybeItem.ToLocalChecked();
+    // if (!vitem->IsString()) return;
 
-    v8::String::Utf8Value val(vitem->ToString());
-    std::string item = std::string(*val);
+    // v8::String::Utf8Value val(vitem->ToString());
+    // std::string item = std::string(*val);
+
+    std::string item = std::string(info[0].As<Napi::String>());
 
     if (item == "gaussians") {
-      args.GetReturnValue().Set(Nan::New<v8::Number>(gaussians));
+      return Napi::Number::New(env, gaussians);
+      // args.GetReturnValue().Set(Nan::New<v8::Number>(gaussians));
     } else if (item == "relative_regularization") {
-      args.GetReturnValue().Set(Nan::New<v8::Number>(relative_regularization));
+      return Napi::Number::New(env, relative_regularization);
+      // args.GetReturnValue().Set(Nan::New<v8::Number>(relative_regularization));
     } else if (item == "absolute_regularization") {
-      args.GetReturnValue().Set(Nan::New<v8::Number>(absolute_regularization));
+      return Napi::Number::New(env, absolute_regularization);
+      // args.GetReturnValue().Set(Nan::New<v8::Number>(absolute_regularization));
     } else if (item == "covariance_mode") {
-      args.GetReturnValue().Set(Nan::New<v8::String>(cm).ToLocalChecked());
+      return Napi::String::New(env, cm);
+      // args.GetReturnValue().Set(Nan::New<v8::String>(cm).ToLocalChecked());
     } else if (item == "multiclass_regression_etimator") {
-      args.GetReturnValue().Set(Nan::New<v8::String>(mre).ToLocalChecked());
+      return Napi::String::New(env, mre);
+      // args.GetReturnValue().Set(Nan::New<v8::String>(mre).ToLocalChecked());
     }
 
-    if (obj->modelType_ == XmmHhmmE) {
+    if (modelType_ == XmmHhmmE) {
       if (item == "hierarchical") {
-        args.GetReturnValue().Set(Nan::New<v8::Boolean>(hierarchical));
+        return Napi::Boolean::New(env, hierarchical);
+        // args.GetReturnValue().Set(Nan::New<v8::Boolean>(hierarchical));
       } else if (item == "states") {
-        args.GetReturnValue().Set(Nan::New<v8::Number>(states));
+        return Napi::Number::New(env, states);
+        // args.GetReturnValue().Set(Nan::New<v8::Number>(states));
       } else if (item == "transition_mode") {
-        args.GetReturnValue().Set(Nan::New<v8::String>(tm).ToLocalChecked());
+        return Napi::String::New(env, tm);
+        // args.GetReturnValue().Set(Nan::New<v8::String>(tm).ToLocalChecked());
       } else if (item == "regression_estimator") {
-        args.GetReturnValue().Set(Nan::New<v8::String>(re).ToLocalChecked());
+        return Napi::String::New(env, re);
+        // args.GetReturnValue().Set(Nan::New<v8::String>(re).ToLocalChecked());
       }
     }
 
   } else {
-    v8::Local<v8::Object> outputConfig = Nan::New<v8::Object>();
+    // v8::Local<v8::Object> outputConfig = Nan::New<v8::Object>();
+    Napi::Object outputConfig = Napi::Object::New(env);
 
-    outputConfig->Set(Nan::New<v8::String>("gaussians").ToLocalChecked(),
-              Nan::New<v8::Number>(gaussians));
-    outputConfig->Set(Nan::New<v8::String>("relative_regularization").ToLocalChecked(),
-              Nan::New<v8::Number>(relative_regularization));
-    outputConfig->Set(Nan::New<v8::String>("absolute_regularization").ToLocalChecked(),
-              Nan::New<v8::Number>(absolute_regularization));
-    outputConfig->Set(Nan::New<v8::String>("covariance_mode").ToLocalChecked(),
-              Nan::New<v8::String>(cm).ToLocalChecked());
-    outputConfig->Set(Nan::New<v8::String>("multiClass_regression_estimator").ToLocalChecked(),
-              Nan::New<v8::String>(mre).ToLocalChecked());
+    outputConfig.Set("gaussians", Napi::Number::New(env, gaussians));
+    outputConfig.Set("relative_regularization", Napi::Number::New(env, relative_regularization));
+    outputConfig.Set("absolute_regularization", Napi::Number::New(env, absolute_regularization));
+    outputConfig.Set("covariance_mode", Napi::String::New(env, cm));
+    outputConfig.Set("multiClass_regression_estimator", Napi::String::New(env, mre));
 
-    if (obj->modelType_ == XmmHhmmE) {
-      outputConfig->Set(Nan::New<v8::String>("hierarchical").ToLocalChecked(),
-                Nan::New<v8::Boolean>(hierarchical));
-      outputConfig->Set(Nan::New<v8::String>("states").ToLocalChecked(),
-                Nan::New<v8::Number>(states));
-      outputConfig->Set(Nan::New<v8::String>("transition_mode").ToLocalChecked(),
-                Nan::New<v8::String>(tm).ToLocalChecked());
-      outputConfig->Set(Nan::New<v8::String>("regression_estimator").ToLocalChecked(),
-                Nan::New<v8::String>(re).ToLocalChecked());
+    if (modelType_ == XmmHhmmE) {
+      outputConfig.Set("hierarchical", Napi::Boolean::New(env, hierarchical));
+      outputConfig.Set("states", Napi::Number::New(env, states));
+      outputConfig.Set("transition_mode", Napi::String::New(env, tm));
+      outputConfig.Set("regression_estimator", Napi::String::New(env, re));
     }
 
-    args.GetReturnValue().Set(outputConfig);
+    // args.GetReturnValue().Set(outputConfig);
+    return outputConfig;
   }
 }
 
+void
+XmmWrap::setConfig(const Napi::CallbackInfo& info) {
+  if (info.Length() > 0 && info[0].IsObject()) {
+    Napi::Object inputConfig = info[0].As<Napi::Object>();
 
+    int g = model_->getGaussians();
+    double rr = model_->getRelativeRegularization();
+    double ar = model_->getAbsoluteRegularization();
+    xmm::GaussianDistribution::CovarianceMode cm = model_->getCovarianceMode();
+    xmm::MultiClassRegressionEstimator mre = model_->getMultiClassRegressionEstimator();
+
+    // HierarchicalHMM-specific :
+    bool h = true;
+    int s = 1;
+    xmm::HMM::TransitionMode tm = xmm::HMM::TransitionMode::LeftRight;
+    xmm::HMM::RegressionEstimator re = xmm::HMM::RegressionEstimator::Full;
+
+    if (modelType_ == XmmHhmmE) {
+      h = getHierarchical(this);
+      s = getStates(this);
+      tm = getTransitionMode(this);
+      re = getRegressionEstimator(this);
+    }
+
+    if (inputConfig.Get("hierarchical").IsBoolean()) {
+      h = inputConfig.Get("hierarchical").As<Napi::Boolean>().Value();
+    }
+
+    if (inputConfig.Get("states").IsNumber()) {
+      s = inputConfig.Get("states").As<Napi::Number>().Int32Value();
+    }
+
+    if (inputConfig.Get("gaussians").IsNumber()) {
+      g = inputConfig.Get("gaussians").As<Napi::Number>().Int32Value();
+    }    
+
+    if (inputConfig.Get("relative_regularization").IsNumber()) {
+      rr = inputConfig.Get("relative_regularization").As<Napi::Number>().DoubleValue();
+    }
+
+    if (inputConfig.Get("absolute_regularization").IsNumber()) {
+      ar = inputConfig.Get("absolute_regularization").As<Napi::Number>().DoubleValue();
+    }  
+
+    if (inputConfig.Get("covariance_mode").IsString()) {
+      std::string scm = std::string(inputConfig.Get("covariance_mode").As<Napi::String>());
+      if (scm == "full") {
+        cm = xmm::GaussianDistribution::CovarianceMode::Full;
+      } else if (scm == "diagonal") {
+        cm = xmm::GaussianDistribution::CovarianceMode::Diagonal;
+      }
+    }
+
+    if (inputConfig.Get("transition_mode").IsString()) {
+      std::string stm = std::string(inputConfig.Get("transition_mode").As<Napi::String>());
+      if (stm == "ergodic") {
+        tm = xmm::HMM::TransitionMode::Ergodic;
+      } else if (stm == "leftright") {
+        tm = xmm::HMM::TransitionMode::LeftRight;
+      }
+    }
+
+    if (inputConfig.Get("regression_estimator").IsString()) {
+      std::string sre = std::string(inputConfig.Get("regression_estimator").As<Napi::String>());
+      if (sre == "full") {
+        re = xmm::HMM::RegressionEstimator::Full;
+      } else if (sre == "windowed") {
+        re = xmm::HMM::RegressionEstimator::Windowed;
+      } else if (sre == "likeliest") {
+        re = xmm::HMM::RegressionEstimator::Likeliest;
+      }
+    }
+
+    if (inputConfig.Get("multiClass_regression_estimator").IsString()) {
+      std::string smre = std::string(inputConfig.Get("multiClass_regression_estimator").As<Napi::String>());
+      if (smre == "likeliest") {
+        mre = xmm::MultiClassRegressionEstimator::Likeliest;
+      } else if (smre == "mixture") {
+        mre = xmm::MultiClassRegressionEstimator::Mixture;
+      }
+    }
+
+    model_->setGaussians(g);
+    model_->setRelativeRegularization(rr);
+    model_->setAbsoluteRegularization(ar);
+    model_->setCovarianceMode(cm);
+    model_->setMultiClassRegressionEstimator(mre);
+
+    if (modelType_ == XmmHhmmE) {
+      setHierarchical(this, h);
+      setStates(this, s);
+      setTransitionMode(this, tm);
+      setRegressionEstimator(this, re);
+    }
+  }
+}
+
+/*
 void XmmWrap::setConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
   XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.This());
 
@@ -701,114 +726,5 @@ void XmmWrap::setConfig(const Nan::FunctionCallbackInfo<v8::Value> & args) {
     }
   }
 }
-
-//============================ GETTERS / SETTERS =============================//
-
-// example code for getters / setters :
-// https://github.com/kneth/DemoNodeExtension/blob/master/person_wrap.cpp
-
-/*
-void XmmWrap::getConfig(v8::Local<v8::String> prop,
-              const Nan::PropertyCallbackInfo<v8::Value> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.This());
-
-  v8::Local<v8::Object> outputConfig = Nan::New<v8::Object>();
-
-  bool hierarchical = true;
-  std::size_t states = 1;
-  std::size_t gaussians = 1;
-  double relative_regularization = 0.01;
-  double absolute_regularization = 0.01;
-  xmm::GaussianDistribution::CovarianceMode covariance_mode = xmm::GaussianDistribution::CovarianceMode::Full;
-  xmm::HMM::TransitionMode transition_mode = xmm::HMM::TransitionMode::LeftRight;
-  xmm::HMM::RegressionEstimator regression_estimator = xmm::HMM::RegressionEstimator::Full;
-
-  if (obj->modelType_ == XmmGmmE) {
-    gaussians = getGaussians<xmm::GMM>(obj);
-    relative_regularization = getRelativeRegularization<xmm::GMM>(obj);
-    absolute_regularization = getAbsoluteRegularization<xmm::GMM>(obj);
-    covariance_mode = getCovarianceMode<xmm::GMM>(obj);
-  } else if (obj->modelType_ == XmmHhmmE) {
-    hierarchical = getHierarchical<xmm::HierarchicalHMM>(obj);
-    states = getStates<xmm::HierarchicalHMM>(obj);
-    gaussians = getGaussians<xmm::HierarchicalHMM>(obj);
-    relative_regularization = getRelativeRegularization<xmm::HierarchicalHMM>(obj);
-    absolute_regularization = getAbsoluteRegularization<xmm::HierarchicalHMM>(obj);
-    covariance_mode = getCovarianceMode<xmm::HierarchicalHMM>(obj);
-    transition_mode = getTransitionMode<xmm::HierarchicalHMM>(obj);
-    regression_estimator = getRegressionEstimator<xmm::HierarchicalHMM>(obj);
-  }
-
-  std::string modelType;
-  switch (obj->modelType_) {
-    case XmmGmmE:
-      modelType = "gmm";
-      break;
-
-    case XmmHhmmE:
-      modelType = "hhmm";
-      break;
-
-    default:
-      modelType = "unknown";
-      break;
-  }
-
-  outputConfig->Set(Nan::New<v8::String>("model").ToLocalChecked(),
-            Nan::New<v8::String>(modelType).ToLocalChecked());
-
-  outputConfig->Set(Nan::New<v8::String>("gaussians").ToLocalChecked(),
-            Nan::New<v8::Number>(gaussians));
-  outputConfig->Set(Nan::New<v8::String>("relative_regularization").ToLocalChecked(),
-            Nan::New<v8::Number>(relative_regularization));
-  outputConfig->Set(Nan::New<v8::String>("absolute_regularization").ToLocalChecked(),
-            Nan::New<v8::Number>(absolute_regularization));
-
-  std::string cm = (covariance_mode == xmm::GaussianDistribution::CovarianceMode::Full) ? "full"
-          : ((covariance_mode == xmm::GaussianDistribution::CovarianceMode::Diagonal) ? "diagonal" : "");
-  outputConfig->Set(Nan::New<v8::String>("covariance_mode").ToLocalChecked(),
-            Nan::New<v8::String>(cm).ToLocalChecked());
-
-  switch (obj->modelType_) {
-    case XmmHhmmE: {
-      outputConfig->Set(Nan::New<v8::String>("hierarchical").ToLocalChecked(),
-                Nan::New<v8::Boolean>(hierarchical));
-
-      outputConfig->Set(Nan::New<v8::String>("states").ToLocalChecked(),
-                Nan::New<v8::Number>(states));
-
-      std::string tm = (transition_mode == xmm::HMM::TransitionMode::Ergodic) ? "ergodic"
-          : ((transition_mode == xmm::HMM::TransitionMode::LeftRight) ? "leftright" : "");
-      outputConfig->Set(Nan::New<v8::String>("transition_mode").ToLocalChecked(),
-                Nan::New<v8::String>(tm).ToLocalChecked());
-
-      std::string re = (regression_estimator == xmm::HMM::RegressionEstimator::Full) ? "full"
-          : ((regression_estimator == xmm::HMM::RegressionEstimator::Windowed) ? "windowed"
-            : ((regression_estimator == xmm::HMM::RegressionEstimator::Likeliest) ? "likeliest" : ""));
-      outputConfig->Set(Nan::New<v8::String>("regression_estimator").ToLocalChecked(),
-                Nan::New<v8::String>(re).ToLocalChecked());
-      break;
-    }
-
-    default:
-      break;
-  }
-
-  args.GetReturnValue().Set(outputConfig);
-}
-//*/
-
-//============================================================================//
-
-// ye old setter signature, replaced by a regular method signature :
-
-/*
-void XmmWrap::setConfig(v8::Local<v8::String> prop,
-              v8::Local<v8::Value> value,
-              const Nan::PropertyCallbackInfo<void> & args) {
-  XmmWrap *obj = ObjectWrap::Unwrap<XmmWrap>(args.This());
-  if (value->IsObject()) {
-
-    v8::Local<v8::Object> inputConfig = v8::Local<v8::Object>::Cast(value);
 //*/
 

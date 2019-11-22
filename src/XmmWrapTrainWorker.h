@@ -1,15 +1,37 @@
 #ifndef _XMMWRAPTRAINWORKER_H_
 #define _XMMWRAPTRAINWORKER_H_
 
-#include <nan.h>
+#include <napi.h>
 #include "../xmm/src/xmm.h"
-#include "JsonCppV8Converters.h"
+#include "JsonCppNapiConverters.h"
 
 template<typename Model>
-class XmmWrapTrainWorker : public Nan::AsyncWorker {
+class XmmWrapTrainWorker : public Napi::AsyncWorker {
+private:
+  Model& original;
+  Model tool;
+
+  xmm::TrainingSet set;
+  bool cancel, done;
+
 public:
-  XmmWrapTrainWorker(Nan::Callback *callback, Model& t, xmm::TrainingSet *s) :
-  Nan::AsyncWorker(callback), original(t), tool(t), set(*s), cancel(false), done(false) {
+  // static void DoWork(const Napi::CallbackInfo& info) {
+  //   bool succeed = info[0].As<Napi::Boolean>();
+  //   Napi::Object resource = info[1].As<Napi::Object>();
+  //   Napi::Function cb = info[2].As<Napi::Function>();
+  //   Napi::Value data = info[3];
+
+  //   XmmWrapTrainWorker* worker = new XmmWrapTrainWorker(cb, tool, &set);
+  //   worker->Queue();
+  // }
+
+  XmmWrapTrainWorker(Napi::Function& callback, Model& t, xmm::TrainingSet *s) :
+  Napi::AsyncWorker(callback),
+  original(t),
+  tool(t),
+  set(*s),
+  cancel(false),
+  done(false) {
     // With threads :
     tool.configuration.multithreading = xmm::MultithreadingMode::Background;
 
@@ -19,7 +41,7 @@ public:
 
   ~XmmWrapTrainWorker() {}
 
-  void Execute() {
+  void Execute() override {
     // No threads !
     // if (set.size() > 0) {
     //   tool.train(&set);
@@ -41,6 +63,33 @@ public:
     }
   }
 
+  //*
+  void OnOk() {
+    Json::Value jm = tool.toJson();
+    Napi::Object model = valueToObject(Env(), jm);
+
+    // this should be safe to do this, as HandleOKCallback
+    // is called in the event loop
+    // is Napi::OnOk also called in the event loop ?
+    // or are there drawbacks ?
+    original = tool;
+    
+    // call reset so the model is ready to filter
+    original.reset();
+
+    done = true;
+  }
+  //*/
+
+  std::vector<napi_value> GetResult(Napi::Env env) override {
+    Json::Value jm = tool.toJson();
+    Napi::Object model = valueToObject(env, jm);
+    Napi::Value err = cancel ? Napi::String::New(env, "training cancelled") : env.Null();
+    Napi::Value res = cancel ? env.Null() : model;
+
+    return { err, res };
+  }
+
   // With threads :
   void Stop() {
     cancel = true;
@@ -50,6 +99,8 @@ public:
     return done;
   }
 
+
+  /*
   void HandleOKCallback() {
     Nan::HandleScope scope;
 
@@ -82,13 +133,7 @@ public:
     done = true;
     callback->Call(2, results);
   }
-
-private:
-  Model& original;
-  Model tool;
-
-  xmm::TrainingSet set;
-  bool cancel, done;
+  //*/
 };
 
 #endif /* _XMMWRAPTRAINWORKER_H_ */

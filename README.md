@@ -69,7 +69,7 @@ See [github.com/Ircam-RnD/xmm](https://github.com/Ircam-RnD/xmm) for detailed XM
 
 * [xmm](#xmm)
     * [new xmm([modelType], [modelConfig])](#new_xmm_new)
-    * [.getConfig([configParam])](#xmm+getConfig) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+    * [.getConfig([configParam])](#xmm+getConfig) ⇒ [<code>xmmModelConfig</code>](#xmmModelConfig) \| <code>Number</code> \| <code>String</code> \| <code>Boolean</code>
     * [.setConfig(config)](#xmm+setConfig)
     * [.addPhrase(phrase)](#xmm+addPhrase)
     * [.getPhrase(index)](#xmm+getPhrase) ⇒ <code>Object</code>
@@ -86,7 +86,7 @@ See [github.com/Ircam-RnD/xmm](https://github.com/Ircam-RnD/xmm) for detailed XM
     * [.cancelTraining()](#xmm+cancelTraining)
     * [.getModel()](#xmm+getModel) ⇒ <code>Object</code>
     * [.setModel(model)](#xmm+setModel)
-    * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
+    * [.getModelType()](#xmm+getModelType) ⇒ <code>&#x27;gmm&#x27;</code> \| <code>&#x27;hhmm&#x27;</code>
     * [.reset()](#xmm+reset)
     * [.filter(observation)](#xmm+filter) ⇒ <code>Object</code>
 
@@ -99,15 +99,15 @@ The main xmm class.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [modelType] | <code>&#x27;gmm\|hhmm&#x27;</code> | <code>&#x27;gmm&#x27;</code> | The type of model. |
-| [modelConfig] | <code>[xmmModelConfig](#xmmModelConfig)</code> |  | Configuration parameters for the model. |
+| [modelConfig] | [<code>xmmModelConfig</code>](#xmmModelConfig) |  | Configuration parameters for the model. |
 
 <a name="xmm+getConfig"></a>
 
-### xmm.getConfig([configParam]) ⇒ <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code>
+### xmm.getConfig([configParam]) ⇒ [<code>xmmModelConfig</code>](#xmmModelConfig) \| <code>Number</code> \| <code>String</code> \| <code>Boolean</code>
 Get the actual model configuration parameters or one of them.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
-**Returns**: <code>[xmmModelConfig](#xmmModelConfig)</code> &#124; <code>Number</code> &#124; <code>String</code> &#124; <code>Boolean</code> - Depends on the parameter.
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
+**Returns**: [<code>xmmModelConfig</code>](#xmmModelConfig) \| <code>Number</code> \| <code>String</code> \| <code>Boolean</code> - Depends on the parameter.
 <br /><br />If called without any argument, returns :
 <li style="list-style-type: none;">
 <ul> an object of type <code>xmmModelConfig</code> containing all the actual model configuration parameters</ul>
@@ -141,18 +141,18 @@ based on the likeliest class, or based on the whole set of classes,
 ### xmm.setConfig(config)
 Set the actual model configuration parameters.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config | <code>[xmmModelConfig](#xmmModelConfig)</code> | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
+| config | [<code>xmmModelConfig</code>](#xmmModelConfig) | A config object as returned by [getConfig](getConfig) when called without arguments (missing parameters won't be changed internally and invalid ones will be ignored). |
 
 <a name="xmm+addPhrase"></a>
 
 ### xmm.addPhrase(phrase)
 Add a phrase to the internal training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -163,7 +163,7 @@ Add a phrase to the internal training set.
 ### xmm.getPhrase(index) ⇒ <code>Object</code>
 Get phrase of a certain index from the internal training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 **Returns**: <code>Object</code> - A valid XMM phrase from the internal training set.  
 
 | Param | Type | Description |
@@ -175,7 +175,7 @@ Get phrase of a certain index from the internal training set.
 ### xmm.getPhrasesOfLabel(label) ⇒ <code>Object</code>
 Get phrases of a certain label from the internal training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 **Returns**: <code>Object</code> - A valid XMM training set containing all the requested phrases.  
 
 | Param | Type | Description |
@@ -187,7 +187,7 @@ Get phrases of a certain label from the internal training set.
 ### xmm.removePhrase(index)
 Remove phrase of a certain index from the internal training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -198,7 +198,7 @@ Remove phrase of a certain index from the internal training set.
 ### xmm.removePhrasesOfLabel(label)
 Remove phrases of a certain label from the internal training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -209,28 +209,28 @@ Remove phrases of a certain label from the internal training set.
 ### xmm.getTrainingSetSize() ⇒ <code>Number</code>
 Get the number of phrases in the training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 **Returns**: <code>Number</code> - The number of phrases in the training set.  
 <a name="xmm+getTrainingSetLabels"></a>
 
 ### xmm.getTrainingSetLabels() ⇒ <code>Array.String</code>
 Get the array of all the labels in the training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 **Returns**: <code>Array.String</code> - An array containing all the training set's labels.  
 <a name="xmm+getTrainingSet"></a>
 
 ### xmm.getTrainingSet() ⇒ <code>Object</code>
 Get the actual training set as an object.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 **Returns**: <code>Object</code> - An object containing a valid XMM training set.  
 <a name="xmm+setTrainingSet"></a>
 
 ### xmm.setTrainingSet(trainingSet)
 Sets the actual training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -241,7 +241,7 @@ Sets the actual training set.
 ### xmm.addTrainingSet(trainingSet)
 Adds a training set to the actual training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -252,17 +252,17 @@ Adds a training set to the actual training set.
 ### xmm.clearTrainingSet()
 Clears the training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 <a name="xmm+train"></a>
 
 ### xmm.train(callback)
 Trains the model with the current training set.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| callback | <code>[trainCallback](#trainCallback)</code> | The callback handling the trained model. |
+| callback | [<code>trainCallback</code>](#trainCallback) | The callback handling the trained model. |
 
 <a name="xmm+cancelTraining"></a>
 
@@ -271,20 +271,20 @@ Cancel the current training process. <br />
 <i><strong><font color="#f00">WARNING</font></strong>
 This feature is experimental and may cause crashes</i>
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 <a name="xmm+getModel"></a>
 
 ### xmm.getModel() ⇒ <code>Object</code>
 Returns the trained model (the same object as in [trainCallback](#trainCallback)).
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 **Returns**: <code>Object</code> - An object containing the trained model.  
 <a name="xmm+setModel"></a>
 
 ### xmm.setModel(model)
 Sets the actual model from another already trained model.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -292,23 +292,23 @@ Sets the actual model from another already trained model.
 
 <a name="xmm+getModelType"></a>
 
-### xmm.getModelType() ⇒ <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code>
+### xmm.getModelType() ⇒ <code>&#x27;gmm&#x27;</code> \| <code>&#x27;hhmm&#x27;</code>
 Returns the type of the actual model.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
-**Returns**: <code>&#x27;gmm&#x27;</code> &#124; <code>&#x27;hhmm&#x27;</code> - The type of model as String.  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
+**Returns**: <code>&#x27;gmm&#x27;</code> \| <code>&#x27;hhmm&#x27;</code> - The type of model as String.  
 <a name="xmm+reset"></a>
 
 ### xmm.reset()
 Resets the internal variables used for filtering.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 <a name="xmm+filter"></a>
 
 ### xmm.filter(observation) ⇒ <code>Object</code>
 Estimates an input array of floats.
 
-**Kind**: instance method of <code>[xmm](#xmm)</code>  
+**Kind**: instance method of [<code>xmm</code>](#xmm)  
 **Returns**: <code>Object</code> - filteringResults - An object containing the estimation results.  
 
 | Param | Type | Description |
@@ -324,15 +324,15 @@ Estimates an input array of floats.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| gaussians | <code>Number</code> | <code>1</code> | the number of gaussians used for encoding a state. |
-| relativeRegularization | <code>Number</code> | <code>0.01</code> | the relative regularization (see XMM documentation). |
-| absoluteRegularization | <code>Number</code> | <code>0.01</code> | the absolute regularization (see XMM documentation). |
-| covarianceMode | <code>&#x27;diagonal\|full&#x27;</code> | <code>&#x27;full&#x27;</code> | the type of covariance matrix used in the model. |
-| hierarchical | <code>Boolean</code> | <code>true</code> | if <code>model</code> is 'hhmm', turns hierarchical mode on/off. |
-| states | <code>Number</code> | <code>1</code> | if <code>model</code> is 'hhmm', defines the number of states used to generate each individual hmm. |
-| transitionMode | <code>&#x27;ergodic\|leftright&#x27;</code> | <code>&#x27;leftright&#x27;</code> | if <code>model</code> is 'hhmm', sets the transition mode between the states of the individual hmm models. |
-| regressionEstimator | <code>&#x27;full\|windowed\|likeliest&#x27;</code> | <code>&#x27;full&#x27;</code> | if <code>model</code> is 'hhmm', the type of estimator used for regression with hmms. |
-| multiClassRegressionEstimator | <code>&#x27;likeliest\|mixture&#x27;</code> | <code>&#x27;likeliest&#x27;</code> | how to compute the regression : based on the likeliest class, or based on the whole set of classes. |
+| [gaussians] | <code>Number</code> | <code>1</code> | the number of gaussians used for encoding a state. |
+| [relativeRegularization] | <code>Number</code> | <code>0.01</code> | the relative regularization (see XMM documentation). |
+| [absoluteRegularization] | <code>Number</code> | <code>0.01</code> | the absolute regularization (see XMM documentation). |
+| [covarianceMode] | <code>&#x27;diagonal\|full&#x27;</code> | <code>&#x27;full&#x27;</code> | the type of covariance matrix used in the model. |
+| [hierarchical] | <code>Boolean</code> | <code>true</code> | if <code>model</code> is 'hhmm', turns hierarchical mode on/off. |
+| [states] | <code>Number</code> | <code>1</code> | if <code>model</code> is 'hhmm', defines the number of states used to generate each individual hmm. |
+| [transitionMode] | <code>&#x27;ergodic\|leftright&#x27;</code> | <code>&#x27;leftright&#x27;</code> | if <code>model</code> is 'hhmm', sets the transition mode between the states of the individual hmm models. |
+| [regressionEstimator] | <code>&#x27;full\|windowed\|likeliest&#x27;</code> | <code>&#x27;full&#x27;</code> | if <code>model</code> is 'hhmm', the type of estimator used for regression with hmms. |
+| [multiClassRegressionEstimator] | <code>&#x27;likeliest\|mixture&#x27;</code> | <code>&#x27;likeliest&#x27;</code> | how to compute the regression : based on the likeliest class, or based on the whole set of classes. |
 
 <hr>
 <a name="trainCallback"></a>

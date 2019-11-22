@@ -1,7 +1,7 @@
 #ifndef _XMMWRAP_UTILS_H_
 #define _XMMWRAP_UTILS_H_
 
-#include <nan.h>
+#include <napi.h>
 #include "XmmWrap.h"
 
 //=============== HierarchicalHMM-specific getters / setters =================//
@@ -53,184 +53,166 @@ void setRegressionEstimator(XmmWrap *obj,
 
 //============================ Phrase converters =============================//
 
-v8::Local<v8::Object> makeObjectPhrase(xmm::Phrase xp) {
+Napi::Object makeObjectPhrase(Napi::Env env, xmm::Phrase xp) {
   Json::Value jp = xp.toJson();
+  Napi::Object outputPhrase = Napi::Object::New(env);
 
-  v8::Local<v8::Object> outputPhrase = Nan::New<v8::Object>();
-  int dimension = jp.get("dimension", false).asInt();
-
-  Nan::Set(outputPhrase, Nan::New<v8::String>("bimodal").ToLocalChecked(),
-    Nan::New(jp.get("bimodal", false).asBool()));
-  Nan::Set(outputPhrase, Nan::New<v8::String>("dimension").ToLocalChecked(),
-    Nan::New(dimension));
-  Nan::Set(outputPhrase, Nan::New<v8::String>("dimension_input").ToLocalChecked(),
-    Nan::New(jp.get("dimension_input", false).asInt()));
-  Nan::Set(outputPhrase, Nan::New<v8::String>("length").ToLocalChecked(),
-    Nan::New(jp.get("length", false).asInt()));
-  Nan::Set(outputPhrase, Nan::New<v8::String>("label").ToLocalChecked(),
-    Nan::New<v8::String>(jp["label"].asString()).ToLocalChecked());
+  outputPhrase.Set("bimodal", Napi::Boolean::New(env, jp.get("bimodal", false).asBool()));
+  outputPhrase.Set("dimension", Napi::Number::New(env, jp.get("dimension", false).asInt()));
+  outputPhrase.Set("dimension_input", Napi::Number::New(env, jp.get("dimension_input", false).asInt()));
+  outputPhrase.Set("length", Napi::Number::New(env, jp.get("length", false).asInt()));
+  outputPhrase.Set("label", Napi::String::New(env, jp["label"].asString()));
 
   int ncols = jp["column_names"].size();
-  v8::Local<v8::Array> columnNames = Nan::New<v8::Array>(ncols);
-  for(int i=0; i<ncols; i++) {
-    columnNames->Set(i, Nan::New<v8::String>(jp["column_names"].get(i, "").asString()).ToLocalChecked());
-  }
-  Nan::Set(outputPhrase, Nan::New<v8::String>("column_names").ToLocalChecked(), columnNames);
-
   int datasize = jp["data"].size();
-  v8::Local<v8::Array> data = Nan::New<v8::Array>(datasize);
-  for(int i=0; i<datasize; i++) {
-    data->Set(i, Nan::New(jp["data"][i].asFloat()));
-  }
-  Nan::Set(outputPhrase, Nan::New<v8::String>("data").ToLocalChecked(), data);
-
   int dataInputSize = jp["data_input"].size();
-  v8::Local<v8::Array> dataInput = Nan::New<v8::Array>(dataInputSize);
-  for(int i=0; i<dataInputSize; i++) {
-    dataInput->Set(i, Nan::New(jp["data_input"][i].asFloat()));
-  }
-  Nan::Set(outputPhrase, Nan::New<v8::String>("data_input").ToLocalChecked(), dataInput);
-
   int dataOutputSize = jp["data_output"].size();
-  v8::Local<v8::Array> dataOutput = Nan::New<v8::Array>(dataOutputSize);
-  for(int i=0; i<dataOutputSize; i++) {
-    dataOutput->Set(i, Nan::New(jp["data_output"][i].asFloat()));
+
+  Napi::Array columnNames = Napi::Array::New(env, ncols);
+  for (int i = 0; i < ncols; i++) {
+    columnNames.Set(i, Napi::String::New(env, jp["column_names"].get(i, "").asString()));
   }
-  Nan::Set(outputPhrase, Nan::New<v8::String>("data_output").ToLocalChecked(), dataOutput);
+
+  Napi::Array data = Napi::Array::New(env, datasize);
+  for (int i = 0; i < datasize; i++) {
+    data.Set(i, Napi::Number::New(env, jp["data"][i].asFloat()));
+  }
+
+  Napi::Array dataInput = Napi::Array::New(env, dataInputSize);
+  for (int i = 0; i < dataInputSize; i++) {
+    dataInput.Set(i, Napi::Number::New(env, jp["data_input"][i].asFloat()));
+  }
+
+  Napi::Array dataOutput = Napi::Array::New(env, dataOutputSize);
+  for (int i = 0; i < dataOutputSize; i++) {
+    dataOutput.Set(i, Napi::Number::New(env, jp["data_output"][i].asFloat()));
+  }
+
+  outputPhrase.Set("column_names", columnNames);
+  outputPhrase.Set("data", data);
+  outputPhrase.Set("data_input", dataInput);
+  outputPhrase.Set("data_output", dataOutput);
 
   return outputPhrase;
 }
 
+bool makeXmmPhrase(Napi::Object inputPhrase, xmm::Phrase& xp) {
+  Napi::Env env = inputPhrase.Env();
 
-bool makeXmmPhrase(v8::Local<v8::Object> inputPhrase, xmm::Phrase &xp) {
+  Napi::Value maybeBimodal = inputPhrase.Get("bimodal");
+  Napi::Value maybeDimension = inputPhrase.Get("dimension");
+  Napi::Value maybeDimensionInput = inputPhrase.Get("dimension_input");
+  Napi::Value maybeLength = inputPhrase.Get("length");
+  Napi::Value maybeLabel = inputPhrase.Get("label");
 
-  Nan::MaybeLocal<v8::Value> maybeBimodal
-    = inputPhrase->Get(Nan::New("bimodal").ToLocalChecked());
-  Nan::MaybeLocal<v8::Value> maybeDimension
-    = inputPhrase->Get(Nan::New("dimension").ToLocalChecked());
-  Nan::MaybeLocal<v8::Value> maybeDimensionInput
-    = inputPhrase->Get(Nan::New("dimension_input").ToLocalChecked());
-  Nan::MaybeLocal<v8::Value> maybeLength
-    = inputPhrase->Get(Nan::New("length").ToLocalChecked());
-  Nan::MaybeLocal<v8::Value> maybeLabel
-    = inputPhrase->Get(Nan::New("label").ToLocalChecked());
+  Napi::Boolean vbimodal = (!maybeBimodal.IsEmpty() &&
+                            maybeBimodal.IsBoolean())
+                         ? maybeBimodal.As<Napi::Boolean>()
+                         : Napi::Boolean::New(env, false);
 
-  v8::Local<v8::Value> vbimodal;
-  if(!maybeBimodal.IsEmpty()) {
-    vbimodal = maybeBimodal.ToLocalChecked();
-  } else return false;
+  Napi::Number vdimension = (!maybeDimension.IsEmpty() &&
+                             maybeDimension.IsNumber())
+                          ? maybeDimension.As<Napi::Number>()
+                          : Napi::Number::New(env, 1);
+                        
+  Napi::Number vdimensionInput = (!maybeDimensionInput.IsEmpty() &&
+                                  maybeDimensionInput.IsNumber())
+                               ? maybeDimensionInput.As<Napi::Number>()
+                               : Napi::Number::New(env, 0);
 
-  v8::Local<v8::Value> vdimension;
-  if(!maybeDimension.IsEmpty()) {
-    vdimension = maybeDimension.ToLocalChecked();
-  } else return false;
+  Napi::Number vlength = (!maybeLength.IsEmpty() &&
+                          maybeLength.IsNumber())
+                       ? maybeLength.As<Napi::Number>()
+                       : Napi::Number::New(env, 0);
 
-  v8::Local<v8::Value> vdimension_input;
-  if(!maybeDimensionInput.IsEmpty()) {
-    vdimension_input = maybeDimensionInput.ToLocalChecked();
-  } else return false;
+  Napi::String vlabel = (!maybeLabel.IsEmpty() &&
+                         maybeLabel.IsString())
+                      ? maybeLabel.As<Napi::String>()
+                      : Napi::String::New(env, "");
 
-  v8::Local<v8::Value> vlength;
-  if(!maybeLength.IsEmpty()) {
-    vlength = maybeLength.ToLocalChecked();
-  } else return false;
+  ////////// get array fields
 
-  v8::Local<v8::Value> vlabel;
-  if(!maybeLabel.IsEmpty()) {
-    vlabel = maybeLabel.ToLocalChecked();
-  } else return false;
+  Napi::Value maybeColumnNames = inputPhrase.Get("column_names");
+  Napi::Value maybeData = inputPhrase.Get("data");
+  Napi::Value maybeDataInput = inputPhrase.Get("data_input");
+  Napi::Value maybeDataOutput = inputPhrase.Get("data_output");
 
-  // ============= get arrays' contents ============ //
+  Napi::Array vcolumnNames = (!maybeColumnNames.IsEmpty() &&
+                              maybeColumnNames.IsArray())
+                           ? maybeColumnNames.As<Napi::Array>()
+                           : Napi::Array::New(env, 0);
 
-  Nan::MaybeLocal<v8::Value> maybeColumnNames
-    = inputPhrase->Get(Nan::New("column_names").ToLocalChecked());
-  v8::Local<v8::Array> vcolumn_names
-    = v8::Local<v8::Array>::Cast(maybeColumnNames.ToLocalChecked());
-  if(!vcolumn_names->IsArray()) {
-    vcolumn_names = Nan::New<v8::Array>(0);
-  }
+  Napi::Array vdata = (!maybeData.IsEmpty() &&
+                        maybeData.IsArray())
+                    ? maybeData.As<Napi::Array>()
+                    : Napi::Array::New(env, 0);
 
-  Nan::MaybeLocal<v8::Value> maybeData
-    = inputPhrase->Get(Nan::New("data").ToLocalChecked());
-  v8::Local<v8::Array> vdata
-    = v8::Local<v8::Array>::Cast(maybeData.ToLocalChecked());
-  if(!vdata->IsArray()) {
-    vdata = Nan::New<v8::Array>(0);
-  }
+  Napi::Array vdataInput = (!maybeDataInput.IsEmpty() &&
+                            maybeDataInput.IsArray())
+                         ? maybeDataInput.As<Napi::Array>()
+                         : Napi::Array::New(env, 0);
 
-  Nan::MaybeLocal<v8::Value> maybeDataInput
-    = inputPhrase->Get(Nan::New("data_input").ToLocalChecked());
-  v8::Local<v8::Array> vdata_input
-    = v8::Local<v8::Array>::Cast(maybeDataInput.ToLocalChecked());
-  if(!vdata_input->IsArray()) {
-    vdata_input = Nan::New<v8::Array>(0);
-  }
+  Napi::Array vdataOutput = (!maybeDataOutput.IsEmpty() &&
+                             maybeDataOutput.IsArray())
+                          ? maybeDataOutput.As<Napi::Array>()
+                          : Napi::Array::New(env, 0);
 
-  Nan::MaybeLocal<v8::Value> maybeDataOutput
-    = inputPhrase->Get(Nan::New("data_output").ToLocalChecked());
-  v8::Local<v8::Array> vdata_output
-    = v8::Local<v8::Array>::Cast(maybeDataOutput.ToLocalChecked());
-  if(!vdata_output->IsArray()) {
-    vdata_output = Nan::New<v8::Array>(0);
-  }
+  ////////// get values in native types
 
-  bool bimodal = (vbimodal->IsBoolean() ? vbimodal->BooleanValue() : false);
-  int dimension = (vdimension->IsNumber() ? vdimension->NumberValue() : 1);
-  int dimension_input = (vdimension_input->IsNumber() ? vdimension_input->NumberValue() : 0);
-  int length = (vlength->IsNumber() ? vlength->NumberValue() : 0);
-  std::string label = "";
-  if(vlabel->IsString()) {
-    v8::String::Utf8Value val(vlabel->ToString());
-    label = std::string(*val);
-  }
+  bool bimodal = vbimodal.Value();
+  int dimension = vdimension.Int32Value();
+  int dimensionInput = vdimensionInput.Int32Value();
+  int length = vlength.Int32Value();
+  std::string label(vlabel);
 
   // ============== BUILD JSON::VALUE ============ //
   
   Json::Value jp;
 
   jp["bimodal"] = bimodal;
-  jp["dimension"] = static_cast<int>(dimension);
-  jp["dimension_input"] = static_cast<int>(dimension_input);
-  jp["length"] = static_cast<int>(length);
+  jp["dimension"] = dimension;
+  jp["dimension_input"] = dimensionInput;
+  jp["length"] = length;
   jp["label"] = label;
 
-  for(int i=0; i<dimension; i++) {
-    if(i<vcolumn_names->Length()
-      && vcolumn_names->Get(i)->IsString()) {
+  for (int i = 0; i < dimension; i++) {
 
-      v8::String::Utf8Value val(vcolumn_names->Get(i)->ToString());
-      jp["column_names"][i] = std::string(*val);
-    } else {
-      jp["column_names"][i] = "";
+    jp["column_names"][i] = (i < vcolumnNames.Length() &&
+                             vcolumnNames.Get(i).IsString())
+                          ? std::string(vcolumnNames.Get(i).As<Napi::String>())
+                          : "";
+  }
+
+  for (int i = 0; i < vdata.Length(); i++) {
+    if(vdata.Get(i).IsNumber()) {
+      jp["data"][i] = vdata.Get(i).As<Napi::Number>().DoubleValue();
     }
   }
 
-  for(int i=0; i<vdata->Length(); i++) {
-    if(vdata->Get(i)->IsNumber()) {
-      jp["data"][i] = vdata->Get(i)->NumberValue();
-    }
-  }
   jp["data_input"] = Json::Value(Json::arrayValue);
-  for(int i=0; i<vdata_input->Length(); i++) {
-    if(vdata_input->Get(i)->IsNumber()) {
-      jp["data_input"][i] = vdata_input->Get(i)->NumberValue();
+
+  for (int i = 0; i < vdataInput.Length(); i++) {
+    if(vdataInput.Get(i).IsNumber()) {
+      jp["data"][i] = vdataInput.Get(i).As<Napi::Number>().DoubleValue();
     }
   }
+
   jp["data_output"] = Json::Value(Json::arrayValue);
-  for(int i=0; i<vdata_output->Length(); i++) {
-    if(vdata_output->Get(i)->IsNumber()) {
-      jp["data_output"][i] = vdata_output->Get(i)->NumberValue();
+  for (int i = 0; i < vdataOutput.Length(); i++) {
+    if(vdataOutput.Get(i).IsNumber()) {
+      jp["data"][i] = vdataOutput.Get(i).As<Napi::Number>().DoubleValue();
     }
   }
 
   // check for possible errors in xmm::Phrase creation and ...
 
   if((!bimodal && dimension * length == jp["data"].size()) ||
-      (bimodal && (dimension - dimension_input) * length == jp["data_output"].size()
-      && dimension_input * length == jp["data_input"].size())) {
+      (bimodal && (dimension - dimensionInput) * length == jp["data_output"].size()
+      && dimensionInput * length == jp["data_input"].size())) {
     xp.fromJson(jp);
     return true;
   }
+
   return false;
 }
 

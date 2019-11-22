@@ -1,7 +1,6 @@
 #ifndef _XMM_TOOL_H_
 #define _XMM_TOOL_H_
 
-#include <nan.h>
 #include "../xmm/src/xmm.h"
 #include "XmmWrapTrainWorker.h"
 
@@ -14,9 +13,9 @@ public:
   virtual Json::Value getModel() = 0;
   virtual void setModel(Json::Value jm) = 0;
   virtual void reset() = 0;
-  virtual void train(Nan::Callback *callback, xmm::TrainingSet *set) = 0;
+  virtual void train(Napi::Function& callback, xmm::TrainingSet *set) = 0;
   virtual void cancelTraining() = 0;
-  virtual v8::Local<v8::Object> filter(std::vector<float> observation) = 0;
+  virtual Json::Value filter(std::vector<float> observation) = 0;
 
   virtual std::size_t getGaussians() = 0;
   virtual void setGaussians(std::size_t gaussians) = 0;
@@ -71,9 +70,10 @@ public:
     model.reset();
   }
 
-  void train(Nan::Callback *callback, xmm::TrainingSet *set) {
+  void train(Napi::Function& callback, xmm::TrainingSet *set) {
     // callbacks.push_back(callback); // no need for callbacks
 
+    /*
     for (int i = workers.size() - 1; i >= 0; i--) {
       if (workers[i]->Done()) {
         // No need to delete the pointer as it's probably freed after call to HandleOKCallback
@@ -82,13 +82,19 @@ public:
         workers.erase(workers.begin() + i);
       }
     }
+    //*/
 
     // Already tried to replace new by make_shared an declare workers as vector of shared_ptrs
     // But this crashes, probably because of some automatic call to delete
+
     workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
-    Nan::AsyncQueueWorker(workers[workers.size() - 1]);
+    workers[workers.size() - 1]->Queue();
+    // Nan::AsyncQueueWorker(workers[workers.size() - 1]);
 
     // Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
+
+    // XmmWrapTrainWorker<Model>* worker = new XmmWrapTrainWorker<Model>(callback, model, set);
+    // worker->Queue();
   }
 
   void cancelTraining() {
@@ -101,8 +107,12 @@ public:
     // callbacks.clear(); // no need for callbacks
   }
 
-  v8::Local<v8::Object> filter(std::vector<float> observation) {
-    v8::Local<v8::Object> outputResults = Nan::New<v8::Object>();
+  // TODO : store a Json::Value of outputResults as a variable of the class
+  // to avoid creating it on each call to filter() and only fill it instead
+  // (e.g. add an "updateFromModel" method or something)
+  Json::Value filter(std::vector<float> observation) {
+    Json::Value outputResults;
+    // return outputResults;
 
     bool bimodal = model.shared_parameters->bimodal.get();
     unsigned int nmodels = model.size();
@@ -113,70 +123,59 @@ public:
     model.filter(observation);
     xmm::Results<ModelType> res = model.results;
 
-    v8::Local<v8::Array> instant_likelihoods = Nan::New<v8::Array>(nmodels);
-    v8::Local<v8::Array> instant_normalized_likelihoods = Nan::New<v8::Array>(nmodels);
-    v8::Local<v8::Array> smoothed_likelihoods = Nan::New<v8::Array>(nmodels);
-    v8::Local<v8::Array> smoothed_normalized_likelihoods = Nan::New<v8::Array>(nmodels);
-    v8::Local<v8::Array> smoothed_log_likelihoods = Nan::New<v8::Array>(nmodels);
+    Json::Value instant_likelihoods;
+    instant_likelihoods.resize(static_cast<Json::ArrayIndex>(nmodels));
 
-    for (std::size_t i = 0; i < nmodels; ++i) {
-      Nan::Set(instant_likelihoods, i,
-               Nan::New(res.instant_likelihoods[i]));
-      Nan::Set(instant_normalized_likelihoods, i,
-               Nan::New(res.instant_normalized_likelihoods[i]));
-      Nan::Set(smoothed_likelihoods, i,
-               Nan::New(res.smoothed_likelihoods[i]));
-      Nan::Set(smoothed_normalized_likelihoods, i,
-               Nan::New(res.smoothed_normalized_likelihoods[i]));
-      Nan::Set(smoothed_log_likelihoods, i,
-               Nan::New(res.smoothed_log_likelihoods[i]));
+    Json::Value instant_normalized_likelihoods;
+    instant_normalized_likelihoods.resize(static_cast<Json::ArrayIndex>(nmodels));
+
+    Json::Value smoothed_likelihoods;
+    smoothed_likelihoods.resize(static_cast<Json::ArrayIndex>(nmodels));
+
+    Json::Value smoothed_normalized_likelihoods;
+    smoothed_normalized_likelihoods.resize(static_cast<Json::ArrayIndex>(nmodels));
+
+    Json::Value smoothed_log_likelihoods;
+    smoothed_log_likelihoods.resize(static_cast<Json::ArrayIndex>(nmodels));
+
+    for (int i = 0; i < nmodels; i++) {
+      // instant_likelihoods[i] = Json::Value(res.instant_likelihoods[i]);
+      // instant_normalized_likelihoods[i] = Json::Value(res.instant_normalized_likelihoods[i]);
+      // smoothed_likelihoods[i] = Json::Value(res.smoothed_likelihoods[i]);
+      // smoothed_normalized_likelihoods[i] = Json::Value(res.smoothed_normalized_likelihoods[i]);
+      // smoothed_log_likelihoods[i] = Json::Value(res.smoothed_log_likelihoods[i]);
+      instant_likelihoods[i] = res.instant_likelihoods[i];
+      instant_normalized_likelihoods[i] = res.instant_normalized_likelihoods[i];
+      smoothed_likelihoods[i] = res.smoothed_likelihoods[i];
+      smoothed_normalized_likelihoods[i] = res.smoothed_normalized_likelihoods[i];
+      smoothed_log_likelihoods[i] = res.smoothed_log_likelihoods[i];
     }
 
-    outputResults->Set(
-      Nan::New<v8::String>("instant_likelihoods").ToLocalChecked(),
-      instant_likelihoods
-    );
-    outputResults->Set(
-      Nan::New<v8::String>("instant_normalized_likelihoods").ToLocalChecked(),
-      instant_normalized_likelihoods
-    );
-    outputResults->Set(
-      Nan::New<v8::String>("smoothed_likelihoods").ToLocalChecked(),
-      smoothed_likelihoods
-    );
-    outputResults->Set(
-      Nan::New<v8::String>("smoothed_normalized_likelihoods").ToLocalChecked(),
-      smoothed_normalized_likelihoods
-    );
-    outputResults->Set(
-      Nan::New<v8::String>("smoothed_log_likelihoods").ToLocalChecked(),
-      smoothed_log_likelihoods
-    );
-
-    outputResults->Set(
-      Nan::New<v8::String>("likeliest").ToLocalChecked(),
-      Nan::New<v8::String>(res.likeliest).ToLocalChecked()
-    );
+    outputResults["instant_likelihoods"] = instant_likelihoods;
+    outputResults["instant_normalized_likelihoods"] = instant_normalized_likelihoods;
+    outputResults["smoothed_likelihoods"] = smoothed_likelihoods;
+    outputResults["smoothed_normalized_likelihoods"] = smoothed_normalized_likelihoods;
+    outputResults["smoothed_log_likelihoods"] = smoothed_log_likelihoods;
+    outputResults["likeliest"] = res.likeliest; // check res.likeliest is a std::string
 
     if (bimodal) {
-      v8::Local<v8::Array> output_values = Nan::New<v8::Array>(dimension_output);
-      for (unsigned int i = 0; i < dimension_output; ++i) {
-        Nan::Set(output_values, i, Nan::New(res.output_values[i]));
-      }
-      outputResults->Set(
-        Nan::New<v8::String>("output_values").ToLocalChecked(),
-        output_values
-      );
-
+      Json::Value outputValues;
+      outputValues.resize(static_cast<Json::ArrayIndex>(dimension_output));
+      
       unsigned int dim_out_cov = res.output_covariance.size();
-      v8::Local<v8::Array> output_covariance = Nan::New<v8::Array>(dim_out_cov);
-      for (unsigned int i = 0; i < dim_out_cov; ++i) {
-        Nan::Set(output_covariance, i, Nan::New(res.output_covariance[i]));
+      Json::Value outputCovariance;
+      outputCovariance.resize(static_cast<Json::ArrayIndex>(dim_out_cov));
+
+      for (unsigned int i = 0; i < dimension_output; i++) {
+        outputValues[i] = res.output_values[i]; // Json::Value(res.output_values[i]);
       }
-      outputResults->Set(
-        Nan::New<v8::String>("output_covariance").ToLocalChecked(),
-        output_covariance
-      );
+      
+      for (unsigned int i = 0; i < dim_out_cov; ++i) {
+        outputCovariance[i] = res.output_covariance[i]; // Json::Value(res.output_covariance[i]);
+      }
+
+      outputResults["output_values"] = outputValues;
+      outputResults["output_covariance"] = outputCovariance;
     }
 
     return outputResults;
@@ -228,7 +227,6 @@ public:
     model.configuration.multiClass_regression_estimator = mre;
     model.configuration.changed = true;
   }
-
 };
 
 #endif /* _XMM_TOOL_H_ */

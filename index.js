@@ -8,7 +8,7 @@
 
 /** @module xmm */
 
-var XmmNative = null;
+// var XmmNative = null;
 
 //  NO NEED TO DO THIS ANYMORE THANKS TO NODE-PRE-GYP :
 
@@ -28,29 +28,133 @@ var bindingPath = binary.find(path.resolve(path.join(__dirname, './package.json'
 
 // Load the new built binary for other platforms.
 // XmmNative = require('./build/Release/xmm-node');
-XmmNative = require(bindingPath);
+var XmmNative = require(bindingPath);
 
 // }
 
 // wrap the native class for more flexibility :
 function Xmm(modelType, options) {
-  this._initialize(modelType);
+  this._xmm = new XmmNative.xmm(modelType);
+  // this._initialize(modelType);
 
   if (options) {
     this.setConfig(options);
   }
 }
 
-Xmm.prototype._initialize = function(modelType) {
-  this._xmm = new XmmNative(modelType);
+// Xmm.prototype._initialize = function(modelType) {
+//   this._xmm = new XmmNative.xmm(modelType);
+//   // expose all the native methods in the wrapper :
+//   for (var i in methods /* this._xmm */) {
+//     var method = methods[i];
+//     if (!Xmm.prototype[method]) {
+//       // console.log(method);
+//       // this[method] = this._xmm[method].bind(this._xmm);
+//       Xmm.prototype[method] = function(input) {
+//         // console.log(method);
+//         return this._xmm[method](input);
+//       };
+//     }
+//   }
+// }
 
-  // expose all the native methods in the wrapper :
-  for (var method in this._xmm) {
-    if (!Xmm.prototype[method]) {
-      this[method] = this._xmm[method].bind(this._xmm);
-    }
-  }
+// no use for this, keeping it for reference.
+// for some reason every method has to be wrapped manually
+// because Napi objects' methods cannot be inspected from js (see below) :/
+
+var methods = [
+  'addPhrase',
+  'getPhrase',
+  'getPhrasesOfLabel',
+  'removePhrase',
+  'removePhrasesOfLabel',
+  'getTrainingSetSize',
+  'getTrainingSetLabels',
+  'getTrainnigSet',
+  'setTrainnigSet',
+  'addTrainnigSet',
+  'clearTrainnigSet',
+  'train',
+  'cancelTraining',
+  'getModel',
+  'setModel',
+  'getModelType',
+  'reset',
+  'filter',
+]
+
+Xmm.prototype.addPhrase = function(phrase) {
+  return this._xmm.addPhrase(phrase);
 }
+
+Xmm.prototype.getPhrase = function(index = 0) {
+  return this._xmm.getPhrase();
+}
+
+Xmm.prototype.getPhrasesOfLabel = function(label = "") {
+  return this._xmm.getPhrasesOfLabel(label);
+}
+
+Xmm.prototype.removePhrase = function(index = -1) {
+  return this._xmm.removePhrase(index);
+}
+
+Xmm.prototype.removePhrasesOfLabel = function(label = "") {
+  return this._xmm.removePhrasesOfLabel(label);
+}
+
+Xmm.prototype.getTrainingSetSize = function() {
+  return this._xmm.getTrainingSetSize();
+}
+
+Xmm.prototype.getTrainingSetLabels = function() {
+  return this._xmm.getTrainingSetLabels();
+}
+
+Xmm.prototype.getTrainingSet = function() {
+  return this._xmm.getTrainingSet();
+}
+
+Xmm.prototype.setTrainingSet = function(set) {
+  return this._xmm.setTrainingSet(set);
+}
+
+Xmm.prototype.addTrainingSet = function(set) {
+  return this._xmm.addTrainingSet(set);
+}
+
+Xmm.prototype.clearTrainingSet = function() {
+  return this._xmm.clearTrainingSet();
+}
+
+Xmm.prototype.train = function(callback) {
+  return this._xmm.train(callback);
+}
+
+Xmm.prototype.cancelTraining = function() {
+  return this._xmm.cancelTraining();
+}
+
+Xmm.prototype.getModel = function() {
+  return this._xmm.getModel();
+}
+
+Xmm.prototype.setModel = function(model) {
+  return this._xmm.setModel(model);
+}
+
+Xmm.prototype.getModelType = function() {
+  return this._xmm.getModelType();
+}
+
+Xmm.prototype.reset = function() {
+  return this._xmm.reset();
+}
+
+Xmm.prototype.filter = function(observation) {
+  return this._xmm.filter(observation);
+}
+
 
 // If we want to override some of the native methods, we could do this
 // (the "if (!Xmm.prototype[method])" test avoids messing up the exposed native
@@ -118,7 +222,7 @@ Xmm.prototype.setConfig = function(config) {
 
 Xmm.prototype.setModelType = function(modelType) {
   var options = this._xmm.getConfig();
-  this._initialize(modelType);
+  this._xmm = new XmmNative.xmm(modelType);
 
   this.setConfig(options);
 }

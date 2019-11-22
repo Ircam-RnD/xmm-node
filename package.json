@@ -1,52 +1,37 @@
 {
   "name": "xmm-node",
-  "version": "0.3.4",
-  "author": "Joseph Larralde",
-  "license": "GPL-3.0",
-  "description": "node wrapper for the XMM library",
-  "keywords": [
-    "xmm",
-    "machine learning",
-    "gmm",
-    "hmm",
-    "regression"
-  ],
+  "version": "0.4.0",
+  "description": "node wrapper for the xmm library",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Ircam-RnD/xmm-node.git"
-  },
-  "bundledDependencies": [
-    "node-pre-gyp"
-  ],
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build > log.txt 2>&1",
     "doc": "jsdoc2md -t docs/README.hbs docs/documentation.js > README.md",
     "test": "babel-tape-runner \"test/*_tests.js\""
   },
-  "dependencies": {
-    "nan": "^2.11.1",
-    "node-pre-gyp": "^0.6.36"
-  },
+  "author": "Joseph Larralde",
+  "license": "GPL-3.0-or-later",
+  "gypfile": true,
   "binary": {
-    "module_name": "xmm-node",
+    "module_name": "xmm",
     "module_path": "./build/bin/{configuration}/{node_abi}-{platform}-{arch}/",
     "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}.tar.gz",
-    "host": "https://github.com/Ircam-RnD/xmm-node/releases/download/",
+    "host": "https://github.com/josephlarralde/test/releases/download/",
     "remote_path": "{version}"
   },
-  "devDependencies": {
-    "babel-core": "^6.14.0",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-tape-runner": "^2.0.1",
-    "jsdoc-template": "ircam-jstools/jsdoc-template",
-    "jsdoc-to-markdown": "^1.3.7",
-    "tape": "^4.6.0",
-    "xmm-client": "github:ircam-rnd/xmm-client#v0.3.4"
+  "bundledDependencies": [
+    "node-pre-gyp"
+  ],
+  "dependencies": {
+    "node-addon-api": "^1.7.1",
+    "node-pre-gyp": "^0.14.0"
   },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@ircam/jsdoc-template": "github:ircam-jstools/jsdoc-template",
+    "babel-tape-runner": "^3.0.0",
+    "jsdoc-to-markdown": "^5.0.3",
+    "tape": "^4.11.0",
+    "xmm-client": "github:ircam-rnd/xmm-client"
   }
 }
