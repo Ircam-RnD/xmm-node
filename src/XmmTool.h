@@ -71,8 +71,6 @@ public:
   }
 
   void train(Napi::Function& callback, xmm::TrainingSet *set) {
-    // callbacks.push_back(callback); // no need for callbacks
-
     /*
     for (int i = workers.size() - 1; i >= 0; i--) {
       if (workers[i]->Done()) {
@@ -84,17 +82,8 @@ public:
     }
     //*/
 
-    // Already tried to replace new by make_shared an declare workers as vector of shared_ptrs
-    // But this crashes, probably because of some automatic call to delete
-
     workers.push_back(new XmmWrapTrainWorker<Model>(callback, model, set));
     workers[workers.size() - 1]->Queue();
-    // Nan::AsyncQueueWorker(workers[workers.size() - 1]);
-
-    // Nan::AsyncQueueWorker(new XmmWrapTrainWorker<Model>(callback, model, set));
-
-    // XmmWrapTrainWorker<Model>* worker = new XmmWrapTrainWorker<Model>(callback, model, set);
-    // worker->Queue();
   }
 
   void cancelTraining() {
@@ -103,13 +92,12 @@ public:
     }
 
     workers.clear();
-
-    // callbacks.clear(); // no need for callbacks
   }
 
   // TODO : store a Json::Value of outputResults as a variable of the class
   // to avoid creating it on each call to filter() and only fill it instead
   // (e.g. add an "updateFromModel" method or something)
+
   Json::Value filter(std::vector<float> observation) {
     Json::Value outputResults;
     // return outputResults;
@@ -139,11 +127,6 @@ public:
     smoothed_log_likelihoods.resize(static_cast<Json::ArrayIndex>(nmodels));
 
     for (int i = 0; i < nmodels; i++) {
-      // instant_likelihoods[i] = Json::Value(res.instant_likelihoods[i]);
-      // instant_normalized_likelihoods[i] = Json::Value(res.instant_normalized_likelihoods[i]);
-      // smoothed_likelihoods[i] = Json::Value(res.smoothed_likelihoods[i]);
-      // smoothed_normalized_likelihoods[i] = Json::Value(res.smoothed_normalized_likelihoods[i]);
-      // smoothed_log_likelihoods[i] = Json::Value(res.smoothed_log_likelihoods[i]);
       instant_likelihoods[i] = res.instant_likelihoods[i];
       instant_normalized_likelihoods[i] = res.instant_normalized_likelihoods[i];
       smoothed_likelihoods[i] = res.smoothed_likelihoods[i];
@@ -167,11 +150,11 @@ public:
       outputCovariance.resize(static_cast<Json::ArrayIndex>(dim_out_cov));
 
       for (unsigned int i = 0; i < dimension_output; i++) {
-        outputValues[i] = res.output_values[i]; // Json::Value(res.output_values[i]);
+        outputValues[i] = res.output_values[i];
       }
       
       for (unsigned int i = 0; i < dim_out_cov; ++i) {
-        outputCovariance[i] = res.output_covariance[i]; // Json::Value(res.output_covariance[i]);
+        outputCovariance[i] = res.output_covariance[i];
       }
 
       outputResults["output_values"] = outputValues;
