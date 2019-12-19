@@ -357,17 +357,20 @@ XmmWrap::filter(const Napi::CallbackInfo& info) {
 
   if (info.Length() > 0 && info[0].IsArray()) {
     Napi::Array arr = info[0].As<Napi::Array>();
-    std::vector<float> observation;
 
-    for (unsigned int i = 0; i < arr.Length(); i++) {
-      if (arr.Get(i).IsNumber()) {
-        observation.push_back(arr.Get(i).ToNumber().DoubleValue());
-      } else {
-        observation.push_back(Napi::Number::New(env, 0));
+    if (arr.Length() > 0) { // should be more strict, sth like "== model_->model->dimension_input) {""
+      std::vector<float> observation;
+
+      for (unsigned int i = 0; i < arr.Length(); i++) {
+        if (arr.Get(i).IsNumber()) {
+          observation.push_back(arr.Get(i).ToNumber().DoubleValue());
+        } else {
+          observation.push_back(Napi::Number::New(env, 0));
+        }
       }
-    }
 
-    return valueToObject(env, model_->filter(observation));
+      return valueToObject(env, model_->filter(observation));
+    }
   }
 
   return env.Null();

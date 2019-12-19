@@ -71,7 +71,7 @@ public:
   }
 
   void train(Napi::Function& callback, xmm::TrainingSet *set) {
-    /*
+    //*
     for (int i = workers.size() - 1; i >= 0; i--) {
       if (workers[i]->Done()) {
         // No need to delete the pointer as it's probably freed after call to HandleOKCallback
