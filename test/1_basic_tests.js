@@ -57,6 +57,16 @@ test('untrained filtering', (t) => {
 	t.end();
 });
 
+test('filtering empty array', (t) => {
+	const gmm = new xmm('hhmm');
+
+	const filteringEmptyArrayMsg = 'filtering an empty array should not crash';
+
+	gmm.filter([]);
+	t.pass(filteringEmptyArrayMsg);
+	t.end();
+});
+
 test('labels', (t) => {
 	const gmm = new xmm('gmm');
 

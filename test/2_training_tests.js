@@ -2,6 +2,21 @@ import xmm from '../index';
 import { GmmDecoder, SetMaker } from 'xmm-client';
 import test from 'tape';
 
+// test('training with empty set', (t) => {
+//   const gmm = new xmm('gmm');
+
+//   const trainingWithEmptySetMsg = 'training with empty set should not crash';
+
+//   gmm.clearTrainingSet();
+//   gmm.train((err, res) => {
+//     // console.log(err);
+//     // console.log(res);
+//     // t.equal(res, null, trainingWithEmptySetMsg);
+//     t.pass(trainingWithEmptySetMsg);
+//     t.end();
+//   });
+// });
+
 test('training', (t) => {
 
   t.plan(4);
@@ -64,19 +79,25 @@ test('training', (t) => {
 
   const set = setMaker.getTrainingSet();
   gmm.setTrainingSet(set);
-  console.log(set);
+  // console.log(set);
   // hhmm.clearTrainingSet();
   // hhmm.addTrainingSet(setMaker.getTrainingSet());
 
   gmm.train((err, res) => {
-    console.log(JSON.stringify(res, null, 2));
+    // console.log(JSON.stringify(res, null, 2));
     gmmClient.setModel(res);
 
     t.notEqual(res, null, trainMsgThree);
     t.equal(res.models.length > 0, true, trainMsgThree);
 
-    console.log(gmmClient.filter([3, 2, 3]));
-    console.log(gmmClient.filter([3, 2, 1]));
+    // console.log(gmm.filter([]));
+    // console.log(gmm.filter());
+    // console.log(gmm.filter({}));
+    // console.log(gmm.filter([ 1 ]));
+    // console.log(gmm.filter([ 2 ]));
+
+    // console.log(gmmClient.filter([3, 2, 3]));
+    // console.log(gmmClient.filter([3, 2, 1]));
 
     // const setModelConfigMsg = 'config should not change when queried after setModel';
     // let config = hhmm.getConfig();
