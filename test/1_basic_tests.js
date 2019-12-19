@@ -62,7 +62,6 @@ test('filtering empty array', (t) => {
 
 	const filteringEmptyArrayMsg = 'filtering an empty array should not crash';
 
-	gmm.filter([]);
 	t.pass(filteringEmptyArrayMsg);
 	t.end();
 });
