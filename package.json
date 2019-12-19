@@ -1,6 +1,6 @@
 {
   "name": "xmm-node",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "node wrapper for the xmm library",
   "main": "index.js",
   "scripts": {
