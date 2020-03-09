@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "XmmWrap.h"
 #include "XmmWrapUtils.h"
 #include "JsonCppNapiConverters.h"
