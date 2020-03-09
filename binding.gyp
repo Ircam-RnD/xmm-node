@@ -32,10 +32,10 @@
       #'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ],
       'defines': [ 'NAPI_ENABLE_CPP_EXCEPTIONS' ],
 
-      "cflags" : ["-std=c++11", "-fexceptions"],
+      "cflags" : ["-w", "-std=c++11", "-fexceptions"],
       # "cflags": ["-Wall", "-std=c++11", "-fexceptions"],
-      "cflags_cc" : ["-std=c++11", "-fexceptions"],
-      #"cflags_cc" : ["-std=c++11", "-fexceptions", "-Wall"],
+      "cflags_cc" : ["-w", "-std=c++11", "-fexceptions"],
+      #"cflags_cc" : ["-Wall", "-std=c++11", "-fexceptions"],
       #"cflags!" : [ '-fno-exceptions' ],
       #"cflags_cc!" : [ '-fno-exceptions' ],
       "conditions" : [
