@@ -2,8 +2,7 @@
 ### XMM native addon for Node.js
 
 Wraps the [XMM](https://github.com/ircam-rnd/xmm) gesture recognition library into a NodeJS module.
-Can be used together with the client-side model decoders library
-[xmm-client](https://github.com/ircam-rnd/xmm-client).
+Can be used together with the client-side model decoders library [xmm-client](https://github.com/ircam-rnd/xmm-client).
 
 #### developers :
 
